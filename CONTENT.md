@@ -4,23 +4,23 @@
   - 1.1 [Motivation](#11-motivation)
   - 1.2 [Objective of the Project](#12-objective-of-the-project)
   - 1.3 [Purpose of the Project](#13-purpose-of-the-project)
-- 2. [**LITERATURE SURVEY**](#2-literature-survey)
-- 3. [**SYSTEM ANALYSIS**](#3-system-analysis)
+- 1. [**LITERATURE SURVEY**](#2-literature-survey)
+- 1. [**SYSTEM ANALYSIS**](#3-system-analysis)
   - 3.1 [Existing System](#31-existing-system)
   - 3.2 [Proposed System](#32-proposed-system)
-- 4. [**SYSTEM REQUIREMENTS**](#4-system-requirements)
+- 1. [**SYSTEM REQUIREMENTS**](#4-system-requirements)
   - 4.1 [Hardware Requirements](#41-hardware-requirements)
   - 4.2 [Software Requirements](#42-software-requirements)
-- 5. [**SOFTWARE DESCRIPTION**](#5-software-description)
-- 6. [**SYSTEM DESIGN**](#6-system-design)
+- 1. [**SOFTWARE DESCRIPTION**](#5-software-description)
+- 1. [**SYSTEM DESIGN**](#6-system-design)
   - 6.1 [System Architecture](#61-system-architecture)
   - 6.2 [UML Diagrams](#62-uml-diagrams)
   - 6.3 [Feasibility Study](#63-feasibility-study)
-- 7. [**IMPLEMENTATION**](#7-implementation)
+- 1. [**IMPLEMENTATION**](#7-implementation)
   - 7.1 [Module Description](#71-module-description)
   - 7.2 [Sample Code](#72-sample-code)
-- 8. [**TESTING AND VALIDATION**](#8-testing-and-validation)
-- 9. [**CONCLUSION**](#9-conclusion)
+- 1. [**TESTING AND VALIDATION**](#8-testing-and-validation)
+- 1. [**CONCLUSION**](#9-conclusion)
 
 ---
 
@@ -44,6 +44,7 @@ Over the past decade, Indian capital markets have witnessed an unprecedented sur
 The overarching objective of **Rupeemind** is to design, develop, and deploy an enterprise-grade, full-stack financial intelligence and wealth management platform specifically engineered for Indian capital market instruments (Equities and Mutual Funds).
 
 The targeted objectives are summarized as follows:
+
 - **Comprehensive Psychometric & Cashflow Assessment**: Develop a 5-step interactive investor profiling engine that analyzes income stability, debt-to-income ratio, emergency fund coverage, and behavioral risk tolerance to classify users into scientifically calibrated risk bands (Conservative, Moderate, Aggressive).
 - **Hybrid Technical & Machine Learning Intelligence**: Implement a dual-engine market signal architecture combining deterministic technical analysis rules (RSI 14, MACD 12/26/9, Bollinger Bands 20/2, EMA crossovers) with a 56-feature trained XGBoost machine learning classification model to generate probabilistic buy/sell confidence scores backed by 5-year walk-forward backtests.
 - **Risk-Free Statutory Paper Trading Sandbox**: Engineer a real-time virtual trading execution engine pre-seeded with ₹10,00,000 in virtual capital, supporting instant market orders and queued limit orders with realistic simulated deduction of Indian statutory taxes (STT, NSE turnover charges, SEBI turnover fees, GST, and Stamp Duty).
@@ -56,6 +57,7 @@ The targeted objectives are summarized as follows:
 ## 1.3 Purpose of the Project
 
 The primary purpose of **Rupeemind** is to democratize quantitative financial engineering and institutional risk management for retail Indian investors. Rather than merely facilitating transactional stock purchasing, the platform acts as an intelligent decision-support copilot and educational sandbox that:
+
 - Teaches discipline through virtual trading prior to real-world capital commitment.
 - Visualizes potential rupee losses during historical macro crashes before those crashes materialize.
 - Translates opaque financial ratios (Sharpe, Beta, VaR, CVaR, CAGR, XIRR) into intuitive visual meters and actionable rebalancing recommendations.
@@ -68,7 +70,7 @@ The primary purpose of **Rupeemind** is to democratize quantitative financial en
 The architecture and feature set of Rupeemind build upon fundamental academic financial models, quantitative machine learning literature, and an analysis of current commercial fintech platforms.
 
 | Literature / Platform | Authors / Publisher | Key Principles & Findings | Limitations Addressed by Rupeemind |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **Modern Portfolio Theory (MPT)** | Harry Markowitz (1952), *Journal of Finance* | Portfolios should be constructed to maximize expected return for a given level of market variance, establishing the concept of the Efficient Frontier and diversification benefits. | MPT assumes normal return distributions and constant variance. Rupeemind augments MPT with extreme-tail risk metrics (Conditional VaR / Expected Shortfall) and non-linear Monte Carlo simulations. |
 | **Capital Asset Pricing Model (CAPM)** | William Sharpe (1964), *Journal of Finance* | Establishes the relationship between systematic market risk (beta) and expected return, defining the Sharpe ratio as the standard measure of risk-adjusted excess return. | Retail investors struggle to compute portfolio-weighted beta dynamically. Rupeemind automates real-time beta calculations across mixed equity and mutual fund holdings. |
 | **Machine Learning in Financial Forecasting** | Chen & Guestrin (2016); Gu, Kelly, & Xiu (2020) | Gradient boosted decision trees (XGBoost) significantly outperform linear econometric models (ARIMA, GARCH) in capturing non-linear feature interactions across multi-period technical indicators. | Algorithmic trading literature often ignores retail accessibility. Rupeemind packages a 56-feature XGBoost model behind an intuitive visual confidence badge with historical backtest win-rates. |
@@ -93,7 +95,8 @@ In the prevailing Indian financial landscape, retail investors navigate a fragme
 5. Tax Calculation   ---> Post-facto surprise during ITR filing (LTCG / STCG / STT / Charges)
 ```
 
-### Disadvantages of the Existing System:
+### Disadvantages of the Existing System
+
 1. **No Integrated Risk Evaluation**: Existing platforms encourage constant transaction volume (churn) rather than risk-adjusted capital preservation.
 2. **Black-Swan Vulnerability**: Investors possess zero insight into how a 30% crash or interest rate hike will impact their specific portfolio.
 3. **High Financial Cost of Learning**: Beginners learn through costly mistakes in live accounts, paying thousands of rupees in tuition to market volatility and statutory charges.
@@ -105,7 +108,8 @@ In the prevailing Indian financial landscape, retail investors navigate a fragme
 
 **Rupeemind** eliminates these fragmented silos by providing a unified, cohesive, end-to-end quantitative financial workstation.
 
-### Key Innovations of the Proposed System:
+### Key Innovations of the Proposed System
+
 - **Unified Full-Stack Architecture**: React 19 frontend, Node.js Express backend, MongoDB local database, and Python FastAPI XGBoost ML microservice connected via high-speed REST and real-time Socket.IO WebSockets.
 - **Scientific Investor Onboarding**: Multi-dimensional risk scoring combining psychological reaction to drawdowns with real-world debt-to-income and emergency cashflow ratios.
 - **Transparent Dual-Engine Signals**: Clear **STRONG BUY / BUY / HOLD / SELL / STRONG SELL** badges driven by mathematical rules (RSI, MACD, Bollinger Bands) and 56-indicator XGBoost machine learning predictions.
@@ -120,13 +124,15 @@ In the prevailing Indian financial landscape, retail investors navigate a fragme
 
 ## 4.1 Hardware Requirements
 
-### Developer Workstation:
+### Developer Workstation
+
 - **Processor**: Intel Core i5/i7 (8th Gen or higher) / AMD Ryzen 5/7 (3000 series or higher) / Apple Silicon (M1/M2/M3/M4).
 - **Memory (RAM)**: Minimum 8 GB DDR4 (16 GB recommended for concurrent Vite, Node, and Python runtimes).
 - **Storage**: Minimum 10 GB available SSD space for Node modules, Python virtual environments, and MongoDB database storage.
 - **Network**: Broadband Internet connection (minimum 10 Mbps) for external financial API ingestion (Yahoo Finance, AMFI MFAPI, Economic Times RSS).
 
-### Client / End-User Machine:
+### Client / End-User Machine
+
 - **Device**: Desktop, Laptop, Tablet, or Smartphone with modern HTML5-compliant browser.
 - **Processor**: Dual-Core 1.5 GHz or higher.
 - **Memory (RAM)**: 2 GB minimum (4 GB recommended).
@@ -136,24 +142,29 @@ In the prevailing Indian financial landscape, retail investors navigate a fragme
 
 ## 4.2 Software Requirements
 
-### Operating System:
+### Operating System
+
 - Microsoft Windows 10/11 (x64) / macOS Sonoma 14+ / Ubuntu Linux 22.04 LTS.
 
-### Frontend Technology Stack:
+### Frontend Technology Stack
+
 - **Runtime & Language**: Node.js >= 20.x, TypeScript ~6.0.2.
 - **Framework & Libraries**: React ^19.2.8, Vite ^8.3.3, Tailwind CSS ^4.3.3, React Router DOM ^7.18.4, Framer Motion ^14.0.0, Recharts ^3.10.1, Lucide React ^1.52.0, Socket.IO Client ^4.8.4, Axios ^1.20.0, Sonner ^2.0.8.
 
-### Backend Technology Stack:
+### Backend Technology Stack
+
 - **Runtime & Framework**: Node.js >= 20.x (ES Modules), Express.js ^4.21.2.
 - **Database & ODM**: MongoDB Community Server 7.x / 8.x (Port 27017), Mongoose ^8.12.0.
 - **Database Management Tool**: MongoDB Compass GUI (at `mongodb://127.0.0.1:27017/rupeemind`).
 - **Security & Utilities**: Helmet ^8.0.0, express-rate-limit ^7.5.0, jsonwebtoken ^9.0.2, bcryptjs ^2.4.3, Zod ^3.24.2, Nodemailer ^10.0.15, Node-Cron ^4.6.0, technicalindicators ^3.1.0.
 
-### Machine Learning & Data Science Service:
+### Machine Learning & Data Science Service
+
 - **Language & Runtime**: Python 3.10 or 3.11.
 - **Framework & Libraries**: FastAPI, Uvicorn, XGBoost, scikit-learn, pandas, numpy, joblib.
 
-### Quality Assurance & Build Tools:
+### Quality Assurance & Build Tools
+
 - **Testing**: Vitest ^5.0.3 (Client and Server), Supertest ^7.3.1.
 - **Linting & Code Quality**: ESLint ^10.12.0 with TypeScript-ESLint.
 
@@ -162,30 +173,39 @@ In the prevailing Indian financial landscape, retail investors navigate a fragme
 # 5. SOFTWARE DESCRIPTION
 
 ### React 19 & Concurrent Rendering
+
 React 19 serves as the client presentation layer. It utilizes concurrent rendering, non-blocking state transitions (`useTransition`), and modular functional components to deliver instantaneous visual feedback across financial dashboards, candlestick charting interfaces, and drawer dialogs without UI thread freeze.
 
 ### TypeScript 6
+
 TypeScript enforces strict static compile-time type safety across the entire application boundary. Shared interfaces for user profiles, stock quotes, paper orders, portfolio metrics, and WebSocket event payloads prevent runtime `undefined` exceptions and guarantee predictable data contracts.
 
 ### Vite 8
+
 Vite acts as the next-generation frontend build tool. Utilizing native ECMAScript Modules (ESM) in development and Rollup with aggressive code-splitting for production, Vite compiles 2,670+ modules into optimized static asset bundles in under 3 seconds.
 
 ### Tailwind CSS 4
+
 Tailwind CSS provides a modern utility-first styling architecture configured via `@tailwindcss/vite`. It delivers a high-contrast, institutional dark/light aesthetic inspired by Bloomberg Terminal and Linear, with glassmorphic cards, responsive grids, and CSS variable-driven financial color accents (profit emerald, loss rose, warning amber).
 
 ### Node.js & Express.js
+
 The server layer operates on Node.js using native ES Modules. Express powers 15 modular RESTful controllers implementing defense-in-depth security, strict Zod payload validation, tiered rate-limiting, and graceful error normalization.
 
 ### MongoDB & Mongoose 8
+
 MongoDB provides a high-throughput NoSQL document data store ideal for polymorphic financial data (such as variable holding types, dynamic risk profiles, and multi-turn chat transcripts). Mongoose enforces strict schema definitions, cascading hooks, and compound indexes optimizing high-velocity queries.
 
 ### Socket.IO Real-Time Streaming
+
 Socket.IO establishes persistent, bi-directional WebSocket connections between the client and Express server. During Indian market trading hours (09:15 to 15:30 IST), the server pushes real-time price ticks, index changes, and immediate order fill notifications directly to connected user sessions.
 
 ### Python FastAPI & XGBoost
+
 The quantitative machine learning microservice runs on Python with FastAPI. It ingests historical price series, computes 56 technical and statistical features, and executes an optimized XGBoost classifier to predict forward market direction probabilities with sub-50ms inference latency.
 
 ### Google Gemini 2.5 Flash
+
 Google's Gemini 2.5 Flash generative AI model is integrated into RupeeBot via Google AI Studio API. It enables multi-turn, context-grounded conversational advisory, synthesizing technical signals and portfolio allocations into coherent, jargon-free explanations with regulatory risk guardrails.
 
 ---
@@ -399,19 +419,24 @@ sequenceDiagram
 ## 6.3 Feasibility Study
 
 ### 1. Technical Feasibility: **High**
+
 The platform is built using production-grade open-source technologies (React 19, TypeScript, Node.js, FastAPI, MongoDB) that possess extensive global ecosystem support, active maintenance, and high throughput. The separation of the CPU-bound machine learning engine (FastAPI) from the I/O-bound WebSockets and REST server (Node.js) ensures horizontal scalability and resilience.
 
 ### 2. Economic Feasibility: **Extremely High**
+
 The entire technology stack is 100% open-source, eliminating costly commercial software licensing fees:
+
 - Database: Community MongoDB (Zero licensing cost).
 - Machine Learning & Analytics: Python scientific stack (XGBoost, scikit-learn, numpy) (Zero licensing cost).
 - Deployment: Compatible with free-tier and low-cost cloud compute instances (Docker on AWS/GCP/DigitalOcean).
 - Return on Investment (ROI): Retail users receive institutional-caliber risk protection and education for free, avoiding major financial losses in live trading.
 
 ### 3. Operational Feasibility: **High**
+
 The application requires zero client-side installation—accessible via any standard web browser on desktop or mobile devices. The user experience is tailored specifically for non-technical retail investors, converting complex mathematical metrics into visual color-coded risk gauges, clear action badges, and natural language AI explanations.
 
 ### 4. Legal & Regulatory Feasibility: **Compliant**
+
 Rupeemind is designed strictly as an educational and personal wealth intelligence decision-support tool. It includes mandatory SEBI-compliant regulatory disclaimers across all recommendations, paper trading, and AI Copilot responses, clearly stating that algorithmic signals and simulated predictions do not constitute registered investment advice.
 
 ---
@@ -465,7 +490,7 @@ Rupeemind is organized into ten distinct, deeply integrated functional modules:
 /**
  * Calculates authentic Indian capital market statutory charges and taxes
  * for simulated paper trading execution.
- * 
+ *
  * Rates applied (Equity Delivery):
  * - STT: 0.1% on turnover
  * - Exchange Turnover Fee (NSE): 0.00345%
@@ -478,7 +503,7 @@ export function calculateIndianStatutoryCharges(turnover, side, brokerage = 0) {
   const exchangeTurnoverFee = Number((turnover * 0.0000345).toFixed(2)); // 0.00345%
   const sebiFee = Number((turnover * 0.000001).toFixed(2)); // ₹10 per Crore
   const stampDuty = side === 'BUY' ? Number((turnover * 0.00015).toFixed(2)) : 0; // 0.015% on buy
-  
+
   const taxableServices = brokerage + exchangeTurnoverFee + sebiFee;
   const gst = Number((taxableServices * 0.18).toFixed(2)); // 18% GST
 
@@ -659,6 +684,7 @@ export async function refreshAccessToken(req, res) {
 ## Testing Methodology
 
 A rigorous multi-tiered testing strategy was executed to validate accuracy, resilience, and data integrity across both mathematical algorithms and API endpoints:
+
 1. **Unit Testing (Vitest)**: Validates mathematical correctness of financial calculators, statistical formulas (VaR, CVaR, Sharpe, Monte Carlo GBM), and Indian statutory tax calculations.
 2. **Integration Testing (Supertest & Express)**: Verifies REST API routes, dual-token JWT authentication, Zod request payload schema validation, and rate limiters.
 3. **Database Assertion (MongoDB)**: Validates atomic schema constraints, compound index execution, and cascading deletion hooks.
@@ -669,7 +695,7 @@ A rigorous multi-tiered testing strategy was executed to validate accuracy, resi
 ## Test Cases Summary Table
 
 | Test ID | Module Tested | Test Description | Input Data | Expected Output | Actual Result | Status |
-|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- |
 | **TC-01** | Auth Module | Dual-Token Login & Cookie Generation | Valid credentials (`user@example.com`, password) | HTTP 200, 15m access token returned, `httpOnly` refresh cookie set | HTTP 200, Token and secure cookie issued | **PASS** |
 | **TC-02** | Auth Module | Refresh Token Reuse Attack Prevention | Re-submission of an invalidated refresh token | HTTP 403, all active user sessions wiped from MongoDB | HTTP 403, all sessions revoked, cookie cleared | **PASS** |
 | **TC-03** | Onboarding | 5-Step Investor Risk Scoring | Monthly income: ₹80,000, Expenses: ₹30,000, Reaction: "Buy dip" | Risk Score >= 70, categorized as "Aggressive", Health Score >= 80 | Risk Score: 78, Category: "Aggressive", Health Score: 85 | **PASS** |
@@ -694,6 +720,7 @@ A rigorous multi-tiered testing strategy was executed to validate accuracy, resi
 The **Rupeemind** project has successfully designed, engineered, and validated an enterprise-grade quantitative wealth management and investment analysis platform built specifically for Indian retail investors.
 
 By integrating:
+
 1. **Psychometric & Cashflow Profiling**: Calibrating investor risk capacity using empirical debt-to-income and emergency fund ratios.
 2. **Hybrid Quantitative Signals**: Unifying deterministic technical analysis rules with 56-feature XGBoost machine learning predictions.
 3. **Statutory Paper Trading**: Replicating genuine Indian capital market friction and exchange taxes (STT, GST, SEBI fees, Stamp Duty) with zero capital risk.
