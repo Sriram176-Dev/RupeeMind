@@ -1,0 +1,3 @@
+"""
+RupeeMind ML package.
+"""

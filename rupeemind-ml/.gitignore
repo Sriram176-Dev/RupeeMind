@@ -1,0 +1,34 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+
+# Data directory outputs (keep structure, ignore raw/generated files if needed)
+data/cleaned/*.csv
+data/final/*.csv
+data/processed/*.csv
+data/live/*.csv
+
+# Models & Reports
+saved_models/*.pkl
+saved_models/*.json
+reports/*.txt
+reports/*.png
+logs/*.log
+
+# Testing & IDE
+.pytest_cache/
+.coverage
+htmlcov/
+.vscode/
+.idea/
+*.swp
+.DS_Store

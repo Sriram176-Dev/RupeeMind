@@ -1,0 +1,3 @@
+"""
+FastAPI REST application package.
+"""

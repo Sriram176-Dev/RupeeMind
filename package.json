@@ -1,0 +1,50 @@
+{
+  "name": "rupeemind",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n \"CLIENT,SERVER\" -c \"cyan,magenta\" \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "vite",
+    "dev:server": "npm run --prefix server dev",
+    "start:server": "npm run --prefix server start",
+    "build": "tsc -b && vite build",
+    "test": "vitest run src/test && npm run --prefix server test",
+    "test:client": "vitest run src/test",
+    "test:server": "npm run --prefix server test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "axios": "^1.20.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^14.0.0",
+    "lucide-react": "^1.52.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4",
+    "recharts": "^3.10.1",
+    "socket.io-client": "^4.8.4",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@rolldown/binding-win32-x64-msvc": "^1.2.12",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "oxlint": "^1.81.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.3"
+  }
+}

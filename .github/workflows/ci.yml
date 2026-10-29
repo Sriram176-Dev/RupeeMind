@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install root & client dependencies
+        run: npm ci
+
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Run root TypeScript typecheck
+        run: npx tsc --noEmit
+
+      - name: Run server test suite (including boot smoke test)
+        working-directory: ./server
+        env:
+          NODE_ENV: test
+          MONGODB_URI: mongodb://127.0.0.1:27017/rupeemind_test
+          JWT_ACCESS_SECRET: test_access_secret_32_characters_minimum_length_ok
+          JWT_REFRESH_SECRET: test_refresh_secret_32_characters_minimum_length_ok
+        run: npm test
+
+      - name: Build production frontend
+        run: npm run build
