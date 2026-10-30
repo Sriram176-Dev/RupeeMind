@@ -28,15 +28,15 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
     >
       <div className={cn('space-y-1.5', align === 'center' ? 'max-w-2xl mx-auto' : 'max-w-3xl')}>
         {eyebrow && (
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#0F766E] dark:text-emerald-400">
+          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#0F766E]">
             {eyebrow}
           </p>
         )}
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#0B1220] dark:text-[#E8EDF2] leading-tight">
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#0B1220] leading-tight">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-sm sm:text-base text-[#5B6572] dark:text-[#8A97A6] leading-relaxed max-w-[65ch]">
+          <p className="text-sm sm:text-base text-[#5B6572] leading-relaxed max-w-[65ch]">
             {subtitle}
           </p>
         )}

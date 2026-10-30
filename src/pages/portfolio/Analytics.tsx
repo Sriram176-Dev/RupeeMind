@@ -165,18 +165,18 @@ export const Analytics: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       {/* Top Banner */}
       <div className="p-6 rounded-3xl bg-gradient-to-r from-[#0F766E]/15 via-[#4F46E5]/10 to-transparent border border-emerald-500/20 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E] dark:text-emerald-400 flex items-center gap-1.5">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E] flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" />
             INSTITUTIONAL QUANT ANALYTICS & SIMULATION
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-1">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220] mt-1">
             Portfolio Health, Crisis Stress-Testing & Monte Carlo
           </h1>
-          <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] mt-1">
+          <p className="text-xs text-[#5B6572] mt-1">
             End-to-end diagnostic suite: concentration risk, 2008/2020 historical crisis replay, parametric VaR, and 1,000-path stochastic projections.
           </p>
         </div>
@@ -198,7 +198,7 @@ export const Analytics: React.FC = () => {
               fetchMonteCarlo();
             }}
             disabled={loading || stressLoading}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] dark:bg-emerald-600 transition-all flex items-center gap-2 shadow-xs shrink-0 min-h-[44px]"
+            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all flex items-center gap-2 shadow-xs shrink-0 min-h-[44px]"
           >
             <RefreshCw className={`w-4 h-4 ${loading || stressLoading ? 'animate-spin' : ''}`} />
             <span>Refresh All Models</span>
@@ -207,13 +207,13 @@ export const Analytics: React.FC = () => {
       </div>
 
       {/* Navigation Tab Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-slate-200">
         <button
           onClick={() => handleTabChange('health')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'health'
               ? 'bg-[#0F766E] text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <Activity className="w-4 h-4" />
@@ -225,7 +225,7 @@ export const Analytics: React.FC = () => {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'stress-test'
               ? 'bg-rose-600 text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <ShieldAlert className="w-4 h-4" />
@@ -237,7 +237,7 @@ export const Analytics: React.FC = () => {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'var'
               ? 'bg-indigo-600 text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <Gauge className="w-4 h-4" />
@@ -249,7 +249,7 @@ export const Analytics: React.FC = () => {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'monte-carlo'
               ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <Cpu className="w-4 h-4" />
@@ -263,9 +263,9 @@ export const Analytics: React.FC = () => {
       {activeTab === 'health' && (
         <div className="space-y-8">
           {loading ? (
-            <div className="p-16 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] text-center space-y-3">
+            <div className="p-16 rounded-3xl bg-white border border-[#E7E5DF] text-center space-y-3">
               <Activity className="w-8 h-8 text-[#0F766E] animate-pulse mx-auto" />
-              <p className="text-sm font-semibold text-[#0B1220] dark:text-[#E8EDF2]">
+              <p className="text-sm font-semibold text-[#0B1220]">
                 Calculating portfolio health & signal quality telemetry...
               </p>
             </div>
@@ -281,7 +281,7 @@ export const Analytics: React.FC = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                   {/* Score & Metrics Card */}
-                  <div className="lg:col-span-5 p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs flex flex-col justify-between space-y-6">
+                  <div className="lg:col-span-5 p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col justify-between space-y-6">
                     <div>
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -290,10 +290,10 @@ export const Analytics: React.FC = () => {
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-bold ${
                             healthData?.healthGrade === 'Excellent'
-                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                              ? 'bg-emerald-100 text-emerald-800'
                               : healthData?.healthGrade === 'Good'
-                              ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300'
-                              : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                              ? 'bg-indigo-100 text-indigo-800'
+                              : 'bg-amber-100 text-amber-800'
                           }`}
                         >
                           {healthData?.healthGrade}
@@ -301,13 +301,13 @@ export const Analytics: React.FC = () => {
                       </div>
 
                       <div className="flex items-baseline gap-2 mt-4">
-                        <span className="font-serif text-5xl sm:text-6xl font-bold text-[#0F766E] dark:text-emerald-400">
+                        <span className="font-serif text-5xl sm:text-6xl font-bold text-[#0F766E]">
                           {healthData?.healthScore}
                         </span>
                         <span className="text-lg font-bold text-gray-400">/ 100</span>
                       </div>
 
-                      <div className="w-full h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full mt-3 overflow-hidden">
+                      <div className="w-full h-2.5 bg-gray-100 rounded-full mt-3 overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-emerald-500 to-[#0F766E] rounded-full transition-all duration-500"
                           style={{ width: `${healthData?.healthScore || 0}%` }}
@@ -316,22 +316,22 @@ export const Analytics: React.FC = () => {
                     </div>
 
                     {/* Key Metrics Grid */}
-                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[#E7E5DF] dark:border-[#1F2933]">
-                      <div className="p-3 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14]">
+                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[#E7E5DF]">
+                      <div className="p-3 rounded-2xl bg-[#FAFAF7]">
                         <span className="text-[10px] uppercase font-bold text-gray-500">Total Invested</span>
-                        <p className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5">
+                        <p className="font-serif text-lg font-bold text-[#0B1220] mt-0.5">
                           {formatINR(healthData?.metrics?.totalInvested || 0)}
                         </p>
                       </div>
 
-                      <div className="p-3 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14]">
+                      <div className="p-3 rounded-2xl bg-[#FAFAF7]">
                         <span className="text-[10px] uppercase font-bold text-gray-500">Current Value</span>
-                        <p className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5">
+                        <p className="font-serif text-lg font-bold text-[#0B1220] mt-0.5">
                           {formatINR(healthData?.metrics?.currentValue || 0)}
                         </p>
                       </div>
 
-                      <div className="p-3 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14]">
+                      <div className="p-3 rounded-2xl bg-[#FAFAF7]">
                         <span className="text-[10px] uppercase font-bold text-gray-500">Unrealized P&L</span>
                         <p
                           className={`font-serif text-lg font-bold mt-0.5 ${
@@ -343,7 +343,7 @@ export const Analytics: React.FC = () => {
                         </p>
                       </div>
 
-                      <div className="p-3 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14]">
+                      <div className="p-3 rounded-2xl bg-[#FAFAF7]">
                         <span className="text-[10px] uppercase font-bold text-gray-500">Concentration Risk</span>
                         <p
                           className={`font-serif text-lg font-bold mt-0.5 ${
@@ -361,13 +361,13 @@ export const Analytics: React.FC = () => {
                   </div>
 
                   {/* Allocation & Concentration Breakdown */}
-                  <div className="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-6">
+                  <div className="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-6">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div>
-                        <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                        <h3 className="font-serif text-lg font-bold text-[#0B1220]">
                           Asset Split & Top Exposures
                         </h3>
-                        <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">
+                        <p className="text-xs text-[#5B6572]">
                           {healthData?.metrics?.holdingsCount || 0} active holdings analyzed
                         </p>
                       </div>
@@ -393,20 +393,20 @@ export const Analytics: React.FC = () => {
                         {healthData?.diversification?.holdings?.map((h) => (
                           <div
                             key={h.id}
-                            className="p-3 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] flex items-center justify-between text-xs"
+                            className="p-3 rounded-xl bg-[#FAFAF7] flex items-center justify-between text-xs"
                           >
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                              <span className="font-bold text-[#0B1220]">
                                 {h.symbol}
                               </span>
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-medium">
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-gray-600 font-medium">
                                 {h.type}
                               </span>
                             </div>
 
                             <div className="flex items-center gap-4">
                               <span className="text-gray-500">{formatINR(h.currentValue)}</span>
-                              <span className="font-bold text-[#0F766E] dark:text-emerald-400 min-w-[45px] text-right">
+                              <span className="font-bold text-[#0F766E] min-w-[45px] text-right">
                                 {h.weight}%
                               </span>
                             </div>
@@ -416,7 +416,7 @@ export const Analytics: React.FC = () => {
                     </div>
 
                     {/* Actionable Insights */}
-                    <div className="space-y-2 pt-2 border-t border-[#E7E5DF] dark:border-[#1F2933]">
+                    <div className="space-y-2 pt-2 border-t border-[#E7E5DF]">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500">
                         Diagnostic Insights
                       </span>
@@ -424,7 +424,7 @@ export const Analytics: React.FC = () => {
                         {healthData?.actionableInsights?.map((insight, idx) => (
                           <div
                             key={idx}
-                            className="flex items-start gap-2 text-xs text-[#0B1220] dark:text-[#E8EDF2] leading-relaxed"
+                            className="flex items-start gap-2 text-xs text-[#0B1220] leading-relaxed"
                           >
                             <CheckCircle className="w-4 h-4 text-[#0F766E] shrink-0 mt-0.5" />
                             <span>{insight}</span>
@@ -446,103 +446,103 @@ export const Analytics: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Card 1: Tracked Signals */}
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
+                  <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
                     <div className="flex items-center gap-2">
-                      <Activity className="w-5 h-5 text-[#0F766E] dark:text-emerald-400" />
-                      <h4 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                      <Activity className="w-5 h-5 text-[#0F766E]" />
+                      <h4 className="font-serif text-lg font-bold text-[#0B1220]">
                         Signal Distribution
                       </h4>
                     </div>
-                    <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">
+                    <p className="text-xs text-[#5B6572]">
                       Active signals across {signalData?.totalTracked || 0} monitored watchlist stocks.
                     </p>
                     <div className="grid grid-cols-3 gap-2 text-center pt-2">
-                      <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/20">
-                        <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300">BUY</span>
-                        <p className="font-serif text-2xl font-bold text-emerald-700 dark:text-emerald-300 mt-0.5">
+                      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-500/20">
+                        <span className="text-[10px] uppercase font-bold text-emerald-700">BUY</span>
+                        <p className="font-serif text-2xl font-bold text-emerald-700 mt-0.5">
                           {signalData?.breakdown?.BUY || 0}
                         </p>
                       </div>
-                      <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
-                        <span className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400">HOLD</span>
-                        <p className="font-serif text-2xl font-bold text-gray-700 dark:text-gray-300 mt-0.5">
+                      <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
+                        <span className="text-[10px] uppercase font-bold text-gray-600">HOLD</span>
+                        <p className="font-serif text-2xl font-bold text-gray-700 mt-0.5">
                           {signalData?.breakdown?.HOLD || 0}
                         </p>
                       </div>
-                      <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-500/20">
-                        <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-300">SELL</span>
-                        <p className="font-serif text-2xl font-bold text-rose-700 dark:text-rose-300 mt-0.5">
+                      <div className="p-3 rounded-xl bg-rose-50 border border-rose-500/20">
+                        <span className="text-[10px] uppercase font-bold text-rose-700">SELL</span>
+                        <p className="font-serif text-2xl font-bold text-rose-700 mt-0.5">
                           {signalData?.breakdown?.SELL || 0}
                         </p>
                       </div>
                     </div>
-                    <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6]">
+                    <p className="text-[11px] text-[#5B6572]">
                       {signalData?.flipsLast7Days || 0} signal flip(s) detected in the last 7 days.
                     </p>
                   </div>
 
                   {/* Card 2: ML Engine vs Rules */}
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
+                  <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
                     <div className="flex items-center gap-2">
-                      <Cpu className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                      <h4 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                      <Cpu className="w-5 h-5 text-indigo-600" />
+                      <h4 className="font-serif text-lg font-bold text-[#0B1220]">
                         ML Resilience Architecture
                       </h4>
                     </div>
-                    <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">
+                    <p className="text-xs text-[#5B6572]">
                       56-feature machine learning model with automatic rule-based circuit breaker.
                     </p>
                     <div className="space-y-2 pt-2">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-medium text-gray-600 dark:text-gray-300">ML Model Usage</span>
-                        <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                        <span className="font-medium text-gray-600">ML Model Usage</span>
+                        <span className="font-bold text-indigo-600">
                           {signalData?.engineMetrics?.mlAdoptionPercent || 0}%
                         </span>
                       </div>
-                      <div className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-indigo-600 rounded-full"
                           style={{ width: `${signalData?.engineMetrics?.mlAdoptionPercent || 0}%` }}
                         />
                       </div>
                       <div className="flex items-center justify-between text-xs pt-1">
-                        <span className="font-medium text-gray-600 dark:text-gray-300">Rule-based Fallback</span>
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                        <span className="font-medium text-gray-600">Rule-based Fallback</span>
+                        <span className="font-bold text-emerald-600">
                           {signalData?.engineMetrics?.ruleEnginePercent || 100}%
                         </span>
                       </div>
                     </div>
-                    <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6]">
+                    <p className="text-[11px] text-[#5B6572]">
                       Zero-downtime architecture gracefully maintains signal generation even during ML maintenance.
                     </p>
                   </div>
 
                   {/* Card 3: Historical Backtest Accuracy */}
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
+                  <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
                     <div className="flex items-center gap-2">
                       <Award className="w-5 h-5 text-amber-500" />
-                      <h4 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                      <h4 className="font-serif text-lg font-bold text-[#0B1220]">
                         Historical Backtest Yield
                       </h4>
                     </div>
-                    <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">
+                    <p className="text-xs text-[#5B6572]">
                       Walk-forward simulation across Nifty 50 constituents ({signalData?.engineMetrics?.sampleSize || 142} samples).
                     </p>
                     <div className="grid grid-cols-2 gap-3 pt-2">
-                      <div className="p-3 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14]">
+                      <div className="p-3 rounded-xl bg-[#FAFAF7]">
                         <span className="text-[10px] uppercase font-bold text-gray-500">Signal Win Rate</span>
                         <p className="font-serif text-2xl font-bold text-emerald-600 mt-0.5">
                           {signalData?.engineMetrics?.historicalWinRate || 58.5}%
                         </p>
                       </div>
-                      <div className="p-3 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14]">
+                      <div className="p-3 rounded-xl bg-[#FAFAF7]">
                         <span className="text-[10px] uppercase font-bold text-gray-500">Avg 20D Return</span>
-                        <p className="font-serif text-2xl font-bold text-[#0F766E] dark:text-emerald-400 mt-0.5">
+                        <p className="font-serif text-2xl font-bold text-[#0F766E] mt-0.5">
                           +{signalData?.engineMetrics?.avgForwardReturn || 3.75}%
                         </p>
                       </div>
                     </div>
-                    <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6]">
+                    <p className="text-[11px] text-[#5B6572]">
                       Baseline buy-and-hold average forward return across identical windows: +{signalData?.engineMetrics?.baselineAvgReturn || 1.42}%.
                     </p>
                   </div>
@@ -577,7 +577,7 @@ export const Analytics: React.FC = () => {
           {stressResult ? (
             <ScenarioImpactCard result={stressResult} />
           ) : (
-            <div className="p-12 text-center rounded-2xl bg-slate-900/40 border border-slate-800 text-slate-400">
+            <div className="p-12 text-center rounded-2xl bg-white border border-[#E7E5DF] text-[#5B6572] shadow-xs">
               <ShieldAlert className="w-8 h-8 text-rose-500 mx-auto mb-2 animate-bounce" />
               <p>Click "Execute Stress Test" above to calculate crisis impacts for your holdings.</p>
             </div>
@@ -597,9 +597,9 @@ export const Analytics: React.FC = () => {
           />
 
           {varLoading || !varMetrics ? (
-            <div className="p-16 rounded-3xl bg-slate-900/40 border border-slate-800 text-center space-y-3">
-              <Gauge className="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
-              <p className="text-sm font-semibold text-slate-300">
+            <div className="p-16 rounded-3xl bg-white border border-[#E7E5DF] text-center space-y-3 shadow-xs">
+              <Gauge className="w-8 h-8 text-[#0F766E] animate-spin mx-auto" />
+              <p className="text-sm font-semibold text-[#0B1220]">
                 Computing parametric VaR and tail-risk distribution...
               </p>
             </div>
@@ -621,9 +621,9 @@ export const Analytics: React.FC = () => {
           />
 
           {mcLoading || !monteCarloResult ? (
-            <div className="p-16 rounded-3xl bg-slate-900/40 border border-slate-800 text-center space-y-3">
-              <Cpu className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
-              <p className="text-sm font-semibold text-slate-300">
+            <div className="p-16 rounded-3xl bg-white border border-[#E7E5DF] text-center space-y-3 shadow-xs">
+              <Cpu className="w-8 h-8 text-[#0F766E] animate-spin mx-auto" />
+              <p className="text-sm font-semibold text-[#0B1220]">
                 Generating 1,000 stochastic price trajectories...
               </p>
             </div>

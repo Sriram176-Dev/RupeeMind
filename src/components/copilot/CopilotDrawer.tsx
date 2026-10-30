@@ -32,21 +32,21 @@ const FormattedMessage: React.FC<{ text: string }> = ({ text }) => {
   const lines = text.split('\n');
 
   return (
-    <div className="space-y-1.5 text-xs sm:text-sm text-slate-200 leading-relaxed break-words">
+    <div className="space-y-1.5 text-xs sm:text-sm text-[#0B1220] leading-relaxed break-words">
       {lines.map((line, idx) => {
         const trimmed = line.trim();
 
         // Heading 3 / 4
         if (trimmed.startsWith('#### ')) {
           return (
-            <h5 key={idx} className="font-bold text-slate-100 mt-2 mb-1 text-xs uppercase tracking-wide text-emerald-400">
+            <h5 key={idx} className="font-bold text-emerald-700 mt-2 mb-1 text-xs uppercase tracking-wide">
               {trimmed.replace('#### ', '')}
             </h5>
           );
         }
         if (trimmed.startsWith('### ')) {
           return (
-            <h4 key={idx} className="font-bold text-slate-100 mt-3 mb-1 text-sm flex items-center gap-1.5">
+            <h4 key={idx} className="font-bold text-[#0B1220] mt-3 mb-1 text-sm flex items-center gap-1.5">
               {trimmed.replace('### ', '')}
             </h4>
           );
@@ -57,7 +57,7 @@ const FormattedMessage: React.FC<{ text: string }> = ({ text }) => {
           const content = trimmed.substring(2);
           return (
             <div key={idx} className="flex items-start gap-2 ml-1 my-0.5">
-              <span className="text-emerald-400 text-xs mt-1 shrink-0">•</span>
+              <span className="text-emerald-600 text-xs mt-1 shrink-0">•</span>
               <span dangerouslySetInnerHTML={{ __html: renderInlineMarkdown(content) }} />
             </div>
           );
@@ -69,7 +69,7 @@ const FormattedMessage: React.FC<{ text: string }> = ({ text }) => {
           if (match) {
             return (
               <div key={idx} className="flex items-start gap-2 ml-1 my-0.5">
-                <span className="font-bold text-emerald-400 text-xs shrink-0">{match[1]}.</span>
+                <span className="font-bold text-emerald-600 text-xs shrink-0">{match[1]}.</span>
                 <span dangerouslySetInnerHTML={{ __html: renderInlineMarkdown(match[2]) }} />
               </div>
             );
@@ -92,11 +92,11 @@ const FormattedMessage: React.FC<{ text: string }> = ({ text }) => {
 
 function renderInlineMarkdown(str: string): string {
   // Replace **bold**
-  let out = str.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-100 font-semibold">$1</strong>');
+  let out = str.replace(/\*\*(.*?)\*\*/g, '<strong class="text-[#0B1220] font-semibold">$1</strong>');
   // Replace *italic*
-  out = out.replace(/\*(.*?)\*/g, '<em class="text-slate-300 italic">$1</em>');
+  out = out.replace(/\*(.*?)\*/g, '<em class="text-[#5B6572] italic">$1</em>');
   // Replace `code`
-  out = out.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-800 text-emerald-400 font-mono text-xs border border-slate-700">$1</code>');
+  out = out.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-[#F1F3F5] text-emerald-700 font-mono text-xs border border-[#E7E5DF]">$1</code>');
   return out;
 }
 
@@ -136,7 +136,7 @@ export const CopilotDrawer: React.FC = () => {
     }
   }, [isAuthenticated, isOpen]);
 
-  // Global Ctrl + J / ⌘ + J shortcut to toggle Copilot
+  // Global Ctrl + J / ⌘ + J shortcut to toggle Copilot & custom event
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'j') {
@@ -144,8 +144,16 @@ export const CopilotDrawer: React.FC = () => {
         setIsOpen((prev) => !prev);
       }
     };
+    const handleCustomToggle = () => {
+      setIsOpen((prev) => !prev);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('toggle-copilot', handleCustomToggle);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('toggle-copilot', handleCustomToggle);
+    };
   }, []);
 
   const loadSession = async () => {
@@ -250,24 +258,24 @@ export const CopilotDrawer: React.FC = () => {
             isExpanded
               ? 'inset-3 sm:inset-6 max-w-4xl mx-auto rounded-3xl'
               : 'bottom-4 right-4 sm:bottom-6 sm:right-6 w-[94vw] sm:w-[480px] h-[640px] max-h-[88vh] rounded-3xl'
-          } bg-slate-900/95 border border-slate-700/80 shadow-2xl backdrop-blur-2xl overflow-hidden`}
+          } bg-white/95 border border-[#E7E5DF] shadow-2xl backdrop-blur-2xl overflow-hidden`}
         >
           {/* Header */}
-          <div className="px-5 py-3.5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-800 flex items-center justify-between gap-3 shrink-0">
+          <div className="px-5 py-3.5 bg-gradient-to-r from-[#FAFAF7] via-white to-[#FAFAF7] border-b border-[#E7E5DF] flex items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="relative p-2 rounded-xl bg-gradient-to-br from-emerald-500/20 to-indigo-500/20 border border-emerald-500/30 text-emerald-400">
+              <div className="relative p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600">
                 <Bot className="w-5 h-5" />
-                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-slate-900" />
+                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white" />
               </div>
 
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-slate-100 text-sm">RupeeBot Copilot</h3>
-                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <h3 className="font-bold text-[#0B1220] text-sm">RupeeBot Copilot</h3>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Live Quant AI
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono mt-0.5">
+                <div className="flex items-center gap-2 text-[11px] text-[#5B6572] font-mono mt-0.5">
                   {contextSummary ? (
                     <span>
                       {contextSummary.holdingsCount} Assets • {formatCompactINR(contextSummary.totalHoldingsValue)} • {contextSummary.riskTolerance}
@@ -282,21 +290,21 @@ export const CopilotDrawer: React.FC = () => {
             <div className="flex items-center gap-1">
               <button
                 onClick={handleClearHistory}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-[#5B6572] hover:text-rose-600 hover:bg-[#FAFAF7] transition-colors"
                 title="Clear conversation"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors hidden sm:block"
+                className="p-1.5 rounded-lg text-[#5B6572] hover:text-[#0B1220] hover:bg-[#FAFAF7] transition-colors hidden sm:block"
                 title={isExpanded ? 'Collapse' : 'Expand'}
               >
                 {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-[#5B6572] hover:text-[#0B1220] hover:bg-[#FAFAF7] transition-colors"
                 title="Close (Esc)"
               >
                 <X className="w-4 h-4" />
@@ -314,16 +322,16 @@ export const CopilotDrawer: React.FC = () => {
                   className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
-                    <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
                       <Bot className="w-4 h-4" />
                     </div>
                   )}
 
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-md ${
+                    className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm ${
                       isUser
-                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-tr-none'
-                        : 'bg-slate-800/80 border border-slate-700/60 rounded-tl-none'
+                        ? 'bg-gradient-to-r from-[#0F766E] to-teal-700 text-white rounded-tr-none'
+                        : 'bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220] rounded-tl-none'
                     }`}
                   >
                     {isUser ? (
@@ -334,7 +342,7 @@ export const CopilotDrawer: React.FC = () => {
                   </div>
 
                   {isUser && (
-                    <div className="w-7 h-7 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-7 h-7 rounded-lg bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0 mt-0.5">
                       <User className="w-4 h-4" />
                     </div>
                   )}
@@ -343,17 +351,17 @@ export const CopilotDrawer: React.FC = () => {
             })}
 
             {loading && (
-              <div className="flex gap-3 justify-start items-center text-xs text-slate-400">
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+              <div className="flex gap-3 justify-start items-center text-xs text-[#5B6572]">
+                <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
                   <Bot className="w-4 h-4 animate-spin" />
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 flex items-center gap-2">
+                <div className="p-3 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center gap-2">
                   <div className="flex gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:0.4s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.4s]" />
                   </div>
-                  <span className="text-xs font-medium text-slate-300">
+                  <span className="text-xs font-medium text-[#5B6572]">
                     Synthesizing quantitative portfolio insight...
                   </span>
                 </div>
@@ -365,9 +373,9 @@ export const CopilotDrawer: React.FC = () => {
 
           {/* Suggestions Bar */}
           {activeSuggestions.length > 0 && !loading && (
-            <div className="px-4 py-2 border-t border-slate-800/80 bg-slate-900/60 overflow-x-auto shrink-0 flex items-center gap-1.5 scrollbar-none">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1">
-                <Lightbulb className="w-3 h-3 text-amber-400" />
+            <div className="px-4 py-2 border-t border-[#E7E5DF] bg-[#FAFAF7] overflow-x-auto shrink-0 flex items-center gap-1.5 scrollbar-none">
+              <span className="text-[10px] font-bold text-[#5B6572] uppercase tracking-wider shrink-0 flex items-center gap-1">
+                <Lightbulb className="w-3 h-3 text-amber-500" />
                 Suggestions:
               </span>
               {activeSuggestions.map((sug, i) => (
@@ -375,7 +383,7 @@ export const CopilotDrawer: React.FC = () => {
                   key={i}
                   type="button"
                   onClick={() => handleSendMessage(sug)}
-                  className="px-2.5 py-1 text-xs rounded-full bg-slate-800 hover:bg-emerald-950/40 text-slate-300 hover:text-emerald-300 border border-slate-700 hover:border-emerald-500/40 whitespace-nowrap transition-all shrink-0"
+                  className="px-2.5 py-1 text-xs rounded-full bg-white hover:bg-emerald-50 text-[#0B1220] hover:text-emerald-700 border border-[#E7E5DF] hover:border-emerald-300 whitespace-nowrap transition-all shrink-0 shadow-xs"
                 >
                   {sug}
                 </button>
@@ -384,7 +392,7 @@ export const CopilotDrawer: React.FC = () => {
           )}
 
           {/* Input Box */}
-          <div className="p-3.5 bg-slate-900 border-t border-slate-800 shrink-0">
+          <div className="p-3.5 bg-white border-t border-[#E7E5DF] shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -399,19 +407,19 @@ export const CopilotDrawer: React.FC = () => {
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Ask RupeeBot anything about your portfolio, risk, or Indian taxes..."
                 disabled={loading}
-                className="flex-1 bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none transition-all disabled:opacity-50"
+                className="flex-1 bg-[#FAFAF7] border border-[#E7E5DF] focus:border-emerald-500 focus:bg-white rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#0B1220] placeholder:text-[#5B6572]/60 focus:outline-none transition-all disabled:opacity-50"
               />
 
               <button
                 type="submit"
                 disabled={!inputText.trim() || loading}
-                className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-emerald-900/20"
+                className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-emerald-900/10"
                 title="Send message"
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
-            <div className="flex items-center justify-between text-[10px] text-slate-500 mt-1.5 px-1 font-mono">
+            <div className="flex items-center justify-between text-[10px] text-[#5B6572] mt-1.5 px-1 font-mono">
               <span>SEBI-aligned educational AI model</span>
               <span>Press Enter to send</span>
             </div>

@@ -28,9 +28,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     isOnboarded,
     requireOnboarding,
   });
-  if (location.pathname === "/onboarding" && isOnboarded) {
-    return <Navigate to="/dashboard" replace />;
-  }
+
   if (accessState === "guest") {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

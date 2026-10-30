@@ -25,13 +25,22 @@ export const updateProfileSchema = z.object({
   goalType: z.string().optional(),
   targetAmount: z.number().min(0).optional(),
   horizonYears: z.number().min(0).optional(),
-  goals: z.array(z.object({
-    type: z.string(),
-    targetAmount: z.number(),
-    horizonYears: z.number(),
-  })).optional(),
+  goals: z.array(z.any()).optional(),
+  goalsAssessment: z.any().optional(),
   quizScores: z.array(z.number()).optional(),
   riskAnswers: z.array(z.number()).optional(),
+  riskToleranceScore: z.number().optional(),
+  riskToleranceBand: z.string().optional(),
+  riskCapacityScore: z.number().optional(),
+  riskCapacityBand: z.string().optional(),
+  effectiveRiskScore: z.number().optional(),
+  effectiveRiskBand: z.string().optional(),
+  isRiskConstrained: z.boolean().optional(),
+  riskConstraintReason: z.string().optional(),
+  riskScore: z.number().optional(),
+  riskBand: z.string().optional(),
+  financialHealthScore: z.number().optional(),
+  financialHealthBand: z.string().optional(),
 });
 
 export async function getProfile(req, res, next) {
@@ -99,25 +108,41 @@ export async function updateProfile(req, res, next) {
     if (data.targetAmount !== undefined) profile.targetAmount = data.targetAmount;
     if (data.horizonYears !== undefined) profile.horizonYears = data.horizonYears;
     if (data.goals !== undefined) profile.goals = data.goals;
+    if (data.goalsAssessment !== undefined) profile.goalsAssessment = data.goalsAssessment;
     if (data.quizScores || data.riskAnswers) {
       const answers = data.quizScores || data.riskAnswers;
       profile.quizScores = answers;
       profile.riskAnswers = answers;
     }
 
-    // Set computed scores
+    // Dual-engine scores & constraints
+    if (data.riskToleranceScore !== undefined) profile.riskToleranceScore = data.riskToleranceScore;
+    if (data.riskToleranceBand !== undefined) profile.riskToleranceBand = data.riskToleranceBand;
+    if (data.riskCapacityScore !== undefined) profile.riskCapacityScore = data.riskCapacityScore;
+    if (data.riskCapacityBand !== undefined) profile.riskCapacityBand = data.riskCapacityBand;
+    if (data.effectiveRiskScore !== undefined) profile.effectiveRiskScore = data.effectiveRiskScore;
+    if (data.effectiveRiskBand !== undefined) profile.effectiveRiskBand = data.effectiveRiskBand;
+    if (data.isRiskConstrained !== undefined) profile.isRiskConstrained = data.isRiskConstrained;
+    if (data.riskConstraintReason !== undefined) profile.riskConstraintReason = data.riskConstraintReason;
+
+    // Set computed scores - prioritize client-sent effective risk score if provided
+    const effectiveRiskScore = data.effectiveRiskScore ?? data.riskScore ?? risk.score;
+    const effectiveRiskBand = data.effectiveRiskBand ?? data.riskBand ?? risk.band;
+    const finHealthScore = data.financialHealthScore ?? health.score;
+    const finHealthBand = data.financialHealthBand ?? health.band;
+
     profile.scores = {
-      risk: risk.score,
-      riskBand: risk.band,
-      financialHealth: health.score,
-      financialHealthLabel: health.band,
+      risk: effectiveRiskScore,
+      riskBand: effectiveRiskBand,
+      financialHealth: finHealthScore,
+      financialHealthLabel: finHealthBand,
       updatedAt: new Date(),
     };
 
     // Append to scoreHistory (capped at 50 most recent)
     profile.scoreHistory.push({
-      risk: risk.score,
-      financialHealth: health.score,
+      risk: effectiveRiskScore,
+      financialHealth: finHealthScore,
       date: new Date(),
     });
     if (profile.scoreHistory.length > 50) {

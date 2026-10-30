@@ -24,13 +24,13 @@ export const OnboardingStepCashFlow: React.FC<OnboardingStepCashFlowProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E] dark:text-emerald-400">
+        <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E]">
           STEP 2 • FINANCIAL HEALTH
         </p>
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-1">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220] mt-1">
           Monthly Cash Flow & Liquidity
         </h1>
-        <p className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] mt-1">
+        <p className="text-xs sm:text-sm text-[#5B6572] mt-1">
           Used to calculate your savings rate, debt-to-income EMI load, and emergency resilience.
         </p>
       </div>
@@ -75,16 +75,16 @@ export const OnboardingStepCashFlow: React.FC<OnboardingStepCashFlowProps> = ({
         />
       </div>
 
-      <div className="p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between">
+      <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
         <div>
-          <span className="text-xs font-semibold text-[#5B6572] dark:text-[#8A97A6]">
+          <span className="text-xs font-semibold text-[#5B6572]">
             Estimated Monthly Investible Surplus
           </span>
-          <p className="font-serif text-xl font-bold text-[#0F766E] dark:text-emerald-400">
+          <p className="font-serif text-xl font-bold text-[#0F766E]">
             {formatINR(investibleSurplus)}
           </p>
         </div>
-        <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-semibold">
+        <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-semibold">
           {savingsRate}% Savings Rate
         </span>
       </div>

@@ -102,16 +102,16 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
   });
 
   return (
-    <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#121821] rounded-2xl border border-[#E7E5DF] dark:border-[#1F2933] shadow-xl py-3 z-50 animate-in fade-in zoom-in-95 duration-150">
+    <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl border border-[#E7E5DF] shadow-xl py-3 z-50 animate-in fade-in zoom-in-95 duration-150">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 pb-2.5 border-b border-[#E7E5DF] dark:border-[#1F2933]">
+      <div className="flex items-center justify-between px-4 pb-2.5 border-b border-[#E7E5DF]">
         <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4 text-[#0F766E] dark:text-emerald-400" />
-          <span className="text-sm font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <Bell className="w-4 h-4 text-[#0F766E]" />
+          <span className="text-sm font-bold text-[#0B1220]">
             Smart Alerts
           </span>
           {unreadCount > 0 && (
-            <span className="px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 rounded-full">
+            <span className="px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full">
               {unreadCount} new
             </span>
           )}
@@ -127,8 +127,8 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
             className={cn(
               'p-1 rounded-lg transition-colors',
               preferencesOpen
-                ? 'bg-emerald-100 text-[#0F766E] dark:bg-emerald-950 dark:text-emerald-300'
-                : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+                ? 'bg-emerald-100 text-[#0F766E]'
+                : 'text-gray-400 hover:text-gray-600'
             )}
           >
             <Sliders className="w-3.5 h-3.5" />
@@ -137,7 +137,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
           {unreadCount > 0 && (
             <button
               onClick={() => markAllAsRead()}
-              className="flex items-center gap-1 text-[11px] font-medium text-[#0F766E] dark:text-emerald-400 hover:underline"
+              className="flex items-center gap-1 text-[11px] font-medium text-[#0F766E] hover:underline"
             >
               <CheckCheck className="w-3.5 h-3.5" />
               Mark all
@@ -148,7 +148,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
 
       {/* Preferences Panel (collapsible) */}
       {preferencesOpen && (
-        <div className="p-3 bg-gray-50 dark:bg-[#0B0F14] border-b border-[#E7E5DF] dark:border-[#1F2933] space-y-2 text-xs">
+        <div className="p-3 bg-gray-50 border-b border-[#E7E5DF] space-y-2 text-xs">
           <span className="font-bold text-[11px] uppercase tracking-wider text-gray-500">
             Alert Preferences
           </span>
@@ -191,7 +191,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
       )}
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-1 px-3 py-2 border-b border-[#E7E5DF]/50 dark:border-[#1F2933]/50 text-[11px]">
+      <div className="flex items-center gap-1 px-3 py-2 border-b border-[#E7E5DF]/50 text-[11px]">
         {(
           [
             { id: 'all', label: 'All' },
@@ -206,8 +206,8 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
             className={cn(
               'px-2 py-0.5 rounded-md font-medium transition-colors',
               activeFilter === tab.id
-                ? 'bg-[#0F766E] text-white dark:bg-emerald-600'
-                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                ? 'bg-[#0F766E] text-white'
+                : 'text-gray-500 hover:text-gray-700'
             )}
           >
             {tab.label}
@@ -216,9 +216,9 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
       </div>
 
       {/* Notifications List */}
-      <div className="max-h-[380px] overflow-y-auto divide-y divide-[#E7E5DF]/50 dark:divide-[#1F2933]/50">
+      <div className="max-h-[380px] overflow-y-auto divide-y divide-[#E7E5DF]/50">
         {filteredNotifications.length === 0 ? (
-          <div className="py-8 text-center px-4 text-[#5B6572] dark:text-[#8A97A6]">
+          <div className="py-8 text-center px-4 text-[#5B6572]">
             <Bell className="w-8 h-8 mx-auto mb-2 opacity-30" />
             <p className="text-xs font-medium">No notifications in this filter</p>
             <p className="text-[11px] opacity-70 mt-0.5">We'll alert you about signal flips and threshold crosses</p>
@@ -236,17 +236,17 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
                 className={cn(
                   'p-3.5 transition-colors flex items-start gap-3 group relative cursor-pointer',
                   !item.read
-                    ? 'bg-[#E6F4F1]/30 dark:bg-emerald-950/20'
-                    : 'hover:bg-black/5 dark:hover:bg-white/5'
+                    ? 'bg-[#E6F4F1]/30'
+                    : 'hover:bg-black/5'
                 )}
               >
-                <div className="mt-0.5 p-1.5 rounded-lg bg-black/5 dark:bg-white/5 shrink-0">
+                <div className="mt-0.5 p-1.5 rounded-lg bg-black/5 shrink-0">
                   {getIcon(item.type, item.severity)}
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-1">
-                    <p className="text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] truncate flex items-center gap-1.5">
+                    <p className="text-xs font-semibold text-[#0B1220] truncate flex items-center gap-1.5">
                       <span>{item.title}</span>
                       {item.severity === 'critical' && (
                         <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
@@ -255,12 +255,12 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                       )}
                     </p>
-                    <span className="text-[10px] text-[#5B6572] dark:text-[#8A97A6] shrink-0">
+                    <span className="text-[10px] text-[#5B6572] shrink-0">
                       {formatTimeAgo(item.createdAt)}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6] mt-0.5 line-clamp-2 leading-relaxed">
+                  <p className="text-[11px] text-[#5B6572] mt-0.5 line-clamp-2 leading-relaxed">
                     {item.body}
                   </p>
 
@@ -268,7 +268,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
                     <Link
                       to={targetRoute}
                       onClick={onClose}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0F766E] dark:text-emerald-400 mt-1 hover:underline"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0F766E] mt-1 hover:underline"
                     >
                       <span>View details</span>
                       <ExternalLink className="w-3 h-3" />
@@ -282,7 +282,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
                     e.stopPropagation();
                     deleteNotification(item.id);
                   }}
-                  className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-[#5B6572] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all shrink-0"
+                  className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-[#5B6572] hover:text-red-500 hover:bg-red-50 transition-all shrink-0"
                   title="Dismiss notification"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

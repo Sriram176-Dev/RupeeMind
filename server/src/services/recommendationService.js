@@ -90,11 +90,22 @@ export async function generateFundRecommendations(userId) {
     throw new Error('Daily AI recommendation limit reached (10 generations/day). Please check your saved recommendations.');
   }
 
-  const riskBand = profileDoc.riskBand || profileDoc.scores?.riskBand || 'Moderate';
-  const riskScore = profileDoc.riskScore || profileDoc.scores?.risk || 55;
+  const effectiveRiskBand = profileDoc.effectiveRiskBand || profileDoc.riskBand || profileDoc.scores?.riskBand || 'Moderate';
+  const riskToleranceBand = profileDoc.riskToleranceBand || effectiveRiskBand;
+  const riskCapacityBand = profileDoc.riskCapacityBand || 'Moderate';
+  const isRiskConstrained = profileDoc.isRiskConstrained || false;
+  const riskConstraintReason = profileDoc.riskConstraintReason || '';
+  const riskScore = profileDoc.effectiveRiskScore || profileDoc.riskScore || profileDoc.scores?.risk || 55;
   const horizonYears = profileDoc.horizonYears || 5;
   const goalType = profileDoc.goalType || 'Wealth creation';
   const monthlySavings = profileDoc.monthlySavings || 20000;
+  const emergencyFund = profileDoc.emergencyFundAmount || 0;
+  const monthlyExpenses = profileDoc.monthlyExpenses || 30000;
+  const emergencyMonths = monthlyExpenses > 0 ? (emergencyFund / monthlyExpenses).toFixed(1) : 0;
+  const monthlyEMI = profileDoc.monthlyEMI || profileDoc.monthlyEMIs || 0;
+  const goalsList = profileDoc.goals && profileDoc.goals.length > 0
+    ? profileDoc.goals
+    : [{ name: goalType, type: goalType, targetAmount: profileDoc.targetAmount || 2500000, horizonYears }];
 
   // 2. Query real portfolio holdings and watchlist
   const holdings = await Holding.find({ userId }).lean();
@@ -118,8 +129,8 @@ export async function generateFundRecommendations(userId) {
 
   const watchedSymbols = watchlist?.items?.map((i) => i.symbol) || [];
 
-  // 3. Query allowed funds from MongoDB
-  const allowedCategories = RISK_BAND_ALLOWED_CATEGORIES[riskBand] || RISK_BAND_ALLOWED_CATEGORIES.Moderate;
+  // 3. Query allowed funds from MongoDB using Effective Risk Band
+  const allowedCategories = RISK_BAND_ALLOWED_CATEGORIES[effectiveRiskBand] || RISK_BAND_ALLOWED_CATEGORIES.Moderate;
   const candidates = await Fund.find({ category: { $in: allowedCategories } }).select('-navHistory').lean();
 
   if (candidates.length === 0) {
@@ -149,11 +160,15 @@ export async function generateFundRecommendations(userId) {
   }));
 
   const aiPrompt = `You are Rupee Mind's production AI wealth strategist & portfolio engine.
-Investor Profile:
-- Risk Band: ${riskBand} (Score: ${riskScore}/100)
-- Horizon: ${horizonYears} years
-- Primary Goal: ${goalType}
-- Monthly Savings Capacity: ₹${monthlySavings.toLocaleString('en-IN')}
+Investor Dual-Engine Profile & Real Financial Circumstances:
+- Effective Fiduciary Risk Band: ${effectiveRiskBand} (Score: ${riskScore}/100)
+- Psychological Risk Tolerance (Willingness): ${riskToleranceBand}
+- Financial Risk Capacity (Ability): ${riskCapacityBand}
+- Fiduciary Constraint Status: ${isRiskConstrained ? `Constrained (${riskConstraintReason})` : 'Harmoniously Aligned'}
+- Emergency Fund Runway: ${emergencyMonths} months of living expenses (₹${emergencyFund.toLocaleString('en-IN')})
+- Monthly Loan Debt/EMIs: ₹${monthlyEMI.toLocaleString('en-IN')}
+- Investible Monthly Surplus: ₹${monthlySavings.toLocaleString('en-IN')}
+- Individually Defined Goals: ${JSON.stringify(goalsList.map(g => ({ name: g.name || g.type, horizon: `${g.horizonYears} yrs`, target: `₹${(g.targetAmount || 0).toLocaleString('en-IN')}`, priority: g.priority || 'Important' })))}
 
 Current Investor Portfolio Context:
 - Total Portfolio Value: ₹${Math.round(totalPortfolioValue).toLocaleString('en-IN')}
@@ -163,16 +178,18 @@ Current Investor Portfolio Context:
 Available Shortlisted Mutual Funds in Database (ONLY choose from this exact list):
 ${JSON.stringify(candidateSummary, null, 2)}
 
-INSTRUCTIONS:
-1. Select between 3 and 5 best-suited funds from the candidate list that complement the user's existing holdings and fulfill their ${goalType} goal.
+INSTRUCTIONS & FIDUCIARY CONSTRAINTS:
+1. Select between 3 and 5 best-suited funds from the candidate list that complement existing holdings and directly serve the user's individually defined goals.
 2. Allocate suggested percentages summing to EXACTLY 100%.
 3. Assign a role to each selected fund: "Core Wealth Builder", "Stability & Hedge", "Growth Accelerator", or "Tax Saver & Compounding".
-4. Write a tailored, deep rationale explaining how it complements the investor's current risk score and portfolio structure.
-5. Provide overall asset allocation (equity, debt, gold percentages summing to 100%).
+4. Write a tailored, deep rationale explaining how it fits the investor's balance sheet constraints (e.g. emergency runway, EMI load) and target milestones.
+5. Provide overall asset allocation (equity, debt, gold percentages summing to 100%) constrained by actual capacity.
 6. Provide a confidenceScore between 75 and 98 based on portfolio-goal alignment.
 7. Provide aiReasoning containing:
-   - "summary": A 2-sentence executive summary of the recommendation thesis.
-   - "keyDrivers": 3-4 bullet strings explaining key portfolio drivers.
+   - "summary": A 2-sentence executive summary explaining how the allocation is constrained and balanced for their real circumstances.
+   - "keyDrivers": 3-4 bullet strings explaining key portfolio drivers and constraints applied (e.g. liquidity cushion, EMI burden, goal horizons).
+   - "portfolioAlignment": 1-2 sentences on how this bridges current holding gaps without exposing essential living funds to market drawdowns.
+8. Return ONLY valid JSON matching this exact structure with NO markdown fences, NO surrounding commentary:
    - "portfolioAlignment": 1-2 sentences on how this bridges current holding gaps.
 8. Return ONLY valid JSON matching this exact structure with NO markdown fences, NO surrounding commentary:
 
@@ -245,28 +262,28 @@ INSTRUCTIONS:
     const topPicks = rankedFunds.slice(0, 3);
     const defaultAllocations = [50, 30, 20];
     parsedOutput = {
-      confidenceScore: 82,
+      confidenceScore: 85,
       assetAllocation: {
-        equity: riskBand === 'Aggressive' ? 80 : riskBand === 'Conservative' ? 30 : 60,
-        debt: riskBand === 'Aggressive' ? 15 : riskBand === 'Conservative' ? 60 : 30,
+        equity: effectiveRiskBand === 'Aggressive' ? 80 : effectiveRiskBand === 'Conservative' ? 25 : effectiveRiskBand === 'Moderately Conservative' ? 35 : effectiveRiskBand === 'Moderately Aggressive' ? 70 : 55,
+        debt: effectiveRiskBand === 'Aggressive' ? 12 : effectiveRiskBand === 'Conservative' ? 65 : effectiveRiskBand === 'Moderately Conservative' ? 55 : effectiveRiskBand === 'Moderately Aggressive' ? 20 : 35,
         gold: 10,
       },
       aiReasoning: {
-        summary: `Quantitative recommendation tailored to ${riskBand} risk profile and ${horizonYears}-year horizon.`,
+        summary: `Fiduciary recommendation calibrated to ${effectiveRiskBand} posture (${isRiskConstrained ? 'constrained by cash flow & emergency reserves' : 'aligned with investor profile'}) across a ${horizonYears}-year horizon.`,
         keyDrivers: [
-          `Top-quartile Sharpe ratio and historical 3Y CAGR across ${riskBand} category.`,
-          `Balanced exposure designed to meet monthly savings goal of ₹${monthlySavings.toLocaleString('en-IN')}.`,
-          'Controlled volatility and limited drawdown relative to category average.',
+          `Asset allocation strictly constrained by your financial risk capacity (${emergencyMonths} months emergency runway, ${monthlyEMI > 0 ? `₹${monthlyEMI.toLocaleString('en-IN')} EMI commitments` : 'zero active EMI debt'}).`,
+          `Fund selection directly prioritized for your individual goals (${goalsList.map(g => g.name || g.type).join(', ')}).`,
+          `Top-quartile Sharpe ratio and historical consistency across the ${effectiveRiskBand} mutual fund universe.`,
         ],
-        portfolioAlignment: `Engineered to complement your current ${holdings.length} holding(s) with systematic diversification.`,
+        portfolioAlignment: `Engineered to complement your current ${holdings.length} holding(s) with systematic downside resilience.`,
       },
       picks: topPicks.map((f, i) => ({
         schemeCode: f.schemeCode.toString(),
         allocationPercent: defaultAllocations[i] || 20,
         role: i === 0 ? 'Core Wealth Builder' : i === 1 ? 'Growth Accelerator' : 'Stability & Hedge',
-        reason: `Selected for stellar risk-adjusted return (${f.sharpeRatio ? f.sharpeRatio.toFixed(2) : '3Y CAGR ' + f.cagr3Y + '%'}) matching ${riskBand} risk appetite.`,
+        reason: `Selected for stellar risk-adjusted return (${f.sharpeRatio ? f.sharpeRatio.toFixed(2) : '3Y CAGR ' + f.cagr3Y + '%'}) matching ${effectiveRiskBand} risk posture.`,
       })),
-      marketContextNote: 'Generated based on current Indian macroeconomic backdrop and relative fund strength.',
+      marketContextNote: 'Generated based on quantitative multi-factor screening and fiduciary balance-sheet constraints.',
     };
   }
 
@@ -293,7 +310,7 @@ INSTRUCTIONS:
   const recommendationDoc = await Recommendation.create({
     userId,
     profileSnapshot: {
-      riskBand,
+      riskBand: effectiveRiskBand,
       riskScore,
       horizonYears,
       goalType,

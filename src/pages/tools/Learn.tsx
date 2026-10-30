@@ -124,7 +124,7 @@ export const Learn: React.FC = () => {
   });
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-12 animate-in fade-in duration-200">
       
       <SectionHeader
         eyebrow="KNOWLEDGE REPOSITORY"
@@ -134,7 +134,7 @@ export const Learn: React.FC = () => {
 
       {/* 1. BEGINNER GUIDES ACCORDION SECTION */}
       <div className="space-y-4">
-        <h2 className="font-serif text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+        <h2 className="font-serif text-2xl font-bold text-[#0B1220]">
           Essential Investor Guides
         </h2>
 
@@ -144,7 +144,7 @@ export const Learn: React.FC = () => {
             return (
               <div
                 key={g.id}
-                className="rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] overflow-hidden shadow-xs transition-all"
+                className="rounded-3xl bg-white border border-[#E7E5DF] overflow-hidden shadow-xs transition-all"
               >
                 <button
                   onClick={() => setExpandedGuide(isExpanded ? null : g.id)}
@@ -152,23 +152,23 @@ export const Learn: React.FC = () => {
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F4F1] dark:bg-emerald-950 text-[#0F766E] dark:text-emerald-300">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F4F1] text-[#0F766E]">
                         {g.tag}
                       </span>
                       <span className="text-xs text-[#5B6572]">{g.readTime}</span>
                     </div>
-                    <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                    <h3 className="font-serif text-lg font-bold text-[#0B1220]">
                       {g.title}
                     </h3>
                   </div>
 
-                  <div className="w-8 h-8 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] flex items-center justify-center text-[#5B6572] shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#FAFAF7] flex items-center justify-center text-[#5B6572] shrink-0">
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="px-6 pb-6 pt-2 border-t border-[#E7E5DF] dark:border-[#1F2933] text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] leading-relaxed whitespace-pre-line animate-in fade-in duration-150">
+                  <div className="px-6 pb-6 pt-2 border-t border-[#E7E5DF] text-xs sm:text-sm text-[#5B6572] leading-relaxed whitespace-pre-line animate-in fade-in duration-150">
                     {g.content}
                   </div>
                 )}
@@ -182,7 +182,7 @@ export const Learn: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+            <h2 className="font-serif text-2xl font-bold text-[#0B1220]">
               Interactive Financial Glossary
             </h2>
             <p className="text-xs text-[#5B6572]">Plain-English definitions for financial jargon and technical indicators.</p>
@@ -195,7 +195,7 @@ export const Learn: React.FC = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search glossary terms..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] text-xs text-[#0B1220] dark:text-[#E8EDF2] focus:ring-2 focus:ring-[#0F766E] focus:outline-none"
+              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-[#E7E5DF] text-xs text-[#0B1220] focus:ring-2 focus:ring-[#0F766E] focus:outline-none"
             />
           </div>
         </div>
@@ -208,8 +208,8 @@ export const Learn: React.FC = () => {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                 selectedCategory === cat
-                  ? 'bg-[#0F766E] text-white dark:bg-emerald-600 shadow-xs'
-                  : 'bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] text-[#5B6572] hover:bg-black/5'
+                  ? 'bg-[#0F766E] text-white shadow-xs'
+                  : 'bg-white border border-[#E7E5DF] text-[#5B6572] hover:bg-black/5'
               }`}
             >
               {cat}
@@ -222,22 +222,22 @@ export const Learn: React.FC = () => {
           {filteredGlossary.map((item) => (
             <div
               key={item.term}
-              className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs flex flex-col justify-between hover:border-[#0F766E]/40 transition-all space-y-3"
+              className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col justify-between hover:border-[#0F766E]/40 transition-all space-y-3"
             >
               <div>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F4F1] dark:bg-emerald-950 text-[#0F766E] dark:text-emerald-300">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F4F1] text-[#0F766E]">
                   {item.category}
                 </span>
-                <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-2">
+                <h3 className="font-serif text-lg font-bold text-[#0B1220] mt-2">
                   {item.term}
                 </h3>
-                <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] leading-relaxed mt-1">
+                <p className="text-xs text-[#5B6572] leading-relaxed mt-1">
                   {item.definition}
                 </p>
               </div>
 
               {item.example && (
-                <div className="pt-3 border-t border-[#E7E5DF] dark:border-[#1F2933] text-[11px] text-[#5B6572] dark:text-[#8A97A6] italic">
+                <div className="pt-3 border-t border-[#E7E5DF] text-[11px] text-[#5B6572] italic">
                   <strong>Example:</strong> {item.example}
                 </div>
               )}

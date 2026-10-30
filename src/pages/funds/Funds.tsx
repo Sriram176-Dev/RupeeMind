@@ -34,13 +34,19 @@ export const Funds: React.FC = () => {
 
   // Compare State (up to 3 funds)
   const [selectedForCompare, setSelectedForCompare] = useState<string[]>([]);
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 250);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   useEffect(() => {
     async function load() {
       try {
         setLoading(true);
         const data = await getFunds({
-          search,
+          search: debouncedSearch,
           category,
           riskLevel,
           min3YReturn,
@@ -55,7 +61,7 @@ export const Funds: React.FC = () => {
       }
     }
     load();
-  }, [search, category, riskLevel, min3YReturn, sortBy, sortOrder]);
+  }, [debouncedSearch, category, riskLevel, min3YReturn, sortBy, sortOrder]);
 
   const handleToggleCompare = (code: string) => {
     if (selectedForCompare.includes(code)) {
@@ -93,7 +99,7 @@ export const Funds: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       
       {/* Page Header */}
       <SectionHeader
@@ -103,7 +109,7 @@ export const Funds: React.FC = () => {
       />
 
       {/* Main Filter & Search Toolbar */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-5">
+      <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-5">
         
         {/* Row 1: Search & Category Pills */}
         <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
@@ -114,17 +120,17 @@ export const Funds: React.FC = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search scheme name, fund house, or category..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] text-xs sm:text-sm text-[#0B1220] dark:text-[#E8EDF2] focus:ring-2 focus:ring-[#0F766E] focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] text-xs sm:text-sm text-[#0B1220] focus:ring-2 focus:ring-[#0F766E] focus:outline-none"
             />
           </div>
 
           {/* Sort Dropdown */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Sort by:</span>
+            <span className="text-xs text-[#5B6572]">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-3 py-2 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
+              className="px-3 py-2 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] text-xs font-semibold text-[#0B1220] focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
             >
               <option value="cagr3Y">3-Year CAGR (Default)</option>
               <option value="cagr1Y">1-Year CAGR</option>
@@ -136,15 +142,15 @@ export const Funds: React.FC = () => {
         </div>
 
         {/* Row 2: Category Chips */}
-        <div className="flex flex-wrap gap-2 pt-2 border-t border-[#E7E5DF] dark:border-[#1F2933]">
+        <div className="flex flex-wrap gap-2 pt-2 border-t border-[#E7E5DF]">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                 category === cat
-                  ? 'bg-[#0F766E] text-white dark:bg-emerald-600 shadow-xs'
-                  : 'bg-[#FAFAF7] dark:bg-[#0B0F14] text-[#5B6572] dark:text-[#8A97A6] hover:bg-black/5 hover:text-[#0B1220]'
+                  ? 'bg-[#0F766E] text-white shadow-xs'
+                  : 'bg-[#FAFAF7] text-[#5B6572] hover:bg-black/5 hover:text-[#0B1220]'
               }`}
             >
               {cat}
@@ -153,11 +159,11 @@ export const Funds: React.FC = () => {
         </div>
 
         {/* Row 3: Secondary Sliders & Risk Level */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-3 border-t border-[#E7E5DF] dark:border-[#1F2933]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-3 border-t border-[#E7E5DF]">
           <div>
             <div className="flex justify-between items-center text-xs mb-1.5">
-              <span className="text-[#5B6572] dark:text-[#8A97A6]">Min 3Y CAGR</span>
-              <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">{min3YReturn}%</span>
+              <span className="text-[#5B6572]">Min 3Y CAGR</span>
+              <span className="font-semibold text-[#0B1220]">{min3YReturn}%</span>
             </div>
             <input
               type="range"
@@ -166,13 +172,13 @@ export const Funds: React.FC = () => {
               step={2}
               value={min3YReturn}
               onChange={(e) => setMin3YReturn(Number(e.target.value))}
-              className="w-full h-1.5 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+              className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Risk Level</span>
+              <span className="text-xs text-[#5B6572]">Risk Level</span>
               <div className="flex flex-wrap gap-1">
                 {riskLevels.map((rl) => (
                   <button
@@ -180,8 +186,8 @@ export const Funds: React.FC = () => {
                     onClick={() => setRiskLevel(rl)}
                     className={`px-2.5 py-1 rounded-md text-[11px] font-semibold ${
                       riskLevel === rl
-                        ? 'bg-[#0F766E] text-white dark:bg-emerald-600'
-                        : 'bg-[#FAFAF7] dark:bg-[#0B0F14] text-[#5B6572]'
+                        ? 'bg-[#0F766E] text-white'
+                        : 'bg-[#FAFAF7] text-[#5B6572]'
                     }`}
                   >
                     {rl === 'Moderately High' ? 'Mod-High' : rl}
@@ -198,10 +204,10 @@ export const Funds: React.FC = () => {
       {loading ? (
         <CardGridSkeleton count={6} />
       ) : funds.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] space-y-3">
+        <div className="p-12 text-center rounded-3xl bg-white border border-[#E7E5DF] space-y-3">
           <PieChart className="w-10 h-10 text-gray-400 mx-auto" />
-          <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">No funds matched your filters</h3>
-          <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Try adjusting your search query, risk profile, or CAGR slider.</p>
+          <h3 className="font-serif text-lg font-bold text-[#0B1220]">No funds matched your filters</h3>
+          <p className="text-xs text-[#5B6572]">Try adjusting your search query, risk profile, or CAGR slider.</p>
           <button
             onClick={() => {
               setSearch('');
@@ -231,14 +237,14 @@ export const Funds: React.FC = () => {
       {/* FLOATING COMPARE BAR (WHEN 2-3 ARE SELECTED) */}
       {selectedForCompare.length >= 2 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-xl px-4 animate-in slide-in-from-bottom-6 duration-200">
-          <div className="p-4 rounded-2xl bg-[#121821] dark:bg-[#1A2330] text-white shadow-2xl border border-emerald-500/30 flex items-center justify-between gap-4">
+          <div className="p-4 rounded-2xl bg-white text-[#0B1220] shadow-2xl border border-[#E7E5DF] flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm">
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-[#0F766E] border border-emerald-200 font-bold flex items-center justify-center text-sm">
                 {selectedForCompare.length}
               </div>
               <div>
-                <p className="text-xs font-bold leading-tight">Compare Funds</p>
-                <p className="text-[11px] text-gray-400">
+                <p className="text-xs font-bold leading-tight text-[#0B1220]">Compare Schemes</p>
+                <p className="text-[11px] text-[#5B6572] truncate max-w-xs">
                   {selectedForCompare.join(', ')}
                 </p>
               </div>
@@ -247,14 +253,14 @@ export const Funds: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setSelectedForCompare([])}
-                className="p-2 rounded-lg text-gray-400 hover:text-white"
+                className="p-2 rounded-lg text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5"
                 title="Clear comparison"
               >
                 <X className="w-4 h-4" />
               </button>
               <button
                 onClick={() => navigate(`/funds/compare?codes=${selectedForCompare.join(',')}`)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors flex items-center gap-1.5 shadow-sm"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-colors flex items-center gap-1.5 shadow-sm"
               >
                 <span>Compare Now</span>
                 <ArrowRight className="w-3.5 h-3.5" />

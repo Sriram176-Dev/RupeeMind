@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark';
+type Theme = 'light';
 
 interface ThemeContextType {
   theme: Theme;
@@ -11,28 +11,22 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    const saved = localStorage.getItem('rupeemind_theme');
-    if (saved === 'dark' || saved === 'light') return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+  const [theme] = useState<Theme>('light');
 
   useEffect(() => {
+    // Strictly enforce light theme across the entire DOM
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('rupeemind_theme', theme);
-  }, [theme]);
+    root.classList.remove('dark');
+    root.classList.add('light');
+    localStorage.removeItem('rupeemind_theme');
+  }, []);
 
   const toggleTheme = () => {
-    setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
+    // Permanent light theme - no-op
   };
 
-  const setTheme = (t: Theme) => {
-    setThemeState(t);
+  const setTheme = () => {
+    // Permanent light theme - no-op
   };
 
   return (
@@ -49,3 +43,4 @@ export function useTheme(): ThemeContextType {
   }
   return context;
 }
+

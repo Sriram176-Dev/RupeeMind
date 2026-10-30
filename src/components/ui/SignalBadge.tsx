@@ -30,14 +30,14 @@ export const SignalBadge: React.FC<SignalBadgeProps> = ({
       case 'BUY':
         return {
           label: 'BUY',
-          bg: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800',
+          bg: 'bg-emerald-50 text-emerald-700 border-emerald-300',
           dot: 'bg-emerald-500',
           icon: ArrowUpRight,
         };
       case 'SELL':
         return {
           label: 'SELL',
-          bg: 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-300 dark:border-rose-800',
+          bg: 'bg-rose-50 text-rose-700 border-rose-300',
           dot: 'bg-rose-500',
           icon: ArrowDownRight,
         };
@@ -45,7 +45,7 @@ export const SignalBadge: React.FC<SignalBadgeProps> = ({
       default:
         return {
           label: 'HOLD',
-          bg: 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-300 dark:border-amber-800',
+          bg: 'bg-amber-50 text-amber-700 border-amber-300',
           dot: 'bg-amber-500',
           icon: Minus,
         };
@@ -59,11 +59,11 @@ export const SignalBadge: React.FC<SignalBadgeProps> = ({
     return (
       <Link
         to="/login"
-        className="group relative inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-700 text-xs font-medium cursor-pointer hover:border-emerald-400 transition-colors"
+        className="group relative inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 text-gray-400 border border-gray-200 text-xs font-medium cursor-pointer hover:border-emerald-400 transition-colors"
         title="Log in to view signals"
       >
         <span className="blur-[3.5px] select-none font-semibold">BUY 85%</span>
-        <Lock className="w-3 h-3 text-emerald-600 dark:text-emerald-400 absolute right-2 opacity-90 group-hover:scale-110 transition-transform" />
+        <Lock className="w-3 h-3 text-emerald-600 absolute right-2 opacity-90 group-hover:scale-110 transition-transform" />
       </Link>
     );
   }
@@ -90,7 +90,7 @@ export const SignalBadge: React.FC<SignalBadgeProps> = ({
         </span>
       )}
       {score !== undefined && (
-        <span className="ml-1 px-1 py-0.2 rounded bg-black/10 dark:bg-white/10 text-[10px] font-mono">
+        <span className="ml-1 px-1 py-0.2 rounded bg-black/10 text-[10px] font-mono">
           {score > 0 ? `+${score}` : score}
         </span>
       )}

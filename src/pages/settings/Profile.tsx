@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { SectionHeader } from '../../components/ui/SectionHeader';
@@ -32,6 +32,16 @@ export const Profile: React.FC = () => {
     profile?.investingRegularity || (profile as any)?.investingHabit || 'Occasionally'
   );
 
+  useEffect(() => {
+    if (profile) {
+      if (profile.monthlyIncome !== undefined) setIncome(profile.monthlyIncome);
+      if (profile.monthlyExpenses !== undefined) setExpenses(profile.monthlyExpenses);
+      if (profile.monthlyEMIs !== undefined) setEmis(profile.monthlyEMIs);
+      if (profile.emergencyFundAmount !== undefined) setEmergency(profile.emergencyFundAmount);
+      if (profile.investingRegularity) setInvestingRegularity(profile.investingRegularity);
+    }
+  }, [profile]);
+
   const scoreHistory = profile?.scoreHistory || (profile?.calculatedAt ? [{
     date: new Date(profile.calculatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
     risk: profile.riskScore || 50,
@@ -57,7 +67,7 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -72,7 +82,7 @@ export const Profile: React.FC = () => {
 
         <button
           onClick={() => navigate('/onboarding')}
-          className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] dark:bg-emerald-600 transition-all flex items-center gap-2 self-start md:self-auto min-h-[44px]"
+          className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all flex items-center gap-2 self-start md:self-auto min-h-[44px]"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Retake Full 5-Step Quiz</span>
@@ -81,14 +91,14 @@ export const Profile: React.FC = () => {
 
       {/* Top Dual Score Gauges Card or Incomplete CTA */}
       {!profile || profile.riskScore == null ? (
-        <div className="p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs text-center space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0F766E] dark:text-emerald-400 flex items-center justify-center mx-auto">
+        <div className="p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs text-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#0F766E] flex items-center justify-center mx-auto">
             <Sparkles className="w-6 h-6" />
           </div>
-          <h2 className="font-serif text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <h2 className="font-serif text-2xl font-bold text-[#0B1220]">
             No Investment Scores Assessed Yet
           </h2>
-          <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] max-w-md mx-auto leading-relaxed">
+          <p className="text-xs text-[#5B6572] max-w-md mx-auto leading-relaxed">
             Complete the 5-step risk and cash flow evaluation to calculate your personalized risk tolerance score and financial health index.
           </p>
           <button
@@ -100,30 +110,30 @@ export const Profile: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs flex items-center justify-between">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs flex items-center justify-between">
             <div className="space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E] dark:text-emerald-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E]">
                 Risk Tolerance Band
               </span>
-              <h2 className="font-serif text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+              <h2 className="font-serif text-2xl font-bold text-[#0B1220]">
                 {profile.riskBand || 'Assessed'}
               </h2>
-              <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] max-w-[220px]">
+              <p className="text-xs text-[#5B6572] max-w-[220px]">
                 Calibrated for <strong>{profile.horizonYears || 5}-year</strong> compounding.
               </p>
             </div>
             <ScoreGauge score={profile.riskScore} size={130} label={profile.riskBand || 'Assessed'} type="risk" />
           </div>
 
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs flex items-center justify-between">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs flex items-center justify-between">
             <div className="space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">
                 Financial Health Rating
               </span>
-              <h2 className="font-serif text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+              <h2 className="font-serif text-2xl font-bold text-[#0B1220]">
                 {profile.financialHealthBand || 'Assessed'}
               </h2>
-              <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] max-w-[220px]">
+              <p className="text-xs text-[#5B6572] max-w-[220px]">
                 {profile.monthlyIncome && profile.monthlySavings
                   ? `Savings rate: ${(((profile.monthlySavings / profile.monthlyIncome) * 100)).toFixed(0)}%`
                   : 'Calibrated from your monthly cash flow surplus.'}
@@ -135,17 +145,17 @@ export const Profile: React.FC = () => {
       )}
 
       {/* Cash Flow Parameters Summary & Quick Edit */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-6">
-        <div className="flex items-center justify-between border-b border-[#E7E5DF] dark:border-[#1F2933] pb-4">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-6">
+        <div className="flex items-center justify-between border-b border-[#E7E5DF] pb-4">
           <div>
-            <h3 className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+            <h3 className="font-serif text-xl font-bold text-[#0B1220]">
               Monthly Cash Flow & Liquidity Parameters
             </h3>
-            <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Your baseline financial numbers used to calculate savings rate and emergency buffers.</p>
+            <p className="text-xs text-[#5B6572]">Your baseline financial numbers used to calculate savings rate and emergency buffers.</p>
           </div>
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="px-3.5 py-1.5 rounded-xl border border-[#E7E5DF] dark:border-[#1F2933] text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] hover:bg-black/5 flex items-center gap-1.5"
+            className="px-3.5 py-1.5 rounded-xl border border-[#E7E5DF] text-xs font-semibold text-[#0B1220] hover:bg-black/5 flex items-center gap-1.5"
           >
             <Edit3 className="w-3.5 h-3.5" />
             <span>{isEditing ? 'Cancel Edit' : 'Edit Numbers'}</span>
@@ -159,7 +169,7 @@ export const Profile: React.FC = () => {
             <CurrencyInput label="Monthly EMIs" value={emis} onChange={setEmis} min={0} max={200000} step={2500} />
             <CurrencyInput label="Emergency Cash Buffer" value={emergency} onChange={setEmergency} min={0} max={2000000} step={25000} />
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] mb-1.5">
+              <label className="block text-xs font-semibold text-[#0B1220] mb-1.5">
                 How regularly do you invest?
               </label>
               <div className="grid grid-cols-3 gap-3">
@@ -170,8 +180,8 @@ export const Profile: React.FC = () => {
                     onClick={() => setInvestingRegularity(habit)}
                     className={`py-2.5 px-4 rounded-xl text-xs font-semibold border transition-all ${
                       investingRegularity === habit
-                        ? 'bg-[#E6F4F1] dark:bg-emerald-950/60 border-[#0F766E] dark:border-emerald-500 text-[#0F766E] dark:text-emerald-300 font-bold shadow-xs'
-                        : 'border-[#E7E5DF] dark:border-[#1F2933] text-[#0B1220] dark:text-[#E8EDF2]'
+                        ? 'bg-[#E6F4F1] border-[#0F766E] text-[#0F766E] font-bold shadow-xs'
+                        : 'border-[#E7E5DF] text-[#0B1220]'
                     }`}
                   >
                     {habit}
@@ -186,42 +196,42 @@ export const Profile: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933]">
+            <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF]">
               <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Monthly Income</span>
-              <p className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5">{formatINR(profile?.monthlyIncome || 145000)}</p>
+              <p className="font-serif text-xl font-bold text-[#0B1220] mt-0.5">{formatINR(profile?.monthlyIncome ?? 0)}</p>
             </div>
-            <div className="p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933]">
+            <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF]">
               <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Living Expenses</span>
-              <p className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5">{formatINR(profile?.monthlyExpenses || 55000)}</p>
+              <p className="font-serif text-xl font-bold text-[#0B1220] mt-0.5">{formatINR(profile?.monthlyExpenses ?? 0)}</p>
             </div>
-            <div className="p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933]">
+            <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF]">
               <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Loan EMIs</span>
-              <p className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5">{formatINR(profile?.monthlyEMIs || 18000)}</p>
+              <p className="font-serif text-xl font-bold text-[#0B1220] mt-0.5">{formatINR(profile?.monthlyEMIs ?? 0)}</p>
             </div>
-            <div className="p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933]">
+            <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF]">
               <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Emergency Fund</span>
-              <p className="font-serif text-xl font-bold text-[#0F766E] dark:text-emerald-400 mt-0.5">{formatINR(profile?.emergencyFundAmount || 400000)}</p>
+              <p className="font-serif text-xl font-bold text-[#0F766E] mt-0.5">{formatINR(profile?.emergencyFundAmount ?? 0)}</p>
             </div>
-            <div className="p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] col-span-2 md:col-span-1">
+            <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] col-span-2 md:col-span-1">
               <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Investing Habit</span>
-              <p className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5">{profile?.investingRegularity || (profile as any)?.investingHabit || 'Occasionally'}</p>
+              <p className="font-serif text-xl font-bold text-[#0B1220] mt-0.5">{profile?.investingRegularity || (profile as any)?.investingHabit || 'Regularly'}</p>
             </div>
           </div>
         )}
       </div>
 
       {/* Score Revision History Table */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
         <div className="flex items-center gap-2">
-          <History className="w-5 h-5 text-[#0F766E] dark:text-emerald-400" />
-          <h3 className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <History className="w-5 h-5 text-[#0F766E]" />
+          <h3 className="font-serif text-xl font-bold text-[#0B1220]">
             Score Change & Assessment History
           </h3>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#FAFAF7] dark:bg-[#0B0F14] text-[#5B6572] dark:text-[#8A97A6]">
+            <thead className="bg-[#FAFAF7] text-[#5B6572]">
               <tr>
                 <th className="py-3 px-4 font-semibold">Assessment Date</th>
                 <th className="py-3 px-4 font-semibold text-center">Risk Score</th>
@@ -229,28 +239,28 @@ export const Profile: React.FC = () => {
                 <th className="py-3 px-4 font-semibold">Trigger Event</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E7E5DF] dark:divide-[#1F2933]">
+            <tbody className="divide-y divide-[#E7E5DF]">
               {scoreHistory.length > 0 ? (
                 scoreHistory.map((h, i) => (
-                  <tr key={i} className="hover:bg-black/5 dark:hover:bg-white/5">
+                  <tr key={i} className="hover:bg-black/5">
                     <td className="py-3 px-4 font-medium flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-[#5B6572]" />
                       <span>{h.date}</span>
                     </td>
-                    <td className="py-3 px-4 text-center font-bold text-[#0F766E] dark:text-emerald-400 tabular-nums">
+                    <td className="py-3 px-4 text-center font-bold text-[#0F766E] tabular-nums">
                       {h.risk} / 100
                     </td>
-                    <td className="py-3 px-4 text-center font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                    <td className="py-3 px-4 text-center font-bold text-emerald-600 tabular-nums">
                       {h.financialHealth} / 100
                     </td>
-                    <td className="py-3 px-4 text-[#5B6572] dark:text-[#8A97A6]">
+                    <td className="py-3 px-4 text-[#5B6572]">
                       {h.reason || 'Evaluation'}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-xs text-[#5B6572] dark:text-[#8A97A6]">
+                  <td colSpan={4} className="py-8 text-center text-xs text-[#5B6572]">
                     No prior score history. Complete the 5-step evaluation to record your first assessment score.
                   </td>
                 </tr>

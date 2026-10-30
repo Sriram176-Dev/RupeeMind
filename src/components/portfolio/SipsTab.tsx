@@ -23,16 +23,16 @@ export const SipsTab: React.FC<SipsTabProps> = ({ sips }) => {
         return (
           <div
             key={sip.id}
-            className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4"
+            className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4"
           >
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F4F1] dark:bg-emerald-950 text-[#0F766E] dark:text-emerald-300">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F4F1] text-[#0F766E]">
                   {sip.frequency} SIP
                 </span>
                 {sip.partialHistory && (
                   <span
-                    className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
+                    className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700"
                     title="NAV history incomplete — values are estimates"
                   >
                     Estimated
@@ -46,10 +46,10 @@ export const SipsTab: React.FC<SipsTabProps> = ({ sips }) => {
             </div>
 
             <div>
-              <h4 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+              <h4 className="font-serif text-lg font-bold text-[#0B1220]">
                 {sip.fundName}
               </h4>
-              <p className="font-serif text-2xl font-bold text-[#0F766E] dark:text-emerald-400 mt-1">
+              <p className="font-serif text-2xl font-bold text-[#0F766E] mt-1">
                 {formatINR(sip.amount, false)}{' '}
                 <span className="text-xs font-normal text-[#5B6572]">/ installment</span>
               </p>
@@ -62,16 +62,16 @@ export const SipsTab: React.FC<SipsTabProps> = ({ sips }) => {
               {sip.totalUnits > 0 && <span className="ml-2">· {sip.totalUnits.toFixed(2)} units</span>}
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[#E7E5DF] dark:border-[#1F2933] text-xs">
+            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[#E7E5DF] text-xs">
               <div>
                 <span className="text-[10px] text-[#5B6572]">Invested</span>
-                <p className="font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5">
+                <p className="font-bold text-[#0B1220] mt-0.5">
                   {formatINR(sip.investedValue, false)}
                 </p>
               </div>
               <div>
                 <span className="text-[10px] text-[#5B6572]">Current Value</span>
-                <p className="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                <p className="font-bold text-emerald-600 mt-0.5">
                   {formatINR(sip.currentValue, false)}
                 </p>
               </div>
@@ -79,7 +79,7 @@ export const SipsTab: React.FC<SipsTabProps> = ({ sips }) => {
                 <span className="text-[10px] text-[#5B6572]">Gain</span>
                 <p
                   className={`font-bold mt-0.5 ${
-                    gainPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                    gainPositive ? 'text-emerald-600' : 'text-red-600'
                   }`}
                 >
                   {gainPositive ? '+' : ''}
@@ -92,8 +92,8 @@ export const SipsTab: React.FC<SipsTabProps> = ({ sips }) => {
                 <p
                   className={`font-bold mt-0.5 ${
                     sip.xirr !== null && sip.xirr >= 0
-                      ? 'text-emerald-600 dark:text-emerald-400'
-                      : 'text-red-600 dark:text-red-400'
+                      ? 'text-emerald-600'
+                      : 'text-red-600'
                   }`}
                 >
                   {sip.xirr !== null ? `${sip.xirr >= 0 ? '+' : ''}${sip.xirr}%` : '—'}

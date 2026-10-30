@@ -25,19 +25,19 @@ export const Portfolio: React.FC = () => {
   const [quotes, setQuotes] = useState<StockQuote[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Add Holding Modal State
+  // Add Holding Modal State - clean initial inputs
   const [isAddHoldingOpen, setIsAddHoldingOpen] = useState(false);
   const [newHoldingType, setNewHoldingType] = useState<'STOCK' | 'MUTUAL_FUND'>('STOCK');
-  const [newSymbolOrCode, setNewSymbolOrCode] = useState('RELIANCE.NS');
-  const [newName, setNewName] = useState('Reliance Industries Ltd.');
-  const [newQuantity, setNewQuantity] = useState(10);
-  const [newBuyPrice, setNewBuyPrice] = useState(2750);
+  const [newSymbolOrCode, setNewSymbolOrCode] = useState('');
+  const [newName, setNewName] = useState('');
+  const [newQuantity, setNewQuantity] = useState<number>(0);
+  const [newBuyPrice, setNewBuyPrice] = useState<number>(0);
 
-  // Add SIP Modal State
+  // Add SIP Modal State - clean initial inputs
   const [isAddSipOpen, setIsAddSipOpen] = useState(false);
-  const [newSipFundName, setNewSipFundName] = useState('Parag Parikh Flexi Cap Fund');
-  const [newSipAmount, setNewSipAmount] = useState(5000);
-  const [newSipDate, setNewSipDate] = useState('10 Nov 2026');
+  const [newSipFundName, setNewSipFundName] = useState('');
+  const [newSipAmount, setNewSipAmount] = useState<number>(0);
+  const [newSipDate, setNewSipDate] = useState('');
 
   // Institutional Audit Report Modal State
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
@@ -172,7 +172,7 @@ export const Portfolio: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <div className="w-10 h-10 border-4 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Loading your portfolio...</p>
+        <p className="text-xs text-[#5B6572]">Loading your portfolio...</p>
       </div>
     );
   }
@@ -180,7 +180,7 @@ export const Portfolio: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#E7E5DF] dark:border-[#1F2933]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#E7E5DF]">
         <SectionHeader
           eyebrow="WEALTH TRACKER"
           title="Portfolio & Active Holdings"
@@ -198,7 +198,7 @@ export const Portfolio: React.FC = () => {
 
           <button
             onClick={() => setIsAddHoldingOpen(true)}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] dark:bg-emerald-600 flex items-center gap-1.5 shadow-xs min-h-[44px]"
+            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] flex items-center gap-1.5 shadow-xs min-h-[44px]"
           >
             <Plus className="w-4 h-4" />
             <span>Add Holding</span>
@@ -206,7 +206,7 @@ export const Portfolio: React.FC = () => {
 
           <button
             onClick={() => setIsAddSipOpen(true)}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] hover:bg-black/5 flex items-center gap-1.5 min-h-[44px]"
+            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#0B1220] bg-white border border-[#E7E5DF] hover:bg-black/5 flex items-center gap-1.5 min-h-[44px]"
           >
             <Plus className="w-4 h-4 text-[#0F766E]" />
             <span>Track New SIP</span>
@@ -223,7 +223,7 @@ export const Portfolio: React.FC = () => {
       />
 
       {/* Tabs */}
-      <div className="flex gap-2 p-1.5 rounded-2xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs max-w-md">
+      <div className="flex gap-2 p-1.5 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs max-w-md">
         {[
           { id: 'holdings', label: `Holdings (${holdings.length})` },
           { id: 'sips', label: `Tracked SIPs (${sips.length})` },
@@ -234,8 +234,8 @@ export const Portfolio: React.FC = () => {
             onClick={() => setActiveTab(t.id as PortfolioTab)}
             className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all ${
               activeTab === t.id
-                ? 'bg-[#0F766E] text-white dark:bg-emerald-600 shadow-sm'
-                : 'text-[#5B6572] dark:text-[#8A97A6] hover:text-[#0B1220]'
+                ? 'bg-[#0F766E] text-white shadow-sm'
+                : 'text-[#5B6572] hover:text-[#0B1220]'
             }`}
           >
             {t.label}

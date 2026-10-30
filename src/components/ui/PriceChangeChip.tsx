@@ -23,9 +23,9 @@ export const PriceChangeChip: React.FC<PriceChangeChipProps> = ({
     <div
       className={cn(
         'inline-flex items-center gap-1 font-semibold rounded-lg tabular-nums',
-        isPositive && 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50',
-        !isPositive && !isNeutral && 'text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50',
-        isNeutral && 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800',
+        isPositive && 'text-emerald-700 bg-emerald-50',
+        !isPositive && !isNeutral && 'text-rose-700 bg-rose-50',
+        isNeutral && 'text-gray-600 bg-gray-100',
         size === 'sm' ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-1 text-xs'
       )}
     >

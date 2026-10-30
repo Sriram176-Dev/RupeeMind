@@ -1,135 +1,180 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { UserProfile } from '../../types';
+import { calculateRiskCapacity } from '../../lib/scoring';
+import { Shield, ShieldAlert, ShieldCheck, AlertCircle, Users, CheckCircle2 } from 'lucide-react';
 
 interface OnboardingStepProtectionProps {
   profileData: UserProfile;
   setProfileData: React.Dispatch<React.SetStateAction<UserProfile>>;
-  experiences: readonly string[];
 }
 
 export const OnboardingStepProtection: React.FC<OnboardingStepProtectionProps> = ({
   profileData,
   setProfileData,
-  experiences,
 }) => {
+  const capacityResult = useMemo(() => {
+    return calculateRiskCapacity(profileData);
+  }, [
+    profileData.monthlyIncome,
+    profileData.monthlyExpenses,
+    profileData.monthlyEMIs,
+    profileData.emergencyFundAmount,
+    profileData.hasLifeInsurance,
+    profileData.hasHealthInsurance,
+    profileData.dependentsCount,
+    profileData.age,
+    profileData.occupation,
+  ]);
+
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E] dark:text-emerald-400">
-          STEP 5 • PROTECTION & EXPERIENCE
-        </p>
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-1">
-          Insurance Shield & Investing Experience
-        </h1>
-        <p className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] mt-1">
-          Ensuring adequate downside protection before scaling investment risk.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-        <label className="p-4 rounded-2xl border border-[#E7E5DF] dark:border-[#1F2933] bg-[#FAFAF7] dark:bg-[#0B0F14] flex items-center justify-between cursor-pointer hover:border-[#0F766E]/40 transition-colors">
-          <div>
-            <p className="font-semibold text-xs sm:text-sm text-[#0B1220] dark:text-[#E8EDF2]">Term Life Insurance</p>
-            <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6]">Pure risk cover for family dependents</p>
-          </div>
-          <input
-            type="checkbox"
-            checked={profileData.hasLifeInsurance}
-            onChange={(e) => setProfileData({ ...profileData, hasLifeInsurance: e.target.checked })}
-            className="w-5 h-5 rounded-md text-[#0F766E] focus:ring-emerald-500 accent-[#0F766E]"
-          />
-        </label>
-
-        <label className="p-4 rounded-2xl border border-[#E7E5DF] dark:border-[#1F2933] bg-[#FAFAF7] dark:bg-[#0B0F14] flex items-center justify-between cursor-pointer hover:border-[#0F766E]/40 transition-colors">
-          <div>
-            <p className="font-semibold text-xs sm:text-sm text-[#0B1220] dark:text-[#E8EDF2]">Health Insurance</p>
-            <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6]">Individual or family floater health cover</p>
-          </div>
-          <input
-            type="checkbox"
-            checked={profileData.hasHealthInsurance}
-            onChange={(e) => setProfileData({ ...profileData, hasHealthInsurance: e.target.checked })}
-            className="w-5 h-5 rounded-md text-[#0F766E] focus:ring-emerald-500 accent-[#0F766E]"
-          />
-        </label>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-[#E7E5DF] dark:border-[#1F2933]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <label className="block text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] mb-1.5">
-            Number of Financial Dependents
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E]">
+            STEP 5 • FINANCIAL RISK CAPACITY & PROTECTION
+          </p>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220] mt-1">
+            Downside Resilience & Safety Net
+          </h1>
+          <p className="text-xs sm:text-sm text-[#5B6572] mt-1">
+            Evaluates your balance sheet's structural ability to absorb market downturns without triggering forced liquidation.
+          </p>
+        </div>
+
+        {/* Live Capacity Gauge Card */}
+        <div className={`p-3.5 sm:p-4 rounded-2xl border shrink-0 text-right ${
+          capacityResult.band === 'High'
+            ? 'bg-emerald-50/80 border-emerald-300'
+            : capacityResult.band === 'Moderate'
+            ? 'bg-blue-50/80 border-blue-200'
+            : 'bg-amber-50/80 border-amber-300'
+        }`}>
+          <span className="text-[10px] uppercase tracking-wider text-[#5B6572] font-semibold block">
+            Financial Risk Capacity
+          </span>
+          <div className="flex items-center gap-1.5 justify-end mt-0.5">
+            <Shield className={`w-4 h-4 ${
+              capacityResult.band === 'High'
+                ? 'text-emerald-700'
+                : capacityResult.band === 'Moderate'
+                ? 'text-blue-700'
+                : 'text-amber-700'
+            }`} />
+            <span className={`font-serif font-bold text-sm ${
+              capacityResult.band === 'High'
+                ? 'text-emerald-700'
+                : capacityResult.band === 'Moderate'
+                ? 'text-blue-700'
+                : 'text-amber-700'
+            }`}>
+              {capacityResult.band} Capacity ({capacityResult.score}/100)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Insurance Shields */}
+      <div className="space-y-3">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-[#5B6572]">
+          Downside Insurance Shields
+        </label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+            profileData.hasLifeInsurance
+              ? 'bg-[#E6F4F1] border-[#0F766E]'
+              : 'bg-[#FAFAF7] border-[#E7E5DF] hover:border-gray-400'
+          }`}>
+            <div className="space-y-0.5 pr-2">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className={`w-4 h-4 ${profileData.hasLifeInsurance ? 'text-[#0F766E]' : 'text-gray-400'}`} />
+                <p className="font-semibold text-xs sm:text-sm text-[#0B1220]">Term Life Insurance</p>
+              </div>
+              <p className="text-[11px] text-[#5B6572]">
+                Pure risk cover protecting dependents against loss of earnings.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={profileData.hasLifeInsurance}
+              onChange={(e) => setProfileData({ ...profileData, hasLifeInsurance: e.target.checked })}
+              className="w-5 h-5 rounded-md text-[#0F766E] focus:ring-emerald-500 accent-[#0F766E]"
+            />
           </label>
-          <div className="flex gap-2">
-            {[0, 1, 2, 3].map((num) => (
-              <button
-                key={num}
-                type="button"
-                onClick={() => setProfileData({ ...profileData, dependentsCount: num })}
-                className={`flex-1 py-2.5 rounded-xl text-xs font-semibold border transition-all ${
-                  profileData.dependentsCount === num
-                    ? 'bg-[#E6F4F1] dark:bg-emerald-950/60 border-[#0F766E] dark:border-emerald-500 text-[#0F766E] dark:text-emerald-300'
-                    : 'border-[#E7E5DF] dark:border-[#1F2933] text-[#0B1220] dark:text-[#E8EDF2]'
-                }`}
-              >
-                {num === 3 ? '3+' : num}
-              </button>
+
+          <label className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+            profileData.hasHealthInsurance
+              ? 'bg-[#E6F4F1] border-[#0F766E]'
+              : 'bg-[#FAFAF7] border-[#E7E5DF] hover:border-gray-400'
+          }`}>
+            <div className="space-y-0.5 pr-2">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className={`w-4 h-4 ${profileData.hasHealthInsurance ? 'text-[#0F766E]' : 'text-gray-400'}`} />
+                <p className="font-semibold text-xs sm:text-sm text-[#0B1220]">Health Insurance</p>
+              </div>
+              <p className="text-[11px] text-[#5B6572]">
+                Comprehensive hospitalization cover shielding investments from medical costs.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={profileData.hasHealthInsurance}
+              onChange={(e) => setProfileData({ ...profileData, hasHealthInsurance: e.target.checked })}
+              className="w-5 h-5 rounded-md text-[#0F766E] focus:ring-emerald-500 accent-[#0F766E]"
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Dependents Selection */}
+      <div className="pt-2 border-t border-[#E7E5DF]">
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-xs font-semibold text-[#0B1220] flex items-center gap-1.5">
+            <Users className="w-4 h-4 text-[#0F766E]" />
+            <span>Number of Financial Dependents</span>
+          </label>
+          <span className="text-[11px] text-[#5B6572]">
+            Parents, spouse, or children reliant on your income
+          </span>
+        </div>
+        <div className="grid grid-cols-4 gap-2.5">
+          {[0, 1, 2, 3].map((num) => (
+            <button
+              key={num}
+              type="button"
+              onClick={() => setProfileData({ ...profileData, dependentsCount: num })}
+              className={`py-3 rounded-xl text-xs font-semibold border transition-all flex items-center justify-center gap-1 ${
+                profileData.dependentsCount === num
+                  ? 'bg-[#E6F4F1] border-[#0F766E] text-[#0F766E] shadow-2xs'
+                  : 'border-[#E7E5DF] bg-[#FAFAF7] text-[#0B1220] hover:border-gray-300'
+              }`}
+            >
+              <span>{num === 3 ? '3+ Dependents' : num === 0 ? '0 (Self only)' : `${num} Dependent${num > 1 ? 's' : ''}`}</span>
+              {profileData.dependentsCount === num && <CheckCircle2 className="w-3.5 h-3.5" />}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Capacity Constraint Insights */}
+      {capacityResult.limitingFactors.length > 0 && (
+        <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-800">
+            <AlertCircle className="w-4 h-4 text-amber-700" />
+            <span>Balance Sheet Constraints Detected</span>
+          </div>
+          <div className="space-y-1">
+            {capacityResult.limitingFactors.map((factor, idx) => (
+              <p key={idx} className="text-xs text-amber-900 flex items-start gap-1.5 leading-relaxed">
+                <span className="text-amber-600 font-bold">•</span>
+                <span>{factor}</span>
+              </p>
             ))}
           </div>
+          <p className="text-[11px] text-amber-800/80 italic pt-1 border-t border-amber-200/60">
+            * Our fiduciary algorithm will automatically constrain higher risk recommendations to protect your essential capital.
+          </p>
         </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] mb-1.5">
-            Prior Stock/Mutual Fund Experience
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            {experiences.map((exp) => (
-              <button
-                key={exp}
-                type="button"
-                onClick={() => setProfileData({ ...profileData, investingExperience: exp as UserProfile['investingExperience'] })}
-                className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all ${
-                  profileData.investingExperience === exp
-                    ? 'bg-[#E6F4F1] dark:bg-emerald-950/60 border-[#0F766E] dark:border-emerald-500 text-[#0F766E] dark:text-emerald-300'
-                    : 'border-[#E7E5DF] dark:border-[#1F2933] text-[#0B1220] dark:text-[#E8EDF2]'
-                }`}
-              >
-                {exp}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-4 border-t border-[#E7E5DF] dark:border-[#1F2933]">
-        <label className="block text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] mb-1.5">
-          How regularly do you invest?
-        </label>
-        <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6] mb-2.5">
-          Used to gauge financial discipline and investing habit score.
-        </p>
-        <div className="grid grid-cols-3 gap-3">
-          {(['Regularly', 'Occasionally', 'Not yet'] as const).map((habit) => {
-            const isSelected = (profileData.investingRegularity || 'Occasionally') === habit;
-            return (
-              <button
-                key={habit}
-                type="button"
-                onClick={() => setProfileData({ ...profileData, investingRegularity: habit })}
-                className={`py-3 px-4 rounded-xl text-xs font-semibold border transition-all flex flex-col items-center gap-1 ${
-                  isSelected
-                    ? 'bg-[#E6F4F1] dark:bg-emerald-950/60 border-[#0F766E] dark:border-emerald-500 text-[#0F766E] dark:text-emerald-300 font-bold shadow-xs'
-                    : 'border-[#E7E5DF] dark:border-[#1F2933] text-[#0B1220] dark:text-[#E8EDF2] hover:border-[#0F766E]/40'
-                }`}
-              >
-                <span>{habit}</span>
-                <span className="text-[10px] font-normal opacity-80">
-                  {habit === 'Regularly' ? 'Monthly SIPs' : habit === 'Occasionally' ? 'Ad-hoc lump sum' : 'Starting out'}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      )}
     </div>
   );
 };

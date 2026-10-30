@@ -43,21 +43,25 @@ export const Dashboard: React.FC = () => {
     async function loadDashboardData() {
       try {
         setLoading(true);
-        const [qData, fData, nData, wData] = await Promise.all([
+        // Load primary dashboard data concurrently
+        const [qData, fData, wData] = await Promise.all([
           getQuotes(),
           getFunds({ sortBy: 'cagr3Y' }),
-          getNews(),
           getWatchlist(),
         ]);
         setQuotes(qData);
         setTopFunds(fData.slice(0, 3));
-        setNews(nData.slice(0, 5));
         setWatchlist(wData);
       } catch (err) {
         console.error('Failed to load dashboard data', err);
       } finally {
         setLoading(false);
       }
+
+      // Stream news asynchronously without blocking primary dashboard render
+      getNews()
+        .then((nData) => setNews(nData.slice(0, 5)))
+        .catch(() => {});
     }
     loadDashboardData();
   }, []);
@@ -90,18 +94,18 @@ export const Dashboard: React.FC = () => {
   });
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       
       {/* Top Greeting & Market Status */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#0F766E] dark:text-emerald-400">
+          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#0F766E]">
             {todayDateStr}
           </p>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#0B1220] dark:text-[#E8EDF2]">
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#0B1220]">
             Namaste, {user?.name?.split(' ')[0] || 'Investor'}
           </h1>
-          <p className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] mt-0.5">
+          <p className="text-xs sm:text-sm text-[#5B6572] mt-0.5">
             Here is your financial telemetry, algorithmic market signals, and watchlist summary.
           </p>
         </div>
@@ -115,16 +119,16 @@ export const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Risk Score Card */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-[#0F766E]/40 transition-all">
+        <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-[#0F766E]/40 transition-all">
           <div className="space-y-2 text-left">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E6F4F1] dark:bg-emerald-950/60 text-[#0F766E] dark:text-emerald-300">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E6F4F1] text-[#0F766E]">
               <Shield className="w-3.5 h-3.5" />
               <span>Risk Tolerance Band</span>
             </div>
-            <h2 className="font-serif text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+            <h2 className="font-serif text-2xl font-bold text-[#0B1220]">
               {riskBand}
             </h2>
-            <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] max-w-xs leading-relaxed">
+            <p className="text-xs text-[#5B6572] max-w-xs leading-relaxed">
               {hasRiskScore
                 ? `Mapped target asset mix: ${riskBand === 'Aggressive' ? '90%' : riskBand === 'Moderately Aggressive' ? '80%' : '70%'} Equities, balance in Debt & Arbitrage.`
                 : 'Take the 2-minute financial profiling quiz to calculate your personalized risk tolerance.'}
@@ -132,7 +136,7 @@ export const Dashboard: React.FC = () => {
             <div className="pt-2">
               <Link
                 to="/onboarding"
-                className="text-xs font-semibold text-[#0F766E] dark:text-emerald-400 hover:underline flex items-center gap-1"
+                className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1"
               >
                 <span>{hasRiskScore ? 'Retake Risk Assessment' : 'Start Risk Assessment'}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -145,16 +149,16 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Financial Health Score Card */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-[#0F766E]/40 transition-all">
+        <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-[#0F766E]/40 transition-all">
           <div className="space-y-2 text-left">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Financial Health Status</span>
             </div>
-            <h2 className="font-serif text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+            <h2 className="font-serif text-2xl font-bold text-[#0B1220]">
               {healthBand}
             </h2>
-            <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] max-w-xs leading-relaxed">
+            <p className="text-xs text-[#5B6572] max-w-xs leading-relaxed">
               {hasHealthScore
                 ? 'Savings rate and emergency liquidity are well positioned for disciplined monthly SIP compounding.'
                 : 'Complete your income, savings, and expense profile to measure your financial resilience.'}
@@ -162,7 +166,7 @@ export const Dashboard: React.FC = () => {
             <div className="pt-2">
               <Link
                 to="/profile"
-                className="text-xs font-semibold text-[#0F766E] dark:text-emerald-400 hover:underline flex items-center gap-1"
+                className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1"
               >
                 <span>{hasHealthScore ? 'View Full Health Breakdown' : 'Complete Profile'}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -180,18 +184,18 @@ export const Dashboard: React.FC = () => {
       <div className="p-6 rounded-3xl bg-gradient-to-r from-[#0F766E]/10 via-[#4F46E5]/10 to-transparent border border-emerald-500/20 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E] dark:text-emerald-400 flex items-center gap-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E] flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5" />
               AI-ASSISTED INVESTING ENGINE
             </span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
               Live Diagnostics
             </span>
           </div>
-          <h3 className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <h3 className="font-serif text-xl font-bold text-[#0B1220]">
             Personalized Allocation & Predictive Telemetry
           </h3>
-          <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] max-w-xl">
+          <p className="text-xs text-[#5B6572] max-w-xl">
             Synthesize direct plan mutual funds tailored to your portfolio holdings, or inspect real-time concentration risk and signal accuracy diagnostics.
           </p>
         </div>
@@ -199,7 +203,7 @@ export const Dashboard: React.FC = () => {
         <div className="flex items-center gap-3 shrink-0">
           <Link
             to="/recommendations"
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] dark:bg-emerald-600 transition-all flex items-center gap-1.5 shadow-xs"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all flex items-center gap-1.5 shadow-xs"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>AI Portfolio</span>
@@ -207,9 +211,9 @@ export const Dashboard: React.FC = () => {
 
           <Link
             to="/analytics"
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] bg-white dark:bg-[#1A222D] border border-[#E7E5DF] dark:border-[#2D3748] hover:bg-gray-50 dark:hover:bg-[#232D3C] transition-all flex items-center gap-1.5 shadow-xs"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-[#0B1220] bg-white border border-[#E7E5DF] hover:bg-gray-50 transition-all flex items-center gap-1.5 shadow-xs"
           >
-            <BarChart3 className="w-3.5 h-3.5 text-[#0F766E] dark:text-emerald-400" />
+            <BarChart3 className="w-3.5 h-3.5 text-[#0F766E]" />
             <span>Diagnostics</span>
           </Link>
         </div>
@@ -225,7 +229,7 @@ export const Dashboard: React.FC = () => {
           />
           <Link
             to="/market"
-            className="text-xs font-semibold text-[#0F766E] dark:text-emerald-400 hover:underline flex items-center gap-1"
+            className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1"
           >
             <span>View Full Market</span>
             <ArrowUpRight className="w-4 h-4" />
@@ -236,17 +240,17 @@ export const Dashboard: React.FC = () => {
           {indices.map((idx) => (
             <div
               key={idx.symbol}
-              className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-2 hover:border-[#0F766E]/40 transition-all"
+              className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs space-y-2 hover:border-[#0F766E]/40 transition-all"
             >
               <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-[#5B6572] dark:text-[#8A97A6]">{idx.name}</p>
+                <p className="text-xs font-bold text-[#5B6572]">{idx.name}</p>
                 <PriceChangeChip change={idx.change} changePercent={idx.changePercent} size="sm" />
               </div>
-              <p className="font-serif text-xl sm:text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2] tabular-nums">
+              <p className="font-serif text-xl sm:text-2xl font-bold text-[#0B1220] tabular-nums">
                 {formatINR(idx.value, false)}
               </p>
               <div className="pt-1 flex items-center justify-between">
-                <span className="text-[10px] text-[#5B6572] dark:text-[#8A97A6]">Day Trend</span>
+                <span className="text-[10px] text-[#5B6572]">Day Trend</span>
                 <Sparkline data={idx.sparkline} width={75} height={22} isPositive={idx.change >= 0} />
               </div>
             </div>
@@ -254,15 +258,15 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Top Gainers / Losers Tabs */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs">
-          <div className="flex items-center justify-between mb-4 border-b border-[#E7E5DF] dark:border-[#1F2933] pb-3">
+        <div className="p-5 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs">
+          <div className="flex items-center justify-between mb-4 border-b border-[#E7E5DF] pb-3">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setMarketTab('gainers')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
                   marketTab === 'gainers'
-                    ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
-                    : 'text-[#5B6572] dark:text-[#8A97A6] hover:bg-black/5'
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : 'text-[#5B6572] hover:bg-black/5'
                 }`}
               >
                 Top Gainers
@@ -271,14 +275,14 @@ export const Dashboard: React.FC = () => {
                 onClick={() => setMarketTab('losers')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
                   marketTab === 'losers'
-                    ? 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300'
-                    : 'text-[#5B6572] dark:text-[#8A97A6] hover:bg-black/5'
+                    ? 'bg-rose-100 text-rose-800'
+                    : 'text-[#5B6572] hover:bg-black/5'
                 }`}
               >
                 Top Losers
               </button>
             </div>
-            <span className="text-[11px] text-[#5B6572] dark:text-[#8A97A6] hidden sm:inline">
+            <span className="text-[11px] text-[#5B6572] hidden sm:inline">
               Live NSE Market Quotes
             </span>
           </div>
@@ -288,16 +292,16 @@ export const Dashboard: React.FC = () => {
               <Link
                 key={stock.symbol}
                 to={`/market/${stock.symbol}`}
-                className="p-3.5 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between hover:border-[#0F766E]/40 transition-all group"
+                className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between hover:border-[#0F766E]/40 transition-all group"
               >
                 <div>
-                  <p className="font-mono text-xs font-bold text-[#0B1220] dark:text-[#E8EDF2] group-hover:text-[#0F766E] dark:group-hover:text-emerald-400">
+                  <p className="font-mono text-xs font-bold text-[#0B1220] group-hover:text-[#0F766E]">
                     {stock.symbol}
                   </p>
-                  <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6] truncate max-w-[120px]">
+                  <p className="text-[11px] text-[#5B6572] truncate max-w-[120px]">
                     {stock.companyName}
                   </p>
-                  <p className="font-serif text-sm font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5 tabular-nums">
+                  <p className="font-serif text-sm font-bold text-[#0B1220] mt-0.5 tabular-nums">
                     {formatINR(stock.price)}
                   </p>
                 </div>
@@ -324,61 +328,60 @@ export const Dashboard: React.FC = () => {
             />
             <Link
               to="/market"
-              className="text-xs font-semibold text-[#0F766E] dark:text-emerald-400 hover:underline flex items-center gap-1"
+              className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1"
             >
               <span>+ Add Stocks</span>
             </Link>
           </div>
 
-          <div className="rounded-2xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] overflow-hidden shadow-xs">
+          <div className="rounded-2xl bg-white border border-[#E7E5DF] overflow-hidden shadow-xs">
             {loading ? (
               <div className="p-6">
                 <TableSkeleton rows={4} />
               </div>
             ) : watchlistQuotes.length === 0 ? (
-              <div className="p-8 text-center text-xs text-[#5B6572] dark:text-[#8A97A6]">
+              <div className="p-8 text-center text-xs text-[#5B6572]">
                 No stocks in your watchlist yet. Explore the market and click the star icon to track symbols.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#FAFAF7] dark:bg-[#0B0F14] border-b border-[#E7E5DF] dark:border-[#1F2933] text-[#5B6572] dark:text-[#8A97A6]">
+                  <thead className="bg-[#FAFAF7] border-b border-[#E7E5DF] text-[#5B6572]">
                     <tr>
                       <th className="py-3 px-4 font-semibold">Symbol</th>
                       <th className="py-3 px-4 font-semibold text-right">Price</th>
                       <th className="py-3 px-4 font-semibold text-right">Day %</th>
-                      <th className="py-3 px-4 font-semibold text-center">Algorithmic Signal</th>
+                      <th className="py-3 px-4 font-semibold text-center">Technical Analysis</th>
                       <th className="py-3 px-3 text-center">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E7E5DF] dark:divide-[#1F2933]">
+                  <tbody className="divide-y divide-[#E7E5DF]">
                     {watchlistQuotes.map((stk) => (
                       <tr
                         key={stk.symbol}
                         onClick={() => window.location.href = `/market/${stk.symbol}`}
-                        className="hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors"
+                        className="hover:bg-black/5 cursor-pointer transition-colors"
                       >
                         <td className="py-3.5 px-4">
-                          <p className="font-mono font-bold text-[#0B1220] dark:text-[#E8EDF2]">{stk.symbol}</p>
-                          <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6] truncate max-w-[140px]">{stk.companyName}</p>
+                          <p className="font-mono font-bold text-[#0B1220]">{stk.symbol}</p>
+                          <p className="text-[11px] text-[#5B6572] truncate max-w-[140px]">{stk.companyName}</p>
                         </td>
-                        <td className="py-3.5 px-4 text-right font-serif font-bold text-[#0B1220] dark:text-[#E8EDF2] tabular-nums">
+                        <td className="py-3.5 px-4 text-right font-serif font-bold text-[#0B1220] tabular-nums">
                           {formatINR(stk.price)}
                         </td>
                         <td className="py-3.5 px-4 text-right">
                           <PriceChangeChip change={stk.change} changePercent={stk.changePercent} size="sm" />
                         </td>
                         <td className="py-3.5 px-4 text-center">
-                          <SignalBadge
-                            signal={stk.changePercent >= 1.0 ? 'BUY' : stk.changePercent <= -1.0 ? 'SELL' : 'HOLD'}
-                            showStrength={false}
-                            size="sm"
-                          />
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0F766E] hover:underline">
+                            <span>Analyze</span>
+                            <ChevronRight className="w-3 h-3" />
+                          </span>
                         </td>
                         <td className="py-3.5 px-3 text-center">
                           <button
                             onClick={(e) => handleToggleWatchlist(stk.symbol, e)}
-                            className="p-1 rounded-md text-amber-500 hover:bg-black/5 dark:hover:bg-white/5"
+                            className="p-1 rounded-md text-amber-500 hover:bg-black/5"
                             title="Remove from watchlist"
                           >
                             <Star className="w-4 h-4 fill-amber-500" />
@@ -401,35 +404,35 @@ export const Dashboard: React.FC = () => {
             className="mb-0"
           />
 
-          <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-5">
+          <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-[#5B6572] dark:text-[#8A97A6]">Standard 12% CAGR Model</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-[#E6F4F1] dark:bg-emerald-950 text-[#0F766E] dark:text-emerald-300 font-semibold">
+              <span className="text-xs font-semibold text-[#5B6572]">Standard 12% CAGR Model</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[#E6F4F1] text-[#0F766E] font-semibold">
                 Direct Growth
               </span>
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] flex justify-between items-center">
+              <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex justify-between items-center">
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-[#5B6572] dark:text-[#8A97A6]">₹10,000 / mo for 15 Yrs</p>
-                  <p className="font-serif text-2xl font-bold text-[#0F766E] dark:text-emerald-400 mt-0.5">₹50.46 Lakhs</p>
+                  <p className="text-[10px] uppercase font-bold text-[#5B6572]">₹10,000 / mo for 15 Yrs</p>
+                  <p className="font-serif text-2xl font-bold text-[#0F766E] mt-0.5">₹50.46 Lakhs</p>
                 </div>
-                <span className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Invested: ₹18.0 L</span>
+                <span className="text-xs text-[#5B6572]">Invested: ₹18.0 L</span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] flex justify-between items-center">
+              <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex justify-between items-center">
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-[#5B6572] dark:text-[#8A97A6]">₹25,000 / mo for 15 Yrs</p>
-                  <p className="font-serif text-2xl font-bold text-[#0F766E] dark:text-emerald-400 mt-0.5">₹1.26 Crores</p>
+                  <p className="text-[10px] uppercase font-bold text-[#5B6572]">₹25,000 / mo for 15 Yrs</p>
+                  <p className="font-serif text-2xl font-bold text-[#0F766E] mt-0.5">₹1.26 Crores</p>
                 </div>
-                <span className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Invested: ₹45.0 L</span>
+                <span className="text-xs text-[#5B6572]">Invested: ₹45.0 L</span>
               </div>
             </div>
 
             <Link
               to="/calculators"
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 min-h-[44px]"
+              className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all flex items-center justify-center gap-2 min-h-[44px]"
             >
               <Calculator className="w-4 h-4" />
               <span>Customize Step-Up & Goal Calculations</span>
@@ -450,7 +453,7 @@ export const Dashboard: React.FC = () => {
           />
           <Link
             to="/funds"
-            className="text-xs font-semibold text-[#0F766E] dark:text-emerald-400 hover:underline flex items-center gap-1"
+            className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1"
           >
             <span>Explore all funds</span>
             <ArrowUpRight className="w-4 h-4" />
@@ -469,17 +472,17 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Latest Market News Strip */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
-        <div className="flex items-center justify-between border-b border-[#E7E5DF] dark:border-[#1F2933] pb-3">
+      <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
+        <div className="flex items-center justify-between border-b border-[#E7E5DF] pb-3">
           <div className="flex items-center gap-2">
-            <Newspaper className="w-4 h-4 text-[#0F766E] dark:text-emerald-400" />
-            <h2 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+            <Newspaper className="w-4 h-4 text-[#0F766E]" />
+            <h2 className="font-serif text-lg font-bold text-[#0B1220]">
               Latest Financial News
             </h2>
           </div>
           <Link
             to="/news"
-            className="text-xs font-semibold text-[#0F766E] dark:text-emerald-400 hover:underline"
+            className="text-xs font-semibold text-[#0F766E] hover:underline"
           >
             All News
           </Link>
@@ -489,21 +492,21 @@ export const Dashboard: React.FC = () => {
           {news.slice(0, 3).map((item) => (
             <div
               key={item.id}
-              className="p-4 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] flex flex-col justify-between"
+              className="p-4 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between text-[11px] text-[#5B6572] dark:text-[#8A97A6] mb-1.5">
-                  <span className="font-semibold text-[#0F766E] dark:text-emerald-400 uppercase">{item.category}</span>
+                <div className="flex items-center justify-between text-[11px] text-[#5B6572] mb-1.5">
+                  <span className="font-semibold text-[#0F766E] uppercase">{item.category}</span>
                   <span>{item.timeAgo}</span>
                 </div>
-                <h3 className="font-serif text-sm font-bold text-[#0B1220] dark:text-[#E8EDF2] line-clamp-2 mb-1">
+                <h3 className="font-serif text-sm font-bold text-[#0B1220] line-clamp-2 mb-1">
                   {item.headline}
                 </h3>
-                <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] line-clamp-2">
+                <p className="text-xs text-[#5B6572] line-clamp-2">
                   {item.summary}
                 </p>
               </div>
-              <div className="mt-3 pt-2 border-t border-[#E7E5DF] dark:border-[#1F2933] text-[11px] font-semibold text-[#5B6572] dark:text-[#8A97A6]">
+              <div className="mt-3 pt-2 border-t border-[#E7E5DF] text-[11px] font-semibold text-[#5B6572]">
                 Source: {item.source}
               </div>
             </div>

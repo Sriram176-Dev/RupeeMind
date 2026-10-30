@@ -29,7 +29,7 @@ export const RiskMeter: React.FC<RiskMeterProps> = ({ level, showText = true }) 
               key={lvl}
               className={cn(
                 'h-1.5 w-4 rounded-full transition-colors',
-                isActive ? colors[currentIndex] : 'bg-gray-200 dark:bg-gray-800'
+                isActive ? colors[currentIndex] : 'bg-gray-200'
               )}
               title={lvl}
             />
@@ -37,7 +37,7 @@ export const RiskMeter: React.FC<RiskMeterProps> = ({ level, showText = true }) 
         })}
       </div>
       {showText && (
-        <span className="text-[11px] font-medium text-[#5B6572] dark:text-[#8A97A6]">
+        <span className="text-[11px] font-medium text-[#5B6572]">
           {level} Risk
         </span>
       )}

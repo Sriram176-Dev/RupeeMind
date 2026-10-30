@@ -46,7 +46,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   isOpen,
   onClose,
   availableCash,
-  initialSymbol = 'RELIANCE',
+  initialSymbol = '',
   initialAction = 'BUY',
   maxSellQty,
   onSubmitOrder,
@@ -57,7 +57,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   const [transactionType, setTransactionType] = useState<'BUY' | 'SELL'>(initialAction);
   const [orderType, setOrderType] = useState<'MARKET' | 'LIMIT'>('MARKET');
   const [productType, setProductType] = useState<'DELIVERY' | 'INTRADAY'>('DELIVERY');
-  const [quantity, setQuantity] = useState<number>(10);
+  const [quantity, setQuantity] = useState<number>(1);
   const [limitPrice, setLimitPrice] = useState<string>('');
 
   const [currentPrice, setCurrentPrice] = useState<number>(0);
@@ -186,8 +186,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         limitPrice: orderType === 'LIMIT' && limitPrice ? parseFloat(limitPrice) : undefined,
       });
       onClose();
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Order submission failed';
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || 'Order submission failed';
       toast.error(msg);
     } finally {
       setSubmitting(false);
@@ -196,31 +196,31 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-lg rounded-3xl bg-white dark:bg-[#11161D] border border-[#E7E5DF] dark:border-[#1F2933] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="w-full max-w-lg rounded-3xl bg-white border border-[#E7E5DF] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[#E7E5DF] dark:border-[#1F2933]">
+        <div className="flex items-center justify-between p-5 border-b border-[#E7E5DF]">
           <div className="flex items-center gap-2.5">
             <span
               className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black ${
                 transactionType === 'BUY'
-                  ? 'bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
-                  : 'bg-rose-500/10 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400'
+                  ? 'bg-emerald-500/10 text-emerald-600'
+                  : 'bg-rose-500/10 text-rose-600'
               }`}
             >
               {transactionType}
             </span>
             <div>
-              <h3 className="text-base font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+              <h3 className="text-base font-bold text-[#0B1220]">
                 Execute Virtual Trade
               </h3>
-              <p className="text-xs text-[#5E687A] dark:text-[#8B98A5]">
+              <p className="text-xs text-[#5E687A]">
                 NSE Live Sandbox • Simulated Slippage & Statutory Charges
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#5E687A] hover:text-[#0B1220] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#5E687A] hover:text-[#0B1220] hover:bg-slate-100 transition"
           >
             <X className="w-4 h-4" />
           </button>
@@ -229,14 +229,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         {/* Modal Form */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-4">
           {/* Action Tabs: BUY vs SELL */}
-          <div className="grid grid-cols-2 p-1 rounded-xl bg-[#F0EFEA] dark:bg-[#1A222D]">
+          <div className="grid grid-cols-2 p-1 rounded-xl bg-[#F0EFEA]">
             <button
               type="button"
               onClick={() => setTransactionType('BUY')}
               className={`py-2 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 ${
                 transactionType === 'BUY'
                   ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-[#5E687A] dark:text-[#8B98A5] hover:text-[#0B1220] dark:hover:text-white'
+                  : 'text-[#5E687A] hover:text-[#0B1220]'
               }`}
             >
               <TrendingUp className="w-3.5 h-3.5" />
@@ -248,7 +248,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               className={`py-2 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 ${
                 transactionType === 'SELL'
                   ? 'bg-rose-600 text-white shadow-sm'
-                  : 'text-[#5E687A] dark:text-[#8B98A5] hover:text-[#0B1220] dark:hover:text-white'
+                  : 'text-[#5E687A] hover:text-[#0B1220]'
               }`}
             >
               <TrendingDown className="w-3.5 h-3.5" />
@@ -258,7 +258,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
           {/* Stock Selector Search — full NSE/BSE universe */}
           <div className="space-y-1.5 relative" ref={searchDropdownRef}>
-            <label className="text-xs font-semibold text-[#5E687A] dark:text-[#8B98A5]">
+            <label className="text-xs font-semibold text-[#5E687A]">
               Select Stock Symbol
             </label>
             <div className="relative">
@@ -271,7 +271,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 }}
                 onFocus={() => setIsSearchOpen(true)}
                 placeholder="Search any NSE/BSE stock (e.g. PAYTM, ETERNAL, HAL)"
-                className="w-full px-3.5 py-2.5 rounded-xl text-sm font-semibold uppercase bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] text-[#0B1220] dark:text-[#E8EDF2] focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
+                className="w-full px-3.5 py-2.5 rounded-xl text-sm font-semibold uppercase bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220] focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
               />
               {searchLoading ? (
                 <Loader2 className="w-4 h-4 absolute right-3.5 top-3 text-[#0F766E] animate-spin" />
@@ -282,7 +282,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
             {/* Dropdown — live results OR quick-pick chips */}
             {isSearchOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1 max-h-52 overflow-y-auto rounded-xl bg-white dark:bg-[#1A222D] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xl z-20">
+              <div className="absolute left-0 right-0 top-full mt-1 max-h-52 overflow-y-auto rounded-xl bg-white border border-[#E7E5DF] shadow-xl z-20">
                 {searchQuery.trim() ? (
                   // Live API results
                   searchLoading ? (
@@ -305,13 +305,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                           setSearchQuery('');
                           setSearchResults([]);
                         }}
-                        className="w-full px-3.5 py-2 text-left hover:bg-[#F0EFEA] dark:hover:bg-[#25303D] flex items-center justify-between text-xs transition border-b border-[#F0EDE8] dark:border-[#1A2333] last:border-0"
+                        className="w-full px-3.5 py-2 text-left hover:bg-[#F0EFEA] flex items-center justify-between text-xs transition border-b border-[#F0EDE8] last:border-0"
                       >
                         <div>
-                          <span className="font-bold text-[#0B1220] dark:text-[#E8EDF2]">{item.symbol}</span>
-                          <span className="ml-2 text-[#5E687A] dark:text-[#8B98A5] text-[11px]">{item.name}</span>
+                          <span className="font-bold text-[#0B1220]">{item.symbol}</span>
+                          <span className="ml-2 text-[#5E687A] text-[11px]">{item.name}</span>
                         </div>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[#5E687A] dark:text-[#8B98A5]">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-[#5E687A]">
                           {item.exchange || 'NSE'}
                         </span>
                       </button>
@@ -331,7 +331,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                             setIsSearchOpen(false);
                             setSearchQuery('');
                           }}
-                          className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#F0EFEA] dark:bg-[#25303D] text-[#0B1220] dark:text-[#E8EDF2] hover:bg-emerald-100 dark:hover:bg-emerald-950/40 hover:text-emerald-700 dark:hover:text-emerald-400 transition"
+                          className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#F0EFEA] text-[#0B1220] hover:bg-emerald-100 hover:text-emerald-700 transition"
                         >
                           {s.symbol}
                         </button>
@@ -345,15 +345,15 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
 
           {/* Live Price Chip */}
-          <div className="p-3 rounded-xl bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between">
-            <span className="text-xs text-[#5E687A] dark:text-[#8B98A5]">
+          <div className="p-3 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
+            <span className="text-xs text-[#5E687A]">
               Current NSE Market Price:
             </span>
             <div className="flex items-center gap-2">
               {loadingPrice ? (
                 <Loader2 className="w-4 h-4 animate-spin text-[#0F766E]" />
               ) : (
-                <span className="text-base font-black text-[#0B1220] dark:text-[#E8EDF2]">
+                <span className="text-base font-black text-[#0B1220]">
                   {formatINR(currentPrice)}
                 </span>
               )}
@@ -362,7 +362,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
           {/* Product Type (Delivery CNC vs Intraday MIS) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-[#5E687A] dark:text-[#8B98A5]">
+            <label className="text-xs font-semibold text-[#5E687A]">
               Product Type
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -371,14 +371,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 onClick={() => setProductType('DELIVERY')}
                 className={`p-2.5 rounded-xl border text-left transition ${
                   productType === 'DELIVERY'
-                    ? 'border-[#0F766E] bg-emerald-500/10 dark:bg-emerald-500/15'
-                    : 'border-[#E7E5DF] dark:border-[#1F2933] bg-[#FAFAF7] dark:bg-[#171D25]'
+                    ? 'border-[#0F766E] bg-emerald-500/10'
+                    : 'border-[#E7E5DF] bg-[#FAFAF7]'
                 }`}
               >
-                <div className="text-xs font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <div className="text-xs font-bold text-[#0B1220]">
                   Delivery (CNC)
                 </div>
-                <div className="text-[10px] text-[#5E687A] dark:text-[#8B98A5]">
+                <div className="text-[10px] text-[#5E687A]">
                   Long-term holding • Zero brokerage
                 </div>
               </button>
@@ -388,14 +388,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 onClick={() => setProductType('INTRADAY')}
                 className={`p-2.5 rounded-xl border text-left transition ${
                   productType === 'INTRADAY'
-                    ? 'border-[#0F766E] bg-emerald-500/10 dark:bg-emerald-500/15'
-                    : 'border-[#E7E5DF] dark:border-[#1F2933] bg-[#FAFAF7] dark:bg-[#171D25]'
+                    ? 'border-[#0F766E] bg-emerald-500/10'
+                    : 'border-[#E7E5DF] bg-[#FAFAF7]'
                 }`}
               >
-                <div className="text-xs font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <div className="text-xs font-bold text-[#0B1220]">
                   Intraday (MIS)
                 </div>
-                <div className="text-[10px] text-[#5E687A] dark:text-[#8B98A5]">
+                <div className="text-[10px] text-[#5E687A]">
                   Same-day square off • Max ₹20/order
                 </div>
               </button>
@@ -405,13 +405,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           {/* Order Type & Price Input */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#5E687A] dark:text-[#8B98A5]">
+              <label className="text-xs font-semibold text-[#5E687A]">
                 Order Type
               </label>
               <select
                 value={orderType}
                 onChange={(e) => setOrderType(e.target.value as 'MARKET' | 'LIMIT')}
-                className="w-full px-3 py-2.5 rounded-xl text-xs font-semibold bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] text-[#0B1220] dark:text-[#E8EDF2] focus:outline-none"
+                className="w-full px-3 py-2.5 rounded-xl text-xs font-semibold bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220] focus:outline-none"
               >
                 <option value="MARKET">Market (Instant Fill)</option>
                 <option value="LIMIT">Limit (Set Target Price)</option>
@@ -419,7 +419,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#5E687A] dark:text-[#8B98A5]">
+              <label className="text-xs font-semibold text-[#5E687A]">
                 {orderType === 'LIMIT' ? 'Limit Price (₹)' : 'Price'}
               </label>
               <input
@@ -429,10 +429,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 onChange={(e) => setLimitPrice(e.target.value)}
                 placeholder="₹"
                 step="0.05"
-                className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold border border-[#E7E5DF] dark:border-[#1F2933] focus:outline-none ${
+                className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold border border-[#E7E5DF] focus:outline-none ${
                   orderType === 'MARKET'
-                    ? 'bg-slate-100 dark:bg-slate-800/60 text-[#8B98A5] cursor-not-allowed'
-                    : 'bg-[#FAFAF7] dark:bg-[#171D25] text-[#0B1220] dark:text-[#E8EDF2]'
+                    ? 'bg-slate-100 text-[#8B98A5] cursor-not-allowed'
+                    : 'bg-[#FAFAF7] text-[#0B1220]'
                 }`}
               />
             </div>
@@ -441,11 +441,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           {/* Quantity Selector with Chips */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-[#5E687A] dark:text-[#8B98A5]">
+              <label className="text-xs font-semibold text-[#5E687A]">
                 Number of Shares
               </label>
               {transactionType === 'SELL' && maxSellQty !== undefined && (
-                <span className="text-[11px] text-[#0F766E] dark:text-emerald-400 font-medium">
+                <span className="text-[11px] text-[#0F766E] font-medium">
                   Holding: {maxSellQty} shares
                 </span>
               )}
@@ -456,7 +456,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               min="1"
               value={quantity || ''}
               onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10) || 0))}
-              className="w-full px-3.5 py-2.5 rounded-xl text-sm font-bold bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] text-[#0B1220] dark:text-[#E8EDF2] focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl text-sm font-bold bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220] focus:outline-none"
             />
 
             {/* Quick Increment Chips */}
@@ -466,7 +466,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   key={inc}
                   type="button"
                   onClick={() => setQuantity(inc)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#F0EFEA] dark:bg-[#1A222D] text-[#5E687A] dark:text-[#8B98A5] hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#F0EFEA] text-[#5E687A] hover:bg-slate-200 transition"
                 >
                   +{inc}
                 </button>
@@ -475,7 +475,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setQuantity(maxSellQty)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20"
                 >
                   Max All ({maxSellQty})
                 </button>
@@ -488,7 +488,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       if (maxPossible > 0) setQuantity(maxPossible);
                     }
                   }}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-[#0F766E] dark:text-emerald-400 border border-emerald-500/20"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-[#0F766E] border border-emerald-500/20"
                 >
                   Max Cash
                 </button>
@@ -497,18 +497,18 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
 
           {/* Interactive Indian Statutory Charges Breakdown */}
-          <div className="rounded-2xl bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] overflow-hidden">
+          <div className="rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] overflow-hidden">
             <button
               type="button"
               onClick={() => setShowChargesDetails(!showChargesDetails)}
-              className="w-full px-4 py-3 flex items-center justify-between text-xs font-semibold text-[#5E687A] dark:text-[#8B98A5] hover:text-[#0B1220] dark:hover:text-[#E8EDF2] transition"
+              className="w-full px-4 py-3 flex items-center justify-between text-xs font-semibold text-[#5E687A] hover:text-[#0B1220] transition"
             >
               <div className="flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5 text-[#0F766E] dark:text-emerald-400" />
+                <Info className="w-3.5 h-3.5 text-[#0F766E]" />
                 <span>Estimated Taxes & Charges (Zerodha Style)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <span className="font-bold text-[#0B1220]">
                   {formatINR(totalChargesAmount)}
                 </span>
                 {showChargesDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -516,34 +516,34 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             </button>
 
             {showChargesDetails && charges && (
-              <div className="px-4 pb-3 space-y-1.5 text-[11px] border-t border-[#E7E5DF] dark:border-[#1F2933] pt-2 text-[#5E687A] dark:text-[#8B98A5]">
+              <div className="px-4 pb-3 space-y-1.5 text-[11px] border-t border-[#E7E5DF] pt-2 text-[#5E687A]">
                 <div className="flex justify-between">
                   <span>Brokerage:</span>
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">
+                  <span className="font-semibold text-[#0B1220]">
                     {charges.brokerage === 0 ? 'FREE (₹0.00)' : formatINR(charges.brokerage)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>STT (Securities Transaction Tax):</span>
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">
+                  <span className="font-semibold text-[#0B1220]">
                     {formatINR(charges.stt)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Exchange Turnover Charge:</span>
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">
+                  <span className="font-semibold text-[#0B1220]">
                     {formatINR(charges.exchangeTurnover)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>GST (18% on Brokerage + Turnover):</span>
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">
+                  <span className="font-semibold text-[#0B1220]">
                     {formatINR(charges.gst)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Stamp Duty (0.015% on Buy):</span>
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">
+                  <span className="font-semibold text-[#0B1220]">
                     {formatINR(charges.stampDuty)}
                   </span>
                 </div>
@@ -552,32 +552,32 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
 
           {/* Total Cost & Validation Warnings */}
-          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#1A222D] border border-[#E7E5DF] dark:border-[#1F2933] space-y-1.5">
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-[#E7E5DF] space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#5E687A] dark:text-[#8B98A5]">
+              <span className="text-[#5E687A]">
                 {transactionType === 'BUY' ? 'Total Required Margin:' : 'Estimated Net Proceeds:'}
               </span>
-              <span className="text-base font-black text-[#0B1220] dark:text-[#E8EDF2]">
+              <span className="text-base font-black text-[#0B1220]">
                 {formatINR(transactionType === 'BUY' ? totalRequiredCash : netEstimatedProceeds)}
               </span>
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-[#5E687A] dark:text-[#8B98A5]">
+            <div className="flex items-center justify-between text-[11px] text-[#5E687A]">
               <span>Available Virtual Cash:</span>
-              <span className="font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+              <span className="font-bold text-[#0B1220]">
                 {formatINR(availableCash)}
               </span>
             </div>
 
             {hasInsufficientCash && (
-              <div className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-semibold pt-1">
+              <div className="flex items-center gap-1.5 text-xs text-rose-600 font-semibold pt-1">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>Insufficient virtual cash. Needed: {formatINR(totalRequiredCash)}</span>
               </div>
             )}
 
             {hasExceededSellQty && (
-              <div className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-semibold pt-1">
+              <div className="flex items-center gap-1.5 text-xs text-rose-600 font-semibold pt-1">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>You cannot sell more shares than you hold ({maxSellQty})</span>
               </div>

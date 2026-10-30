@@ -1,4 +1,4 @@
-import { apiClient } from "../lib/apiClient";
+import { apiClient, setAccessToken } from "../lib/apiClient";
 import type { User, UserProfile } from "../types";
 import { mapServerProfileToUserProfile } from "./profileService";
 
@@ -18,7 +18,12 @@ export async function signupApi(
     password: password || "SecurePass@123",
   });
 
-  const { user, profile } = response.data;
+  const { user, profile, accessToken } = response.data;
+
+  // Store access token in memory for Bearer auth
+  if (accessToken) {
+    setAccessToken(accessToken);
+  }
 
   return {
     user: {
@@ -40,7 +45,12 @@ export async function loginApi(
     password: password || "SecurePass@123",
   });
 
-  const { user, profile } = response.data;
+  const { user, profile, accessToken } = response.data;
+
+  // Store access token in memory for Bearer auth
+  if (accessToken) {
+    setAccessToken(accessToken);
+  }
 
   return {
     user: {
@@ -57,15 +67,20 @@ export async function logoutApi(): Promise<void> {
   try {
     await apiClient.post("/auth/logout");
   } finally {
-    // No client token storage. Session is cookie-backed and invalidated by the backend.
+    setAccessToken(null);
   }
 }
 
 export async function refreshTokenApi(): Promise<boolean> {
   try {
-    await apiClient.post("/auth/refresh");
+    const response = await apiClient.post("/auth/refresh");
+    const newToken = response.data?.accessToken;
+    if (newToken) {
+      setAccessToken(newToken);
+    }
     return true;
   } catch {
+    setAccessToken(null);
     return false;
   }
 }

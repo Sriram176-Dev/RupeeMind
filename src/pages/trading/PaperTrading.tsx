@@ -41,7 +41,7 @@ export const PaperTrading: React.FC = () => {
   // Modal controls
   const [isOrderModalOpen, setIsOrderModalOpen] = useState<boolean>(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
-  const [selectedStockForOrder, setSelectedStockForOrder] = useState<string>('RELIANCE');
+  const [selectedStockForOrder, setSelectedStockForOrder] = useState<string>('');
   const [orderAction, setOrderAction] = useState<'BUY' | 'SELL'>('BUY');
   const [maxSellQty, setMaxSellQty] = useState<number | undefined>(undefined);
 
@@ -88,24 +88,34 @@ export const PaperTrading: React.FC = () => {
     if (res?.success) {
       toast.success(res.message || 'Simulated order executed successfully!');
       await loadData();
+    } else {
+      throw new Error(res?.message || 'Failed to execute simulated order');
     }
   };
 
   // Cancel order handler
   const handleCancelOrder = async (orderId: string) => {
-    const res = await cancelPaperOrderApi(orderId);
-    if (res?.success) {
-      toast.success(`Order ${orderId} cancelled`);
-      await loadData();
+    try {
+      const res = await cancelPaperOrderApi(orderId);
+      if (res?.success) {
+        toast.success(`Order ${orderId} cancelled`);
+        await loadData();
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || err?.message || 'Failed to cancel order');
     }
   };
 
   // Reset wallet handler
   const handleResetWallet = async () => {
-    const res = await resetPaperWalletApi();
-    if (res?.success) {
-      toast.success('Paper trading sandbox reset to ₹10,00,000!');
-      await loadData();
+    try {
+      const res = await resetPaperWalletApi();
+      if (res?.success) {
+        toast.success('Paper trading sandbox reset to ₹10,00,000!');
+        await loadData();
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || err?.message || 'Failed to reset paper trading sandbox');
     }
   };
 
@@ -132,7 +142,7 @@ export const PaperTrading: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col items-center justify-center space-y-4">
         <div className="w-10 h-10 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs font-semibold text-[#5E687A] dark:text-[#8B98A5]">
+        <p className="text-xs font-semibold text-[#5E687A]">
           Loading virtual paper trading portfolio & live quotes...
         </p>
       </div>
@@ -144,14 +154,14 @@ export const PaperTrading: React.FC = () => {
       {/* Page Title & Breadcrumb */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#0F766E] dark:text-emerald-400 uppercase tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#0F766E] uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" />
             <span>Virtual Trading Sandbox</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#0B1220] dark:text-[#E8EDF2] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#0B1220] tracking-tight">
             Live Paper Trading & Execution
           </h1>
-          <p className="text-sm text-[#5E687A] dark:text-[#8B98A5] mt-1">
+          <p className="text-sm text-[#5E687A] mt-1">
             Test quantitative strategies with ₹10,00,000 in virtual capital, real NSE quotes, and authentic Indian regulatory taxes.
           </p>
         </div>
@@ -159,7 +169,7 @@ export const PaperTrading: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => loadData()}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-[#5E687A] dark:text-[#8B98A5] bg-white dark:bg-[#11161D] border border-[#E7E5DF] dark:border-[#1F2933] hover:border-slate-400 transition shadow-sm"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-[#5E687A] bg-white border border-[#E7E5DF] hover:border-slate-400 transition shadow-sm"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Refresh Ticks</span>
@@ -185,13 +195,13 @@ export const PaperTrading: React.FC = () => {
       )}
 
       {/* Main Tabs Navigation */}
-      <div className="flex items-center gap-2 border-b border-[#E7E5DF] dark:border-[#1F2933]">
+      <div className="flex items-center gap-2 border-b border-[#E7E5DF]">
         <button
           onClick={() => setActiveTab('POSITIONS')}
           className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition ${
             activeTab === 'POSITIONS'
-              ? 'border-[#0F766E] text-[#0F766E] dark:text-emerald-400'
-              : 'border-transparent text-[#5E687A] dark:text-[#8B98A5] hover:text-[#0B1220] dark:hover:text-[#E8EDF2]'
+              ? 'border-[#0F766E] text-[#0F766E]'
+              : 'border-transparent text-[#5E687A] hover:text-[#0B1220]'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -202,8 +212,8 @@ export const PaperTrading: React.FC = () => {
           onClick={() => setActiveTab('ORDERS')}
           className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition ${
             activeTab === 'ORDERS'
-              ? 'border-[#0F766E] text-[#0F766E] dark:text-emerald-400'
-              : 'border-transparent text-[#5E687A] dark:text-[#8B98A5] hover:text-[#0B1220] dark:hover:text-[#E8EDF2]'
+              ? 'border-[#0F766E] text-[#0F766E]'
+              : 'border-transparent text-[#5E687A] hover:text-[#0B1220]'
           }`}
         >
           <History className="w-4 h-4" />
@@ -214,8 +224,8 @@ export const PaperTrading: React.FC = () => {
           onClick={() => setActiveTab('ANALYTICS')}
           className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition ${
             activeTab === 'ANALYTICS'
-              ? 'border-[#0F766E] text-[#0F766E] dark:text-emerald-400'
-              : 'border-transparent text-[#5E687A] dark:text-[#8B98A5] hover:text-[#0B1220] dark:hover:text-[#E8EDF2]'
+              ? 'border-[#0F766E] text-[#0F766E]'
+              : 'border-transparent text-[#5E687A] hover:text-[#0B1220]'
           }`}
         >
           <BarChart3 className="w-4 h-4" />
@@ -245,17 +255,17 @@ export const PaperTrading: React.FC = () => {
       {activeTab === 'ANALYTICS' && summary && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Allocation Donut Chart */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-[#11161D] border border-[#E7E5DF] dark:border-[#1F2933] shadow-sm lg:col-span-2 space-y-4">
+          <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-sm lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <h3 className="text-sm font-bold text-[#0B1220]">
                   Portfolio Capital Allocation
                 </h3>
-                <p className="text-xs text-[#5E687A] dark:text-[#8B98A5]">
+                <p className="text-xs text-[#5E687A]">
                   Breakdown of virtual cash versus invested equity positions
                 </p>
               </div>
-              <PieIcon className="w-5 h-5 text-[#0F766E] dark:text-emerald-400" />
+              <PieIcon className="w-5 h-5 text-[#0F766E]" />
             </div>
 
             <div className="h-64 w-full">
@@ -292,17 +302,17 @@ export const PaperTrading: React.FC = () => {
               {allocationData.map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-center gap-2 p-2 rounded-xl bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933]"
+                  className="flex items-center gap-2 p-2 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF]"
                 >
                   <span
                     className="w-3 h-3 rounded-full shrink-0"
                     style={{ backgroundColor: item.color }}
                   />
                   <div className="truncate">
-                    <div className="text-[11px] font-bold text-[#0B1220] dark:text-[#E8EDF2] truncate">
+                    <div className="text-[11px] font-bold text-[#0B1220] truncate">
                       {item.name}
                     </div>
-                    <div className="text-[10px] text-[#5E687A] dark:text-[#8B98A5]">
+                    <div className="text-[10px] text-[#5E687A]">
                       {formatINR(item.value)}
                     </div>
                   </div>
@@ -312,50 +322,50 @@ export const PaperTrading: React.FC = () => {
           </div>
 
           {/* Quick Stats Panel */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-[#11161D] border border-[#E7E5DF] dark:border-[#1F2933] shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-[#0B1220]">
               Paper Trading Performance
             </h3>
 
             <div className="space-y-3">
-              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between">
-                <span className="text-xs text-[#5E687A] dark:text-[#8B98A5]">
+              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
+                <span className="text-xs text-[#5E687A]">
                   Initial Seed Capital:
                 </span>
-                <span className="text-xs font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <span className="text-xs font-bold text-[#0B1220]">
                   ₹10,00,000
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between">
-                <span className="text-xs text-[#5E687A] dark:text-[#8B98A5]">
+              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
+                <span className="text-xs text-[#5E687A]">
                   Completed Trades:
                 </span>
-                <span className="text-xs font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <span className="text-xs font-bold text-[#0B1220]">
                   {summary.wallet.totalTrades}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between">
-                <span className="text-xs text-[#5E687A] dark:text-[#8B98A5]">
+              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
+                <span className="text-xs text-[#5E687A]">
                   Winning Trade Ratio:
                 </span>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                <span className="text-xs font-bold text-emerald-600">
                   {summary.performance.winRatePercent}%
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between">
-                <span className="text-xs text-[#5E687A] dark:text-[#8B98A5]">
+              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
+                <span className="text-xs text-[#5E687A]">
                   Sandbox Reset Count:
                 </span>
-                <span className="text-xs font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <span className="text-xs font-bold text-[#0B1220]">
                   {summary.wallet.resetCount} times
                 </span>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
+            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-800 leading-relaxed">
               💡 <strong>Pro Tip:</strong> Use limit orders to capture dips during intraday market volatility. Indian statutory charges (STT, GST) are simulated in real-time.
             </div>
           </div>

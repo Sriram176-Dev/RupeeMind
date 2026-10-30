@@ -191,10 +191,12 @@ export async function compareFundsApi(codes: string[]): Promise<MutualFund[]> {
 export async function getNews(
   category?: string,
   query?: string,
+  fresh?: boolean,
 ): Promise<NewsItem[]> {
   const params = new URLSearchParams();
   if (category && category !== "All") params.set("category", category);
   if (query) params.set("q", query);
+  if (fresh) params.set("fresh", "true");
 
   const response = await apiClient.get(`/news?${params.toString()}`);
   return Array.isArray(response.data?.data) ? response.data.data : [];

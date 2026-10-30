@@ -57,16 +57,16 @@ export const FundDetail: React.FC = () => {
 
   if (loading && !fund) {
     return (
-      <div className="max-w-[1240px] mx-auto px-4 py-16 text-center">
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <div className="w-10 h-10 border-4 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Loading fund intelligence...</p>
+        <p className="text-xs text-[#5B6572]">Loading fund intelligence...</p>
       </div>
     );
   }
 
   if (!fund) {
     return (
-      <div className="max-w-[1240px] mx-auto px-4 py-16 text-center space-y-4">
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center space-y-4">
         <h1 className="font-serif text-2xl font-bold">Fund Not Found</h1>
         <p className="text-xs text-[#5B6572]">No scheme was found matching code {code}.</p>
         <Link to="/funds" className="inline-block px-4 py-2 bg-[#0F766E] text-white rounded-xl text-xs font-semibold">
@@ -80,13 +80,13 @@ export const FundDetail: React.FC = () => {
   const sipResult = calculateSIP(sipAmount, expectedRate, sipYears);
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       
       {/* Back link */}
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate('/funds')}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-[#5B6572] dark:text-[#8A97A6] hover:text-[#0B1220] dark:hover:text-[#E8EDF2]"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-[#5B6572] hover:text-[#0B1220]"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to All Funds</span>
@@ -94,46 +94,46 @@ export const FundDetail: React.FC = () => {
 
         <Link
           to={`/funds/compare?codes=${fund.code}`}
-          className="text-xs font-semibold text-[#0F766E] dark:text-emerald-400 hover:underline"
+          className="text-xs font-semibold text-[#0F766E] hover:underline"
         >
           Compare with other schemes →
         </Link>
       </div>
 
       {/* Fund Header Hero Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#E6F4F1] dark:bg-emerald-950/60 text-[#0F766E] dark:text-emerald-300 border border-emerald-500/20">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#E6F4F1] text-[#0F766E] border border-emerald-500/20">
               {fund.category}
             </span>
           </div>
 
-          <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0B1220] dark:text-[#E8EDF2] leading-tight">
+          <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0B1220] leading-tight">
             {fund.name}
           </h1>
 
-          <p className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6]">
+          <p className="text-xs sm:text-sm text-[#5B6572]">
             {fund.fundHouse}
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-6">
             <div>
-              <span className="text-[10px] text-[#5B6572] dark:text-[#8A97A6] uppercase font-semibold">Current NAV</span>
-              <p className="font-serif text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2] tabular-nums">
+              <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Current NAV</span>
+              <p className="font-serif text-2xl font-bold text-[#0B1220] tabular-nums">
                 {formatINR(fund.nav)}
               </p>
             </div>
-            <div className="border-l border-[#E7E5DF] dark:border-[#1F2933] pl-6">
-              <span className="text-[10px] text-[#5B6572] dark:text-[#8A97A6] uppercase font-semibold">Expense Ratio</span>
-              <p className="font-serif text-2xl font-bold text-[#0F766E] dark:text-emerald-400 tabular-nums">
+            <div className="border-l border-[#E7E5DF] pl-6">
+              <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Expense Ratio</span>
+              <p className="font-serif text-2xl font-bold text-[#0F766E] tabular-nums">
                 {fund.expenseRatio != null ? `${fund.expenseRatio}%` : '—'}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="shrink-0 p-4 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] space-y-2">
+        <div className="shrink-0 p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] space-y-2">
           <RiskMeter level={fund.riskLevel as any} />
 
         </div>
@@ -143,12 +143,12 @@ export const FundDetail: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left 7 Cols: NAV History Chart */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E7E5DF] dark:border-[#1F2933] pb-3">
-            <h2 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+        <div className="lg:col-span-7 p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E7E5DF] pb-3">
+            <h2 className="font-serif text-lg font-bold text-[#0B1220]">
               Historical NAV Trajectory
             </h2>
-            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            <span className="text-xs font-semibold text-emerald-600">
               {fund.cagr3Y != null ? `+${formatPercent(fund.cagr3Y)} 3Y CAGR` : '—'}
             </span>
           </div>
@@ -176,13 +176,13 @@ export const FundDetail: React.FC = () => {
           {/* Historical CAGR Returns Table */}
           <div className="pt-2">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#FAFAF7] dark:bg-[#0B0F14] text-[#5B6572] dark:text-[#8A97A6]">
+              <thead className="bg-[#FAFAF7] text-[#5B6572]">
                 <tr>
                   <th className="py-2.5 px-3 rounded-l-lg font-semibold">Period</th>
                   <th className="py-2.5 px-3 rounded-r-lg font-semibold text-right">Fund CAGR</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E7E5DF] dark:divide-[#1F2933]">
+              <tbody className="divide-y divide-[#E7E5DF]">
                 <tr>
                   <td className="py-2.5 px-3 font-semibold">1 Year</td>
                   <td className="py-2.5 px-3 text-right font-bold text-emerald-600">{fund.cagr1Y != null ? formatPercent(fund.cagr1Y) : '—'}</td>
@@ -204,31 +204,31 @@ export const FundDetail: React.FC = () => {
         {/* Right 5 Cols: Risk & Asset Metrics */}
         <div className="lg:col-span-5 space-y-6">
           
-          <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
-            <h2 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
+            <h2 className="font-serif text-lg font-bold text-[#0B1220]">
               Risk Ratios & Downside Protection
             </h2>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933]">
+              <div className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF]">
                 <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Standard Volatility</span>
-                <p className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2] mt-0.5">{fund.volatility != null ? `${fund.volatility.toFixed(2)}%` : '—'}</p>
+                <p className="font-serif text-lg font-bold text-[#0B1220] mt-0.5">{fund.volatility != null ? `${fund.volatility.toFixed(2)}%` : '—'}</p>
                 <p className="text-[10px] text-[#5B6572] mt-0.5">Annualised std dev</p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933]">
+              <div className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF]">
                 <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Max Drawdown</span>
-                <p className="font-serif text-lg font-bold text-rose-600 dark:text-rose-400 mt-0.5">{fund.maxDrawdown != null ? `${fund.maxDrawdown.toFixed(2)}%` : '—'}</p>
+                <p className="font-serif text-lg font-bold text-rose-600 mt-0.5">{fund.maxDrawdown != null ? `${fund.maxDrawdown.toFixed(2)}%` : '—'}</p>
                 <p className="text-[10px] text-[#5B6572] mt-0.5">Peak-to-trough decline</p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933]">
+              <div className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF]">
                 <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Expense Ratio</span>
-                <p className="font-serif text-lg font-bold text-[#0F766E] dark:text-emerald-400 mt-0.5">{fund.expenseRatio != null ? `${fund.expenseRatio}%` : '—'}</p>
+                <p className="font-serif text-lg font-bold text-[#0F766E] mt-0.5">{fund.expenseRatio != null ? `${fund.expenseRatio}%` : '—'}</p>
                 <p className="text-[10px] text-[#5B6572] mt-0.5">Direct Growth Plan</p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933]">
+              <div className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF]">
                 <span className="text-[10px] text-[#5B6572] uppercase font-semibold">Sharpe Ratio</span>
                 <p className="font-serif text-lg font-bold text-amber-600 mt-0.5">{fund.sharpeRatio != null ? fund.sharpeRatio.toFixed(2) : '—'}</p>
                 <p className="text-[10px] text-[#5B6572] mt-0.5">Risk-adjusted return</p>
@@ -242,10 +242,10 @@ export const FundDetail: React.FC = () => {
       </div>
 
       {/* Row 3: Embedded SIP Simulator prefilled with Fund's 3Y CAGR */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-lg space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-lg space-y-6">
         <div className="flex items-center gap-2">
-          <Calculator className="w-5 h-5 text-[#0F766E] dark:text-emerald-400" />
-          <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <Calculator className="w-5 h-5 text-[#0F766E]" />
+          <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#0B1220]">
             Embedded SIP Compounding Simulator ({fund.cagr3Y != null ? `${fund.cagr3Y.toFixed(1)}%` : '—'} Historical CAGR)
           </h2>
         </div>
@@ -263,8 +263,8 @@ export const FundDetail: React.FC = () => {
 
             <div>
               <div className="flex justify-between items-center text-xs mb-1.5">
-                <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Duration</span>
-                <span className="font-serif font-bold text-sm text-[#0F766E] dark:text-emerald-400">{sipYears} Years</span>
+                <span className="font-semibold text-[#0B1220]">Duration</span>
+                <span className="font-serif font-bold text-sm text-[#0F766E]">{sipYears} Years</span>
               </div>
               <input
                 type="range"
@@ -272,25 +272,25 @@ export const FundDetail: React.FC = () => {
                 max={25}
                 value={sipYears}
                 onChange={(e) => setSipYears(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
               />
             </div>
           </div>
 
-          <div className="lg:col-span-6 p-6 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] flex flex-col justify-between space-y-4">
+          <div className="lg:col-span-6 p-6 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex flex-col justify-between space-y-4">
             <div>
-              <span className="text-xs uppercase font-semibold text-[#5B6572] dark:text-[#8A97A6]">Estimated Wealth Corpus</span>
-              <p className="font-serif text-3xl sm:text-4xl font-bold text-[#0F766E] dark:text-emerald-400 mt-1">
+              <span className="text-xs uppercase font-semibold text-[#5B6572]">Estimated Wealth Corpus</span>
+              <p className="font-serif text-3xl sm:text-4xl font-bold text-[#0F766E] mt-1">
                 {formatCompactINR(sipResult.totalValue)}
               </p>
-              <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] mt-0.5">
+              <p className="text-xs text-[#5B6572] mt-0.5">
                 Invested: {formatCompactINR(sipResult.investedAmount)} • Estimated Gain: {formatCompactINR(sipResult.estimatedReturns)}
               </p>
             </div>
 
             <Link
               to={`/calculators?amount=${sipAmount}&years=${sipYears}&rate=${expectedRate}`}
-              className="w-full py-2.5 px-4 rounded-xl text-center text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] dark:bg-emerald-600 transition-all flex items-center justify-center gap-1.5 min-h-[40px]"
+              className="w-full py-2.5 px-4 rounded-xl text-center text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all flex items-center justify-center gap-1.5 min-h-[40px]"
             >
               <span>Explore Advanced Step-Up SIP Projections</span>
               <ArrowRight className="w-3.5 h-3.5" />

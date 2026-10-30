@@ -10,35 +10,84 @@ export type HealthBand =
   | 'Stable' 
   | 'Strong';
 
+export type CapacityBand = 'Low' | 'Moderate' | 'High';
+
+export type GoalCategory = 
+  | 'Wealth creation' 
+  | 'Retirement' 
+  | 'House' 
+  | 'Education' 
+  | 'Child' 
+  | 'Tax saving' 
+  | 'Emergency' 
+  | 'Other';
+
+export type GoalPriority = 'Critical' | 'Important' | 'Flexible';
+
+export interface FinancialGoalItem {
+  id: string;
+  name: string;
+  category: GoalCategory;
+  targetAmount: number;
+  horizonYears: number;
+  priority: GoalPriority;
+  requiredMonthlySIP?: number;
+  feasible?: boolean;
+  recommendedAllocation?: { equity: number; debt: number; gold: number };
+  deficitAmount?: number;
+}
+
+export interface GoalsAssessmentSummary {
+  totalMonthlySIPRequired: number;
+  investibleSurplus: number;
+  surplusGap: number;
+  isFullyFundable: boolean;
+  goals: FinancialGoalItem[];
+}
+
 export interface UserProfile {
-  // Step 1: Basics
+  // Step 1: Demographics & Horizon Runway
   age: number;
   occupation: 'Government' | 'Private' | 'Business' | 'Freelance' | 'Student' | 'Other';
   city: string;
 
-  // Step 2: Money (Monthly)
+  // Step 2: Money (Monthly Cash Flow & Liquidity)
   monthlyIncome: number;
   monthlyExpenses: number;
   monthlyEMIs: number;
   monthlySavings: number;
   emergencyFundAmount: number;
 
-  // Step 3: Goals
+  // Step 3: Individually Assessable Goals
   goalType: 'Wealth creation' | 'Retirement' | 'House' | 'Education' | 'Child' | 'Tax saving';
   targetAmount: number;
   horizonYears: number;
+  goals?: FinancialGoalItem[];
+  goalsAssessment?: GoalsAssessmentSummary;
 
-  // Step 4: Risk Quiz (1 to 5 for each)
+  // Step 4: Psychological Risk Tolerance (Behavioral Quiz)
   quizScores: number[];
+  riskToleranceScore?: number;
+  riskToleranceBand?: RiskBand;
 
-  // Step 5: Protection & Experience
+  // Step 5: Financial Risk Capacity (Structural Protection & Balance Sheet Ability)
   hasLifeInsurance: boolean;
   hasHealthInsurance: boolean;
   dependentsCount: number;
+  riskCapacityScore?: number;
+  riskCapacityBand?: CapacityBand;
+
+  // Step 6: Market Experience & Habits
   investingExperience: 'None' | 'Beginner' | 'Intermediate' | 'Experienced';
   investingRegularity?: 'Regularly' | 'Occasionally' | 'Not yet';
 
-  // Calculated Scores
+  // Effective / Constrained Risk & Assessment Engine Outputs
+  effectiveRiskBand?: RiskBand;
+  effectiveRiskScore?: number;
+  isRiskConstrained?: boolean;
+  riskConstraintReason?: string;
+
+  // Backwards compatibility aliases
   riskScore?: number;
   riskBand?: RiskBand;
   financialHealthScore?: number;
@@ -57,6 +106,7 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
+  onboardingDone?: boolean;
   profile?: UserProfile;
   preferences?: {
     priceSignalAlerts?: boolean;
@@ -86,6 +136,7 @@ export interface StockQuote {
   dayLow: number;
   fiftyTwoWeekHigh: number;
   fiftyTwoWeekLow: number;
+  previousClose?: number;
   sector: string;
   marketCap: number; // in Crores
   isNifty50: boolean;
@@ -148,7 +199,12 @@ export interface SignalData {
 export interface PricePoint {
   date: string;
   price: number;
+  open?: number;
+  high?: number;
+  low?: number;
+  close?: number;
   volume?: number;
+  fullDate?: string;
 }
 
 export type TimeRange = '1D' | '1W' | '1M' | '1Y' | '5Y';
@@ -197,6 +253,8 @@ export interface NewsItem {
   url: string;
   gradient: string;
   readTime: string;
+  publishedAt?: string;
+  imageUrl?: string;
 }
 
 export interface Holding {

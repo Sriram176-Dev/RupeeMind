@@ -116,7 +116,7 @@ export const Calculators: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <SectionHeader
@@ -128,15 +128,15 @@ export const Calculators: React.FC = () => {
 
         <button
           onClick={handleSaveCalculation}
-          className="px-4 py-2.5 rounded-xl border border-[#E7E5DF] dark:border-[#1F2933] bg-white dark:bg-[#121821] text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2] hover:bg-black/5 flex items-center gap-2 self-start md:self-auto min-h-[44px]"
+          className="px-4 py-2.5 rounded-xl border border-[#E7E5DF] bg-white text-xs font-semibold text-[#0B1220] hover:bg-black/5 flex items-center gap-2 self-start md:self-auto min-h-[44px]"
         >
-          <Bookmark className="w-4 h-4 text-[#0F766E] dark:text-emerald-400" />
+          <Bookmark className="w-4 h-4 text-[#0F766E]" />
           <span>Save Calculation</span>
         </button>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex overflow-x-auto custom-scrollbar gap-2 p-1.5 rounded-2xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs">
+      <div className="flex overflow-x-auto custom-scrollbar gap-2 p-1.5 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs">
         {[
           { id: 'sip', label: 'Regular SIP' },
           { id: 'stepup', label: 'Step-Up SIP (+10%)' },
@@ -149,8 +149,8 @@ export const Calculators: React.FC = () => {
             onClick={() => setActiveTab(tab.id as CalculatorTab)}
             className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap shrink-0 min-h-[40px] ${
               activeTab === tab.id
-                ? 'bg-[#0F766E] text-white dark:bg-emerald-600 shadow-sm font-bold'
-                : 'text-[#5B6572] dark:text-[#8A97A6] hover:text-[#0B1220] dark:hover:text-[#E8EDF2] hover:bg-black/5'
+                ? 'bg-[#0F766E] text-white shadow-sm font-bold'
+                : 'text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5'
             }`}
           >
             {tab.label}
@@ -162,8 +162,8 @@ export const Calculators: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Inputs (5 Cols) */}
-        <div className="lg:col-span-5 p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-6">
-          <h2 className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+        <div className="lg:col-span-5 p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-6">
+          <h2 className="font-serif text-xl font-bold text-[#0B1220]">
             {activeTab === 'sip' && 'SIP Parameters'}
             {activeTab === 'stepup' && 'Step-Up SIP Parameters'}
             {activeTab === 'lumpsum' && 'Lumpsum Parameters'}
@@ -185,8 +185,8 @@ export const Calculators: React.FC = () => {
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Expected Annual Return (CAGR)</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{sipRate}%</span>
+                  <span className="font-semibold text-[#0B1220]">Expected Annual Return (CAGR)</span>
+                  <span className="font-bold text-[#0F766E]">{sipRate}%</span>
                 </div>
                 <input
                   type="range"
@@ -195,14 +195,14 @@ export const Calculators: React.FC = () => {
                   step={0.5}
                   value={sipRate}
                   onChange={(e) => setSipRate(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Time Horizon (Years)</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{sipYears} Years</span>
+                  <span className="font-semibold text-[#0B1220]">Time Horizon (Years)</span>
+                  <span className="font-bold text-[#0F766E]">{sipYears} Years</span>
                 </div>
                 <input
                   type="range"
@@ -211,7 +211,7 @@ export const Calculators: React.FC = () => {
                   step={1}
                   value={sipYears}
                   onChange={(e) => setSipYears(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
             </div>
@@ -231,8 +231,8 @@ export const Calculators: React.FC = () => {
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Annual Step-Up Increment (%)</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">+{stepUpPercent}% / yr</span>
+                  <span className="font-semibold text-[#0B1220]">Annual Step-Up Increment (%)</span>
+                  <span className="font-bold text-[#0F766E]">+{stepUpPercent}% / yr</span>
                 </div>
                 <input
                   type="range"
@@ -241,15 +241,15 @@ export const Calculators: React.FC = () => {
                   step={1}
                   value={stepUpPercent}
                   onChange={(e) => setStepUpPercent(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
                 <span className="text-[10px] text-[#5B6572] mt-1 block">Increases SIP amount every 12 months with salary increment.</span>
               </div>
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Expected Return Rate</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{stepUpRate}%</span>
+                  <span className="font-semibold text-[#0B1220]">Expected Return Rate</span>
+                  <span className="font-bold text-[#0F766E]">{stepUpRate}%</span>
                 </div>
                 <input
                   type="range"
@@ -257,14 +257,14 @@ export const Calculators: React.FC = () => {
                   max={25}
                   value={stepUpRate}
                   onChange={(e) => setStepUpRate(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Duration</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{stepUpYears} Years</span>
+                  <span className="font-semibold text-[#0B1220]">Duration</span>
+                  <span className="font-bold text-[#0F766E]">{stepUpYears} Years</span>
                 </div>
                 <input
                   type="range"
@@ -272,7 +272,7 @@ export const Calculators: React.FC = () => {
                   max={35}
                   value={stepUpYears}
                   onChange={(e) => setStepUpYears(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
             </div>
@@ -292,8 +292,8 @@ export const Calculators: React.FC = () => {
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Expected Annual Return (CAGR)</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{lumpRate}%</span>
+                  <span className="font-semibold text-[#0B1220]">Expected Annual Return (CAGR)</span>
+                  <span className="font-bold text-[#0F766E]">{lumpRate}%</span>
                 </div>
                 <input
                   type="range"
@@ -301,14 +301,14 @@ export const Calculators: React.FC = () => {
                   max={30}
                   value={lumpRate}
                   onChange={(e) => setLumpRate(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Investment Horizon</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{lumpYears} Years</span>
+                  <span className="font-semibold text-[#0B1220]">Investment Horizon</span>
+                  <span className="font-bold text-[#0F766E]">{lumpYears} Years</span>
                 </div>
                 <input
                   type="range"
@@ -316,7 +316,7 @@ export const Calculators: React.FC = () => {
                   max={30}
                   value={lumpYears}
                   onChange={(e) => setLumpYears(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
             </div>
@@ -336,8 +336,8 @@ export const Calculators: React.FC = () => {
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Target Horizon (Years)</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{goalYears} Years</span>
+                  <span className="font-semibold text-[#0B1220]">Target Horizon (Years)</span>
+                  <span className="font-bold text-[#0F766E]">{goalYears} Years</span>
                 </div>
                 <input
                   type="range"
@@ -345,14 +345,14 @@ export const Calculators: React.FC = () => {
                   max={30}
                   value={goalYears}
                   onChange={(e) => setGoalYears(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Expected Portfolio CAGR</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{goalRate}%</span>
+                  <span className="font-semibold text-[#0B1220]">Expected Portfolio CAGR</span>
+                  <span className="font-bold text-[#0F766E]">{goalRate}%</span>
                 </div>
                 <input
                   type="range"
@@ -360,7 +360,7 @@ export const Calculators: React.FC = () => {
                   max={25}
                   value={goalRate}
                   onChange={(e) => setGoalRate(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
             </div>
@@ -380,7 +380,7 @@ export const Calculators: React.FC = () => {
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Expected Inflation Rate</span>
+                  <span className="font-semibold text-[#0B1220]">Expected Inflation Rate</span>
                   <span className="font-bold text-rose-600">{infInflation}%</span>
                 </div>
                 <input
@@ -390,14 +390,14 @@ export const Calculators: React.FC = () => {
                   step={0.5}
                   value={infInflation}
                   onChange={(e) => setInfInflation(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-rose-500"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-rose-500"
                 />
               </div>
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Nominal CAGR Return</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{infRate}%</span>
+                  <span className="font-semibold text-[#0B1220]">Nominal CAGR Return</span>
+                  <span className="font-bold text-[#0F766E]">{infRate}%</span>
                 </div>
                 <input
                   type="range"
@@ -405,14 +405,14 @@ export const Calculators: React.FC = () => {
                   max={20}
                   value={infRate}
                   onChange={(e) => setInfRate(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
 
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Years</span>
-                  <span className="font-bold text-[#0F766E] dark:text-emerald-400">{infYears} Years</span>
+                  <span className="font-semibold text-[#0B1220]">Years</span>
+                  <span className="font-bold text-[#0F766E]">{infYears} Years</span>
                 </div>
                 <input
                   type="range"
@@ -420,7 +420,7 @@ export const Calculators: React.FC = () => {
                   max={30}
                   value={infYears}
                   onChange={(e) => setInfYears(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                 />
               </div>
             </div>
@@ -432,58 +432,58 @@ export const Calculators: React.FC = () => {
         <div className="lg:col-span-7 space-y-6">
           
           {/* Big Output Banner */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#FAFAF7] dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-md space-y-6">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#FAFAF7] border border-[#E7E5DF] shadow-md space-y-6">
             
             {activeTab === 'goal' ? (
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E] dark:text-emerald-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E]">
                   REQUIRED MONTHLY SIP TO HIT GOAL
                 </span>
-                <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F766E] dark:text-emerald-400 mt-1 tabular-nums">
+                <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F766E] mt-1 tabular-nums">
                   {formatINR(goalResult.requiredMonthlySIP, false)}
-                  <span className="text-sm font-normal text-[#5B6572] dark:text-[#8A97A6]"> / month</span>
+                  <span className="text-sm font-normal text-[#5B6572]"> / month</span>
                 </p>
-                <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] mt-1">
+                <p className="text-xs text-[#5B6572] mt-1">
                   Adjusted for 6% inflation, future cost of goal will be ~ <strong>{formatCompactINR(goalResult.futureCostWithInflation)}</strong>.
                 </p>
               </div>
             ) : activeTab === 'inflation' ? (
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E] dark:text-emerald-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E]">
                   REAL PURCHASING POWER (TODAY'S MONEY)
                 </span>
-                <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F766E] dark:text-emerald-400 mt-1 tabular-nums">
+                <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F766E] mt-1 tabular-nums">
                   {formatCompactINR(infResult.realPurchasingPower)}
                 </p>
-                <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] mt-1">
+                <p className="text-xs text-[#5B6572] mt-1">
                   Nominal Corpus: {formatCompactINR(infResult.nominalResult.totalValue)} • Real Net Return: <strong>+{infResult.realReturnRate}%</strong>
                 </p>
               </div>
             ) : (
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E] dark:text-emerald-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E]">
                   ESTIMATED TOTAL WEALTH VALUE
                 </span>
-                <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F766E] dark:text-emerald-400 mt-1 tabular-nums">
+                <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F766E] mt-1 tabular-nums">
                   {formatCompactINR(currentResult.totalValue)}
                 </p>
-                <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] mt-1">
+                <p className="text-xs text-[#5B6572] mt-1">
                   Full value: {formatINR(currentResult.totalValue, false)}
                 </p>
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#E7E5DF] dark:border-[#1F2933]">
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#E7E5DF]">
               <div>
-                <span className="text-[11px] uppercase font-bold text-[#5B6572] dark:text-[#8A97A6]">Total Invested</span>
-                <p className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2] tabular-nums mt-0.5">
+                <span className="text-[11px] uppercase font-bold text-[#5B6572]">Total Invested</span>
+                <p className="font-serif text-xl font-bold text-[#0B1220] tabular-nums mt-0.5">
                   {formatCompactINR(currentResult.investedAmount)}
                 </p>
               </div>
 
               <div>
-                <span className="text-[11px] uppercase font-bold text-[#5B6572] dark:text-[#8A97A6]">Estimated Wealth Gain</span>
-                <p className="font-serif text-xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">
+                <span className="text-[11px] uppercase font-bold text-[#5B6572]">Estimated Wealth Gain</span>
+                <p className="font-serif text-xl font-bold text-emerald-600 tabular-nums mt-0.5">
                   +{formatCompactINR(currentResult.estimatedReturns)}
                 </p>
               </div>
@@ -492,8 +492,8 @@ export const Calculators: React.FC = () => {
           </div>
 
           {/* Growth by Year Stacked Area Chart */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
-            <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
+            <h3 className="font-serif text-lg font-bold text-[#0B1220]">
               Year-by-Year Compounding Trajectory
             </h3>
 
@@ -520,14 +520,14 @@ export const Calculators: React.FC = () => {
       </div>
 
       {/* Collapsible Year-by-Year Amortization Schedule Table */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
+      <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
         <button
           onClick={() => setShowTable(!showTable)}
           className="w-full flex items-center justify-between text-left focus:outline-none"
         >
           <div className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-[#0F766E] dark:text-emerald-400" />
-            <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+            <Layers className="w-5 h-5 text-[#0F766E]" />
+            <h3 className="font-serif text-lg font-bold text-[#0B1220]">
               Year-by-Year Amortization & Value Breakdown
             </h3>
           </div>
@@ -537,7 +537,7 @@ export const Calculators: React.FC = () => {
         {showTable && (
           <div className="overflow-x-auto pt-2 animate-in fade-in duration-150">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#FAFAF7] dark:bg-[#0B0F14] text-[#5B6572] dark:text-[#8A97A6]">
+              <thead className="bg-[#FAFAF7] text-[#5B6572]">
                 <tr>
                   <th className="py-3 px-4 font-semibold">End of Year</th>
                   <th className="py-3 px-4 font-semibold text-right">Total Invested</th>
@@ -545,13 +545,13 @@ export const Calculators: React.FC = () => {
                   <th className="py-3 px-4 font-semibold text-right">Total Portfolio Value</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E7E5DF] dark:divide-[#1F2933]">
+              <tbody className="divide-y divide-[#E7E5DF]">
                 {currentResult.breakdown.map((row) => (
-                  <tr key={row.year} className="hover:bg-black/5 dark:hover:bg-white/5">
+                  <tr key={row.year} className="hover:bg-black/5">
                     <td className="py-2.5 px-4 font-bold">Year {row.year}</td>
                     <td className="py-2.5 px-4 text-right tabular-nums text-[#5B6572]">{formatINR(row.invested, false)}</td>
                     <td className="py-2.5 px-4 text-right tabular-nums font-semibold text-emerald-600">+{formatINR(row.returns, false)}</td>
-                    <td className="py-2.5 px-4 text-right tabular-nums font-bold text-[#0B1220] dark:text-[#E8EDF2]">{formatINR(row.total, false)}</td>
+                    <td className="py-2.5 px-4 text-right tabular-nums font-bold text-[#0B1220]">{formatINR(row.total, false)}</td>
                   </tr>
                 ))}
               </tbody>

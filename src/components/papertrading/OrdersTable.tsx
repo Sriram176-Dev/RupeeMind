@@ -33,28 +33,28 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
   };
 
   return (
-    <div className="rounded-3xl bg-white dark:bg-[#11161D] border border-[#E7E5DF] dark:border-[#1F2933] shadow-sm overflow-hidden">
+    <div className="rounded-3xl bg-white border border-[#E7E5DF] shadow-sm overflow-hidden">
       {/* Header and Filter Pills */}
-      <div className="p-5 border-b border-[#E7E5DF] dark:border-[#1F2933] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="p-5 border-b border-[#E7E5DF] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-sm font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <h3 className="text-sm font-bold text-[#0B1220]">
             Simulated Order Book ({filteredOrders.length})
           </h3>
-          <p className="text-xs text-[#5E687A] dark:text-[#8B98A5]">
+          <p className="text-xs text-[#5E687A]">
             Execution history, fill prices, and statutory fees
           </p>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#FAFAF7] dark:bg-[#171D25] border border-[#E7E5DF] dark:border-[#1F2933] self-start sm:self-auto">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] self-start sm:self-auto">
           {(['ALL', 'EXECUTED', 'PENDING', 'CANCELLED'] as const).map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status)}
               className={`px-3 py-1 rounded-lg text-[11px] font-bold transition ${
                 filter === status
-                  ? 'bg-white dark:bg-[#1F2933] text-[#0B1220] dark:text-[#E8EDF2] shadow-sm'
-                  : 'text-[#5E687A] dark:text-[#8B98A5] hover:text-[#0B1220] dark:hover:text-[#E8EDF2]'
+                  ? 'bg-white text-[#0B1220] shadow-sm'
+                  : 'text-[#5E687A] hover:text-[#0B1220]'
               }`}
             >
               {status}
@@ -64,14 +64,14 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
       </div>
 
       {filteredOrders.length === 0 ? (
-        <div className="p-8 text-center text-xs text-[#5E687A] dark:text-[#8B98A5]">
+        <div className="p-8 text-center text-xs text-[#5E687A]">
           No {filter.toLowerCase()} orders found in this session.
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-[#FAFAF7] dark:bg-[#171D25] text-[#5E687A] dark:text-[#8B98A5] font-semibold border-b border-[#E7E5DF] dark:border-[#1F2933]">
+              <tr className="bg-[#FAFAF7] text-[#5E687A] font-semibold border-b border-[#E7E5DF]">
                 <th className="py-3 px-4">Order ID / Time</th>
                 <th className="py-3 px-4">Instrument</th>
                 <th className="py-3 px-4 text-center">Action</th>
@@ -83,7 +83,7 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
                 <th className="py-3 px-4 text-center">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E7E5DF] dark:divide-[#1F2933]">
+            <tbody className="divide-y divide-[#E7E5DF]">
               {filteredOrders.map((order) => {
                 const isBuy = order.transactionType === 'BUY';
                 const formattedDate = new Date(order.createdAt).toLocaleTimeString('en-IN', {
@@ -97,22 +97,22 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
                 return (
                   <tr
                     key={order.orderId}
-                    className="hover:bg-slate-50/60 dark:hover:bg-[#1A222D]/60 transition"
+                    className="hover:bg-slate-50/60 transition"
                   >
                     {/* Order ID & Time */}
                     <td className="py-3 px-4">
-                      <div className="font-mono font-bold text-[#0B1220] dark:text-[#E8EDF2] text-[11px]">
+                      <div className="font-mono font-bold text-[#0B1220] text-[11px]">
                         {order.orderId}
                       </div>
-                      <div className="text-[10px] text-[#5E687A] dark:text-[#8B98A5]">
+                      <div className="text-[10px] text-[#5E687A]">
                         {formattedDate}
                       </div>
                     </td>
 
                     {/* Symbol */}
-                    <td className="py-3 px-4 font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                    <td className="py-3 px-4 font-bold text-[#0B1220]">
                       {order.symbol}
-                      <span className="block font-normal text-[10px] text-[#5E687A] dark:text-[#8B98A5] truncate max-w-[120px]">
+                      <span className="block font-normal text-[10px] text-[#5E687A] truncate max-w-[120px]">
                         {order.companyName}
                       </span>
                     </td>
@@ -122,8 +122,8 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
                       <span
                         className={`inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
                           isBuy
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                            : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                            ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                            : 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
                         }`}
                       >
                         {order.transactionType}
@@ -132,26 +132,26 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
 
                     {/* Type & Product */}
                     <td className="py-3 px-4">
-                      <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">
+                      <span className="font-semibold text-[#0B1220]">
                         {order.orderType}
                       </span>
-                      <span className="text-[#5E687A] dark:text-[#8B98A5] text-[10px] block">
+                      <span className="text-[#5E687A] text-[10px] block">
                         {order.productType}
                       </span>
                     </td>
 
                     {/* Qty */}
-                    <td className="py-3 px-4 text-right font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                    <td className="py-3 px-4 text-right font-bold text-[#0B1220]">
                       {order.quantity}
                     </td>
 
                     {/* Executed / Requested Price */}
-                    <td className="py-3 px-4 text-right font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                    <td className="py-3 px-4 text-right font-bold text-[#0B1220]">
                       {formatINR(order.executedPrice || order.requestedPrice || 0)}
                     </td>
 
                     {/* Charges */}
-                    <td className="py-3 px-4 text-right text-[#5E687A] dark:text-[#8B98A5]">
+                    <td className="py-3 px-4 text-right text-[#5E687A]">
                       {formatINR(order.charges?.totalCharges || 0)}
                     </td>
 
@@ -161,8 +161,8 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
                         <span
                           className={`font-bold ${
                             order.realizedPnL >= 0
-                              ? 'text-emerald-600 dark:text-emerald-400'
-                              : 'text-rose-600 dark:text-rose-400'
+                              ? 'text-emerald-600'
+                              : 'text-rose-600'
                           }`}
                         >
                           {order.realizedPnL >= 0 ? '+' : ''}
@@ -176,7 +176,7 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
                     {/* Status Pill & Action */}
                     <td className="py-3 px-4 text-center">
                       {order.status === 'EXECUTED' && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 px-2 py-0.5 rounded-full bg-emerald-500/10">
                           <CheckCircle2 className="w-3 h-3" />
                           <span>FILLED</span>
                         </span>
@@ -184,14 +184,14 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
 
                       {order.status === 'PENDING' && (
                         <div className="flex items-center justify-center gap-1.5">
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full bg-amber-500/10">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-600 px-2 py-0.5 rounded-full bg-amber-500/10">
                             <Clock className="w-3 h-3 animate-pulse" />
                             <span>PENDING</span>
                           </span>
                           <button
                             onClick={() => handleCancel(order.orderId)}
                             disabled={cancellingId === order.orderId}
-                            className="p-1 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
+                            className="p-1 rounded text-rose-500 hover:bg-rose-50 transition"
                             title="Cancel limit order"
                           >
                             <RotateCcw className="w-3 h-3" />
@@ -200,7 +200,7 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onCancelOrder 
                       )}
 
                       {order.status === 'CANCELLED' && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#8B98A5] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#8B98A5] px-2 py-0.5 rounded-full bg-slate-100">
                           <XCircle className="w-3 h-3" />
                           <span>CANCELLED</span>
                         </span>

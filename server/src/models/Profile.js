@@ -2,9 +2,21 @@ import mongoose from 'mongoose';
 
 const goalSchema = new mongoose.Schema(
   {
+    id: { type: String },
+    name: { type: String },
     type: { type: String, default: 'Wealth creation' },
+    category: { type: String, default: 'Wealth creation' },
     targetAmount: { type: Number, default: 0 },
     horizonYears: { type: Number, default: 5 },
+    priority: { type: String, default: 'Important' },
+    requiredMonthlySIP: { type: Number, default: 0 },
+    feasible: { type: Boolean, default: true },
+    recommendedAllocation: {
+      equity: { type: Number, default: 50 },
+      debt: { type: Number, default: 40 },
+      gold: { type: Number, default: 10 },
+    },
+    deficitAmount: { type: Number, default: 0 },
   },
   { _id: false }
 );
@@ -47,6 +59,16 @@ const profileSchema = new mongoose.Schema(
     targetAmount: { type: Number, default: null },
     horizonYears: { type: Number, default: null },
     goals: [goalSchema],
+    goalsAssessment: { type: mongoose.Schema.Types.Mixed, default: null },
+    // Dual-engine scores & constraints
+    riskToleranceScore: { type: Number, default: null },
+    riskToleranceBand: { type: String, default: null },
+    riskCapacityScore: { type: Number, default: null },
+    riskCapacityBand: { type: String, default: null },
+    effectiveRiskScore: { type: Number, default: null },
+    effectiveRiskBand: { type: String, default: null },
+    isRiskConstrained: { type: Boolean, default: false },
+    riskConstraintReason: { type: String, default: null },
     riskAnswers: { type: [Number], default: [] },
     quizScores: { type: [Number], default: [] }, // compatibility alias
     scores: {
@@ -82,6 +104,12 @@ profileSchema.pre('save', function (next) {
 
   if (this.quizScores && (!this.riskAnswers || this.riskAnswers.length === 0)) this.riskAnswers = this.quizScores;
   if (this.riskAnswers && (!this.quizScores || this.quizScores.length === 0)) this.quizScores = this.riskAnswers;
+
+  if (this.effectiveRiskBand) {
+    if (!this.scores) this.scores = {};
+    this.scores.riskBand = this.effectiveRiskBand;
+    if (this.effectiveRiskScore !== undefined) this.scores.risk = this.effectiveRiskScore;
+  }
 
   if (this.goalType && (!this.goals || this.goals.length === 0)) {
     this.goals = [{

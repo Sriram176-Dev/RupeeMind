@@ -25,7 +25,7 @@ export const FundCompare: React.FC = () => {
   const [comparedFunds, setComparedFunds] = useState<MutualFund[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const codesQuery = searchParams.get('codes') || 'PPFAS_FLEXI,UTI_NIFTY50,HDFC_BALANCED_ADV';
+  const codesQuery = searchParams.get('codes') || '';
 
   useEffect(() => {
     async function load() {
@@ -35,8 +35,13 @@ export const FundCompare: React.FC = () => {
         setAllFunds(list);
 
         const activeCodes = codesQuery.split(',').filter(Boolean);
-        const matched = list.filter((f) => activeCodes.includes(f.code));
-        setComparedFunds(matched.length > 0 ? matched : list.slice(0, 3));
+        if (activeCodes.length > 0) {
+          const matched = list.filter((f) => activeCodes.includes(f.code) || activeCodes.includes(String(f.schemeCode)));
+          setComparedFunds(matched.length > 0 ? matched : list.slice(0, 3));
+        } else {
+          // Default to top available synced funds from live database
+          setComparedFunds(list.slice(0, 3));
+        }
       } catch (err) {
         console.error('Failed to load compare funds', err);
       } finally {
@@ -84,18 +89,18 @@ export const FundCompare: React.FC = () => {
   const colors = ['#0F766E', '#4F46E5', '#D97706'];
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate('/funds')}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-[#5B6572] dark:text-[#8A97A6] hover:text-[#0B1220] dark:hover:text-[#E8EDF2]"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-[#5B6572] hover:text-[#0B1220]"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Fund Explorer</span>
         </button>
 
-        <span className="text-xs text-[#5B6572] dark:text-[#8A97A6]">
+        <span className="text-xs text-[#5B6572]">
           Comparing {comparedFunds.length} / 3 schemes
         </span>
       </div>
@@ -108,13 +113,13 @@ export const FundCompare: React.FC = () => {
 
       {/* Available Add Selector */}
       {comparedFunds.length < 3 && (
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] flex flex-wrap items-center justify-between gap-3">
-          <span className="text-xs font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Add another scheme to compare:</span>
+        <div className="p-4 rounded-2xl bg-white border border-[#E7E5DF] flex flex-wrap items-center justify-between gap-3">
+          <span className="text-xs font-semibold text-[#0B1220]">Add another scheme to compare:</span>
           <select
             onChange={(e) => {
               if (e.target.value) addFund(e.target.value);
             }}
-            className="px-3 py-1.5 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] text-xs text-[#0B1220] dark:text-[#E8EDF2]"
+            className="px-3 py-1.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] text-xs text-[#0B1220]"
             defaultValue=""
           >
             <option value="" disabled>Select fund...</option>
@@ -128,21 +133,21 @@ export const FundCompare: React.FC = () => {
       )}
 
       {/* Side-by-Side Comparison Matrix Table */}
-      <div className="rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] overflow-hidden shadow-xs">
+      <div className="rounded-3xl bg-white border border-[#E7E5DF] overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <tbody className="divide-y divide-[#E7E5DF] dark:divide-[#1F2933]">
+            <tbody className="divide-y divide-[#E7E5DF]">
               
               {/* Scheme Headers */}
-              <tr className="bg-[#FAFAF7] dark:bg-[#0B0F14]">
-                <td className="p-5 font-bold text-sm text-[#5B6572] dark:text-[#8A97A6] w-1/4">
+              <tr className="bg-[#FAFAF7]">
+                <td className="p-5 font-bold text-sm text-[#5B6572] w-1/4">
                   Scheme Overview
                 </td>
                 {comparedFunds.map((fund, idx) => (
                   <td key={fund.code} className="p-5 w-1/4 align-top">
                     <div className="space-y-2">
                       <div className="flex justify-between items-start">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F4F1] dark:bg-emerald-950/60 text-[#0F766E] dark:text-emerald-300">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F4F1] text-[#0F766E]">
                           {fund.category}
                         </span>
                         {comparedFunds.length > 1 && (
@@ -157,7 +162,7 @@ export const FundCompare: React.FC = () => {
                       </div>
                       <Link
                         to={`/funds/${fund.code}`}
-                        className="font-serif font-bold text-base text-[#0B1220] dark:text-[#E8EDF2] hover:text-[#0F766E] transition-colors block line-clamp-2"
+                        className="font-serif font-bold text-base text-[#0B1220] hover:text-[#0F766E] transition-colors block line-clamp-2"
                       >
                         {fund.name}
                       </Link>
@@ -171,7 +176,7 @@ export const FundCompare: React.FC = () => {
               <tr>
                 <td className="p-4 font-semibold text-[#5B6572]">Current NAV</td>
                 {comparedFunds.map((f) => (
-                  <td key={f.code} className="p-4 font-serif font-bold text-base text-[#0B1220] dark:text-[#E8EDF2] tabular-nums">
+                  <td key={f.code} className="p-4 font-serif font-bold text-base text-[#0B1220] tabular-nums">
                     {formatINR(f.nav)}
                   </td>
                 ))}
@@ -187,11 +192,11 @@ export const FundCompare: React.FC = () => {
                   return (
                     <td key={f.code} className="p-4">
                       <div className="flex items-center gap-2">
-                        <span className={`font-serif font-bold text-base tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400 font-extrabold' : 'text-[#0B1220] dark:text-[#E8EDF2]'}`}>
+                        <span className={`font-serif font-bold text-base tabular-nums ${isBest ? 'text-emerald-600 font-extrabold' : 'text-[#0B1220]'}`}>
                           {f.cagr3Y != null ? formatPercent(f.cagr3Y) : '—'}
                         </span>
                         {isBest && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                             Best in set
                           </span>
                         )}
@@ -205,7 +210,7 @@ export const FundCompare: React.FC = () => {
               <tr>
                 <td className="p-4 font-semibold text-[#5B6572]">1-Year Return</td>
                 {comparedFunds.map((f) => (
-                  <td key={f.code} className="p-4 font-bold text-sm text-emerald-600 dark:text-emerald-400 tabular-nums">
+                  <td key={f.code} className="p-4 font-bold text-sm text-emerald-600 tabular-nums">
                     {f.cagr1Y != null ? formatPercent(f.cagr1Y) : '—'}
                   </td>
                 ))}
@@ -215,7 +220,7 @@ export const FundCompare: React.FC = () => {
               <tr>
                 <td className="p-4 font-semibold text-[#5B6572]">5-Year CAGR</td>
                 {comparedFunds.map((f) => (
-                  <td key={f.code} className="p-4 font-bold text-sm text-[#0B1220] dark:text-[#E8EDF2] tabular-nums">
+                  <td key={f.code} className="p-4 font-bold text-sm text-[#0B1220] tabular-nums">
                     {f.cagr5Y != null ? formatPercent(f.cagr5Y) : '—'}
                   </td>
                 ))}
@@ -252,7 +257,7 @@ export const FundCompare: React.FC = () => {
               <tr>
                 <td className="p-4 font-semibold text-[#5B6572]">Max Drawdown Risk</td>
                 {comparedFunds.map((f) => (
-                  <td key={f.code} className="p-4 font-mono text-xs text-rose-600 dark:text-rose-400">
+                  <td key={f.code} className="p-4 font-mono text-xs text-rose-600">
                     {f.maxDrawdown != null ? `${f.maxDrawdown.toFixed(2)}%` : '—'}
                   </td>
                 ))}
@@ -274,8 +279,8 @@ export const FundCompare: React.FC = () => {
       </div>
 
       {/* Returns Comparison Bar Chart */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
-        <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
+        <h3 className="font-serif text-lg font-bold text-[#0B1220]">
           CAGR Compounding Trajectory Comparison
         </h3>
 

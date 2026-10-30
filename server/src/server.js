@@ -75,6 +75,7 @@ async function bootstrap() {
     console.log("[ML Setup] Skipping ML service startup in test environment");
   }
 
+  // Bootstrap Express HTTP server on configured port
   const server = httpServer.listen(ENV.PORT, () => {
     console.log(
       `[Rupee Mind Server] Running on http://localhost:${ENV.PORT} (${ENV.NODE_ENV})`,

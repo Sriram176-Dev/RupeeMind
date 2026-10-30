@@ -41,7 +41,12 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, []);
 
   useEffect(() => {
-    loadNotifications();
+    if (isAuthenticated) {
+      loadNotifications();
+    } else {
+      setNotifications([]);
+      setUnreadCount(0);
+    }
   }, [loadNotifications, isAuthenticated]);
 
   // Connect to socket and listen for real-time notifications

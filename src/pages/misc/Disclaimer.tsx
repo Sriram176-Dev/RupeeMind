@@ -14,25 +14,25 @@ export const Disclaimer: React.FC = () => {
       />
 
       {/* Main Alert Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 shadow-xs space-y-3">
-        <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-bold text-sm">
+      <div className="p-6 sm:p-8 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xs space-y-3">
+        <div className="flex items-center gap-2 text-amber-700 font-bold text-sm">
           <AlertTriangle className="w-5 h-5" />
           <span>Statutory Disclaimer & Non-Advisory Notice</span>
         </div>
-        <p className="text-xs sm:text-sm text-amber-900/90 dark:text-amber-200/90 leading-relaxed">
+        <p className="text-xs sm:text-sm text-amber-900/90 leading-relaxed">
           {APP_CONFIG.disclaimer}
         </p>
       </div>
 
       {/* Section 1: Nature of Service */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
         <div className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-[#0F766E] dark:text-emerald-400" />
-          <h2 className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <Shield className="w-5 h-5 text-[#0F766E]" />
+          <h2 className="font-serif text-xl font-bold text-[#0B1220]">
             1. Nature of Platform & Educational Scope
           </h2>
         </div>
-        <div className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] leading-relaxed space-y-3">
+        <div className="text-xs sm:text-sm text-[#5B6572] leading-relaxed space-y-3">
           <p>
             Rupee Mind is a financial analytics, algorithmic signal synthesis, and compounding simulation software platform designed strictly for informational and educational enrichment.
           </p>
@@ -43,14 +43,14 @@ export const Disclaimer: React.FC = () => {
       </div>
 
       {/* Section 2: Algorithmic Signals & Technical Indicators */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
         <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-[#0F766E] dark:text-emerald-400" />
-          <h2 className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <FileText className="w-5 h-5 text-[#0F766E]" />
+          <h2 className="font-serif text-xl font-bold text-[#0B1220]">
             2. Algorithmic Signals & Mathematical Models
           </h2>
         </div>
-        <div className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] leading-relaxed space-y-3">
+        <div className="text-xs sm:text-sm text-[#5B6572] leading-relaxed space-y-3">
           <p>
             All Buy, Sell, and Hold signals, RSI calculations, MACD indicators, and Moving Average Golden/Death Crosses are derived purely through quantitative mathematical formulas applied to historical market data.
           </p>
@@ -61,14 +61,14 @@ export const Disclaimer: React.FC = () => {
       </div>
 
       {/* Section 3: Privacy & Data Security */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-4">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
         <div className="flex items-center gap-2">
-          <Lock className="w-5 h-5 text-[#0F766E] dark:text-emerald-400" />
-          <h2 className="font-serif text-xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <Lock className="w-5 h-5 text-[#0F766E]" />
+          <h2 className="font-serif text-xl font-bold text-[#0B1220]">
             3. Client Privacy & Storage Policy
           </h2>
         </div>
-        <div className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] leading-relaxed space-y-3">
+        <div className="text-xs sm:text-sm text-[#5B6572] leading-relaxed space-y-3">
           <p>
             Rupee Mind operates a privacy-centric client architecture. Your onboarding questionnaire answers, risk scores, and simulated holding portfolios are stored in client-side storage (`localStorage`) on your personal browser unless explicit cloud synchronization is enabled.
           </p>

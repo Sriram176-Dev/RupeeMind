@@ -18,7 +18,7 @@ export function App() {
           <NotificationProvider>
             <BrowserRouter>
               <ScrollToTop />
-              <div className="min-h-screen flex flex-col bg-[#FAFAF7] dark:bg-[#0B0F14] text-[#0B1220] dark:text-[#E8EDF2] selection:bg-emerald-500/20 selection:text-emerald-800 dark:selection:text-emerald-200">
+              <div className="min-h-screen flex flex-col bg-[#FAFAF7] text-[#0B1220] selection:bg-emerald-500/20 selection:text-emerald-800">
                 <Navbar />
 
                 <main className="flex-1">

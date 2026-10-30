@@ -22,7 +22,7 @@ export const StockDetail: React.FC = () => {
   const [history, setHistory] = useState<PricePoint[]>([]);
   const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
   const [range, setRange] = useState<TimeRange>('1M');
-  const [chartType, setChartType] = useState<'area' | 'line'>('area');
+  const [chartType, setChartType] = useState<'candles' | 'area' | 'line'>('candles');
   const [loading, setLoading] = useState(true);
   const [isWatchlist, setIsWatchlist] = useState(false);
 
@@ -31,37 +31,35 @@ export const StockDetail: React.FC = () => {
       if (!symbol) return;
       try {
         setLoading(true);
-        const [q, hist, news] = await Promise.all([
+        const [q, hist] = await Promise.all([
           getStockQuote(symbol),
           getStockHistory(symbol, range),
-          getNews(),
         ]);
 
         setQuote(q);
         setHistory(hist);
-
-        // Filter news that mentions this ticker or company name
-        const cleanSym = symbol.toUpperCase().replace(/\.NS$/, '');
-        const matchingNews = news.filter((n) => {
-          const text = `${n.headline} ${n.summary}`.toLowerCase();
-          const symMatch = text.includes(cleanSym.toLowerCase());
-          const nameMatch = q?.companyName ? text.includes(q.companyName.toLowerCase().split(' ')[0]) : false;
-          return symMatch || nameMatch;
-        });
-        setRelatedNews(matchingNews.slice(0, 3));
-
-        // Fetch real algorithmic signal (authenticated)
-        try {
-          const sig = await getSignal(symbol);
-          setSignal(sig);
-        } catch {
-          setSignal(null);
-        }
       } catch (err) {
         console.error('Failed to load stock detail', err);
       } finally {
         setLoading(false);
       }
+
+      // Load signal and news asynchronously without blocking chart render
+      getSignal(symbol)
+        .then((sig) => setSignal(sig))
+        .catch(() => setSignal(null));
+
+      getNews()
+        .then((news) => {
+          const cleanSym = symbol.toUpperCase().replace(/\.NS$/, '');
+          const matchingNews = news.filter((n) => {
+            const text = `${n.headline} ${n.summary}`.toLowerCase();
+            const symMatch = text.includes(cleanSym.toLowerCase());
+            return symMatch;
+          });
+          setRelatedNews(matchingNews.slice(0, 3));
+        })
+        .catch(() => {});
     }
     loadData();
   }, [symbol, range]);
@@ -79,16 +77,16 @@ export const StockDetail: React.FC = () => {
 
   if (loading && !quote) {
     return (
-      <div className="max-w-[1240px] mx-auto px-4 py-16 text-center">
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <div className="w-10 h-10 border-4 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-xs text-[#5B6572] dark:text-[#8A97A6]">Loading algorithmic telemetry for {symbol}...</p>
+        <p className="text-xs text-[#5B6572]">Loading algorithmic telemetry for {symbol}...</p>
       </div>
     );
   }
 
   if (!quote) {
     return (
-      <div className="max-w-[1240px] mx-auto px-4 py-16 text-center space-y-4">
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center space-y-4">
         <h1 className="font-serif text-2xl font-bold">Stock Not Found</h1>
         <p className="text-xs text-[#5B6572]">The symbol {symbol} could not be resolved.</p>
         <Link to="/market" className="inline-block px-4 py-2 bg-[#0F766E] text-white rounded-xl text-xs font-semibold">
@@ -99,18 +97,18 @@ export const StockDetail: React.FC = () => {
   }
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       {/* Back link & breadcrumb */}
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate('/market')}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-[#5B6572] dark:text-[#8A97A6] hover:text-[#0B1220] dark:hover:text-[#E8EDF2]"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-[#5B6572] hover:text-[#0B1220]"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Market List</span>
         </button>
 
-        <span className="text-[11px] font-semibold text-[#0F766E] dark:text-emerald-400 uppercase tracking-wider">
+        <span className="text-[11px] font-semibold text-[#0F766E] uppercase tracking-wider">
           NSE Stock Intelligence
         </span>
       </div>

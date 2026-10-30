@@ -60,54 +60,54 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
       {/* High-Level Impact Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Pre-Stress Value */}
-        <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 shadow-lg backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
+        <div className="p-5 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs">
+          <div className="flex items-center justify-between text-[#5B6572] mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Initial Portfolio</span>
-            <Layers className="w-4 h-4 text-slate-400" />
+            <Layers className="w-4 h-4 text-[#5B6572]" />
           </div>
-          <div className="text-2xl font-black text-slate-100 font-mono">
+          <div className="text-2xl font-black text-[#0B1220] font-mono">
             {formatINR(initialPortfolioValue)}
           </div>
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-400">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#5B6572]">
             {getSourceBadge()}
           </div>
         </div>
 
         {/* Post-Stress Value */}
-        <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 shadow-lg backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
+        <div className="p-5 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs">
+          <div className="flex items-center justify-between text-[#5B6572] mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Stressed Portfolio</span>
-            <Activity className="w-4 h-4 text-rose-400" />
+            <Activity className="w-4 h-4 text-rose-500" />
           </div>
-          <div className="text-2xl font-black text-slate-100 font-mono">
+          <div className="text-2xl font-black text-[#0B1220] font-mono">
             {formatINR(projectedPortfolioValue)}
           </div>
-          <p className="text-xs text-slate-400 mt-2">
+          <p className="text-xs text-[#5B6572] mt-2">
             Under {scenario.title} conditions
           </p>
         </div>
 
         {/* Projected Loss / Gain */}
         <div
-          className={`p-5 rounded-2xl border shadow-lg backdrop-blur-md ${
+          className={`p-5 rounded-2xl border shadow-xs ${
             isPositive
-              ? 'bg-emerald-950/20 border-emerald-500/30'
-              : 'bg-rose-950/20 border-rose-500/30'
+              ? 'bg-emerald-50 border-emerald-200'
+              : 'bg-rose-50 border-rose-200'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#5B6572]">
               Crisis Drawdown
             </span>
             {isPositive ? (
-              <TrendingUp className="w-4 h-4 text-emerald-400" />
+              <TrendingUp className="w-4 h-4 text-emerald-600" />
             ) : (
-              <TrendingDown className="w-4 h-4 text-rose-400" />
+              <TrendingDown className="w-4 h-4 text-rose-600" />
             )}
           </div>
           <div
             className={`text-2xl font-black font-mono ${
-              isPositive ? 'text-emerald-400' : 'text-rose-400'
+              isPositive ? 'text-emerald-700' : 'text-rose-700'
             }`}
           >
             {totalLoss < 0 ? `-` : `+`}{formatINR(Math.abs(totalLoss))}
@@ -116,26 +116,26 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
             <span
               className={`text-xs font-bold px-2 py-0.5 rounded ${
                 isPositive
-                  ? 'bg-emerald-500/20 text-emerald-300'
-                  : 'bg-rose-500/20 text-rose-300'
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : 'bg-rose-100 text-rose-800'
               }`}
             >
               {totalPercentageDrop}%
             </span>
-            <span className="text-xs text-slate-400">total capital shift</span>
+            <span className="text-xs text-[#5B6572]">total capital shift</span>
           </div>
         </div>
 
         {/* Portfolio Sensitivity Beta */}
-        <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 shadow-lg backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
+        <div className="p-5 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs">
+          <div className="flex items-center justify-between text-[#5B6572] mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Weighted Beta (β)</span>
-            <ShieldCheck className="w-4 h-4 text-blue-400" />
+            <ShieldCheck className="w-4 h-4 text-blue-600" />
           </div>
-          <div className="text-2xl font-black text-slate-100 font-mono">
+          <div className="text-2xl font-black text-[#0B1220] font-mono">
             {portfolioBeta.toFixed(2)}
           </div>
-          <p className="text-xs text-slate-400 mt-2">
+          <p className="text-xs text-[#5B6572] mt-2">
             {portfolioBeta > 1.2
               ? 'Aggressive (Amplifies Nifty swings)'
               : portfolioBeta < 0.85
@@ -148,8 +148,8 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
       {/* Asset Level Breakdown: Hardest Hit vs Most Resilient */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Hardest Hit */}
-        <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800 shadow-lg">
-          <div className="flex items-center gap-2 mb-4 text-rose-400 font-semibold text-sm">
+        <div className="p-6 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs">
+          <div className="flex items-center gap-2 mb-4 text-rose-600 font-semibold text-sm">
             <ArrowDownRight className="w-4 h-4" />
             <span>Hardest Hit Holdings (Highest Capital Bleed)</span>
           </div>
@@ -158,26 +158,26 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
             {hardestHit.map((asset) => (
               <div
                 key={asset.symbol}
-                className="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/50 flex items-center justify-between"
+                className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-100 text-sm">{asset.symbol}</span>
-                    <span className="text-xs px-2 py-0.5 rounded bg-slate-700 text-slate-300">
+                    <span className="font-bold text-[#0B1220] text-sm">{asset.symbol}</span>
+                    <span className="text-xs px-2 py-0.5 rounded bg-gray-200 text-[#0B1220]">
                       {asset.sector}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">β {asset.beta}</span>
+                    <span className="text-xs text-[#5B6572] font-mono">β {asset.beta}</span>
                   </div>
-                  <div className="text-xs text-slate-400 mt-1">
+                  <div className="text-xs text-[#5B6572] mt-1">
                     Value: {formatINR(asset.currentValue)} → {formatINR(asset.projectedValue)}
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-sm font-bold font-mono text-rose-400">
+                  <span className="text-sm font-bold font-mono text-rose-600">
                     {asset.percentageImpact}%
                   </span>
-                  <div className="text-xs text-rose-500 font-mono">
+                  <div className="text-xs text-rose-700 font-mono font-medium">
                     {formatINR(asset.pnlImpact)}
                   </div>
                 </div>
@@ -187,8 +187,8 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
         </div>
 
         {/* Most Resilient */}
-        <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800 shadow-lg">
-          <div className="flex items-center gap-2 mb-4 text-emerald-400 font-semibold text-sm">
+        <div className="p-6 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs">
+          <div className="flex items-center gap-2 mb-4 text-emerald-600 font-semibold text-sm">
             <ShieldCheck className="w-4 h-4" />
             <span>Most Resilient Holdings (Defensive Anchors)</span>
           </div>
@@ -197,17 +197,17 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
             {mostResilient.map((asset) => (
               <div
                 key={asset.symbol}
-                className="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/50 flex items-center justify-between"
+                className="p-3.5 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-100 text-sm">{asset.symbol}</span>
-                    <span className="text-xs px-2 py-0.5 rounded bg-slate-700 text-slate-300">
+                    <span className="font-bold text-[#0B1220] text-sm">{asset.symbol}</span>
+                    <span className="text-xs px-2 py-0.5 rounded bg-gray-200 text-[#0B1220]">
                       {asset.sector}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">β {asset.beta}</span>
+                    <span className="text-xs text-[#5B6572] font-mono">β {asset.beta}</span>
                   </div>
-                  <div className="text-xs text-slate-400 mt-1">
+                  <div className="text-xs text-[#5B6572] mt-1">
                     Value: {formatINR(asset.currentValue)} → {formatINR(asset.projectedValue)}
                   </div>
                 </div>
@@ -215,14 +215,14 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
                 <div className="text-right">
                   <span
                     className={`text-sm font-bold font-mono ${
-                      asset.percentageImpact >= 0 ? 'text-emerald-400' : 'text-slate-300'
+                      asset.percentageImpact >= 0 ? 'text-emerald-600' : 'text-[#0B1220]'
                     }`}
                   >
                     {asset.percentageImpact >= 0 ? `+` : ``}{asset.percentageImpact}%
                   </span>
                   <div
-                    className={`text-xs font-mono ${
-                      asset.percentageImpact >= 0 ? 'text-emerald-500' : 'text-slate-400'
+                    className={`text-xs font-mono font-medium ${
+                      asset.percentageImpact >= 0 ? 'text-emerald-700' : 'text-[#5B6572]'
                     }`}
                   >
                     {formatINR(asset.pnlImpact)}
@@ -235,14 +235,14 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
       </div>
 
       {/* Actionable Defensive Risk Recommendations */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-slate-900/90 to-slate-800/80 border border-slate-700 shadow-xl">
+      <div className="p-6 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] shadow-xs">
         <div className="flex items-center gap-2 mb-4">
-          <span className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <span className="p-2 rounded-lg bg-amber-50 text-amber-600 border border-amber-200">
             <Lightbulb className="w-5 h-5" />
           </span>
           <div>
-            <h4 className="font-bold text-slate-100 text-base">Defensive Portfolio Recommendations</h4>
-            <p className="text-xs text-slate-400">Institutional risk reduction measures derived from this scenario</p>
+            <h4 className="font-bold text-[#0B1220] text-base">Defensive Portfolio Recommendations</h4>
+            <p className="text-xs text-[#5B6572]">Institutional risk reduction measures derived from this scenario</p>
           </div>
         </div>
 
@@ -250,12 +250,12 @@ export const ScenarioImpactCard: React.FC<Props> = ({ result }) => {
           {recommendations.map((rec, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-start gap-3"
+              className="p-4 rounded-xl bg-white border border-[#E7E5DF] flex items-start gap-3 shadow-xs"
             >
-              <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+              <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
               <div>
-                <h5 className="font-semibold text-slate-200 text-sm mb-1">{rec.title}</h5>
-                <p className="text-xs text-slate-400 leading-relaxed">{rec.advice}</p>
+                <h5 className="font-semibold text-[#0B1220] text-sm mb-1">{rec.title}</h5>
+                <p className="text-xs text-[#5B6572] leading-relaxed">{rec.advice}</p>
               </div>
             </div>
           ))}

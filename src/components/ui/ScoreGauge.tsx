@@ -50,14 +50,14 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({
   // Determine color gradient
   const getColor = () => {
     if (type === 'health') {
-      if (score >= 71) return { stroke: '#16A34A', bg: '#DCFCE7', text: 'text-emerald-600 dark:text-emerald-400' };
-      if (score >= 41) return { stroke: '#D97706', bg: '#FEF3C7', text: 'text-amber-600 dark:text-amber-400' };
-      return { stroke: '#DC2626', bg: '#FEE2E2', text: 'text-red-600 dark:text-red-400' };
+      if (score >= 71) return { stroke: '#16A34A', bg: '#DCFCE7', text: 'text-emerald-600' };
+      if (score >= 41) return { stroke: '#D97706', bg: '#FEF3C7', text: 'text-amber-600' };
+      return { stroke: '#DC2626', bg: '#FEE2E2', text: 'text-red-600' };
     } else {
       // Risk score: 0-30 blue/teal, 31-70 amber, 71-100 purple/rose
-      if (score <= 30) return { stroke: '#0F766E', bg: '#E6F4F1', text: 'text-teal-700 dark:text-teal-400' };
-      if (score <= 70) return { stroke: '#4F46E5', bg: '#EEF2FF', text: 'text-indigo-600 dark:text-indigo-400' };
-      return { stroke: '#EA580C', bg: '#FFEDD5', text: 'text-orange-600 dark:text-orange-400' };
+      if (score <= 30) return { stroke: '#0F766E', bg: '#E6F4F1', text: 'text-teal-700' };
+      if (score <= 70) return { stroke: '#4F46E5', bg: '#EEF2FF', text: 'text-indigo-600' };
+      return { stroke: '#EA580C', bg: '#FFEDD5', text: 'text-orange-600' };
     }
   };
 
@@ -74,7 +74,7 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({
             r={radius}
             stroke="currentColor"
             strokeWidth={strokeWidth}
-            className="text-gray-100 dark:text-gray-800"
+            className="text-gray-100"
             fill="transparent"
           />
           {/* Animated score arc */}
@@ -94,21 +94,21 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({
 
         {/* Center score text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#0B1220] dark:text-[#E8EDF2] tabular-nums">
+          <span className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#0B1220] tabular-nums">
             {displayScore}
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#5B6572] dark:text-[#8A97A6]">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#5B6572]">
             / 100
           </span>
         </div>
       </div>
 
       <div className="mt-3">
-        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${themeColors.text} bg-black/5 dark:bg-white/5`}>
+        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${themeColors.text} bg-black/5`}>
           {label}
         </span>
         {sublabel && (
-          <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] mt-1 max-w-[160px] mx-auto">
+          <p className="text-xs text-[#5B6572] mt-1 max-w-[160px] mx-auto">
             {sublabel}
           </p>
         )}

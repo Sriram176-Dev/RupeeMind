@@ -107,7 +107,7 @@ export async function signup(req, res, next) {
       read: false,
     });
 
-    setRefreshTokenCookie(res, tokens.refreshToken);
+    setRefreshTokenCookie(res, tokens.refreshToken, tokens.accessToken);
 
     return res.status(201).json({
       success: true,
@@ -168,7 +168,7 @@ export async function login(req, res, next) {
 
     const profile = await Profile.findOne({ userId: user._id });
 
-    setRefreshTokenCookie(res, tokens.refreshToken);
+    setRefreshTokenCookie(res, tokens.refreshToken, tokens.accessToken);
 
     return res.status(200).json({
       success: true,
@@ -237,7 +237,7 @@ export async function refresh(req, res) {
     }
 
     await user.save();
-    setRefreshTokenCookie(res, newTokens.refreshToken);
+    setRefreshTokenCookie(res, newTokens.refreshToken, newTokens.accessToken);
 
     return res.status(200).json({
       success: true,
@@ -260,6 +260,7 @@ export async function refresh(req, res) {
     if (elapsedMs <= 15000) {
       // Within 15-second grace window (concurrent requests or multiple tabs)
       const newTokens = generateTokens({ id: userWithPrevious._id.toString(), email: userWithPrevious.email });
+      setRefreshTokenCookie(res, newTokens.refreshToken, newTokens.accessToken);
       return res.status(200).json({
         success: true,
         accessToken: newTokens.accessToken,

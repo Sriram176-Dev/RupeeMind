@@ -5,12 +5,14 @@ export async function protect(req, res, next) {
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     token = req.headers.authorization.split(' ')[1]?.trim();
+  } else if (req.cookies?.accessToken) {
+    token = req.cookies.accessToken;
   }
 
   if (!token) {
     return res.status(401).json({
       success: false,
-      message: 'Authentication required. Authorization Bearer header is missing.',
+      message: 'Authentication required. Authorization Bearer header or valid session cookie is missing.',
     });
   }
 

@@ -39,16 +39,26 @@ export function verifyRefreshToken(token) {
   }
 }
 
-export function setRefreshTokenCookie(res, refreshToken) {
+export function setRefreshTokenCookie(res, refreshToken, accessToken = null) {
   const isProduction = ENV.NODE_ENV === 'production';
 
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'strict' : 'lax',
-    path: '/api/auth',
+    path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
+
+  if (accessToken) {
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
+      path: '/',
+      maxAge: 15 * 60 * 1000, // 15 mins
+    });
+  }
 }
 
 export function clearAuthCookies(res) {
@@ -58,6 +68,13 @@ export function clearAuthCookies(res) {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'strict' : 'lax',
-    path: '/api/auth',
+    path: '/',
+  });
+
+  res.clearCookie('accessToken', {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'strict' : 'lax',
+    path: '/',
   });
 }

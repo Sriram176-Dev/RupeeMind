@@ -67,7 +67,7 @@ describe('Auth Flow & Security Tests (Supertest API)', () => {
       const refCookie = cookies.find((c) => c.startsWith('refreshToken='));
       expect(refCookie).toBeDefined();
       expect(refCookie).toContain('HttpOnly');
-      expect(refCookie).toContain('Path=/api/auth');
+      expect(refCookie).toMatch(/Path=(\/|\/api\/auth)/);
 
       refreshTokenCookie = refCookie.split(';')[0];
 

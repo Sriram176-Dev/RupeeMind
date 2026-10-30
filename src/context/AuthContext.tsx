@@ -94,26 +94,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const fullProfile: UserProfile = {
       ...profile,
-      riskScore: risk.score,
-      riskBand: risk.band,
-      financialHealthScore: health.score,
-      financialHealthBand: health.band,
+      riskScore: profile.effectiveRiskScore ?? profile.riskScore ?? risk.score,
+      riskBand: profile.effectiveRiskBand ?? profile.riskBand ?? risk.band,
+      financialHealthScore: profile.financialHealthScore ?? health.score,
+      financialHealthBand: profile.financialHealthBand ?? health.band,
       calculatedAt: new Date().toISOString(),
     };
 
     const saved = await apiSaveProfile(fullProfile);
 
-    if (user) {
-      setUser({
-        ...user,
+    setUser((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        onboardingDone: true,
         profile: saved || fullProfile,
-      });
-    }
+      };
+    });
   };
 
   const isAuthenticated = !!user;
   const isOnboarded = Boolean(
-    user?.profile?.riskScore !== undefined && user?.profile?.riskScore !== null,
+    user?.onboardingDone || (user?.profile?.riskScore !== undefined && user?.profile?.riskScore !== null),
   );
 
   return (

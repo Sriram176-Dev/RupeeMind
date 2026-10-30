@@ -22,13 +22,13 @@ export const DisclaimerBanner: React.FC<DisclaimerBannerProps> = ({
     <div
       className={`${compact ? 'p-3 text-[11px]' : 'p-4 text-xs'} rounded-2xl flex items-start gap-3 leading-relaxed border ${
         isWarn
-          ? 'bg-amber-500/5 dark:bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-200'
-          : 'bg-emerald-500/5 dark:bg-emerald-500/10 border-emerald-500/20 text-emerald-900 dark:text-emerald-200'
+          ? 'bg-amber-500/5 border-amber-500/20 text-amber-900'
+          : 'bg-emerald-500/5 border-emerald-500/20 text-emerald-900'
       } ${className}`}
     >
       <Icon
         className={`w-4 h-4 shrink-0 mt-0.5 ${
-          isWarn ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'
+          isWarn ? 'text-amber-600' : 'text-emerald-600'
         }`}
       />
       <div>

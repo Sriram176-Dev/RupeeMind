@@ -37,33 +37,33 @@ export const MonteCarloChart: React.FC<Props> = ({ data, onRerun, loading }) => 
   };
 
   return (
-    <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur-md space-y-6">
+    <div className="bg-white border border-[#E7E5DF] rounded-2xl p-6 shadow-xs space-y-6">
       {/* Header and Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-800 gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[#E7E5DF] gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="p-2 rounded-lg bg-emerald-50 text-[#0F766E] border border-emerald-200">
               <Cpu className="w-5 h-5" />
             </span>
-            <h3 className="text-lg font-bold text-slate-100">
+            <h3 className="text-lg font-bold text-[#0B1220]">
               Monte Carlo 1,000-Path Geometric Brownian Motion
             </h3>
           </div>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-[#5B6572] mt-1">
             Simulates 1,000 randomized market trajectories over 1 year using Nifty historical drift (μ={expectedReturnRate}%) & portfolio volatility (σ={volatilityApplied}%).
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Horizon Selector */}
-          <div className="flex items-center bg-slate-800/80 rounded-xl p-1 border border-slate-700">
+          <div className="flex items-center bg-[#FAFAF7] rounded-xl p-1 border border-[#E7E5DF]">
             <button
               type="button"
               onClick={() => handleApplyDays(63)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 tradingDays === 63
-                  ? 'bg-emerald-600 text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#0F766E] text-white shadow'
+                  : 'text-[#5B6572] hover:text-[#0B1220]'
               }`}
             >
               3 Months
@@ -73,8 +73,8 @@ export const MonteCarloChart: React.FC<Props> = ({ data, onRerun, loading }) => 
               onClick={() => handleApplyDays(126)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 tradingDays === 126
-                  ? 'bg-emerald-600 text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#0F766E] text-white shadow'
+                  : 'text-[#5B6572] hover:text-[#0B1220]'
               }`}
             >
               6 Months
@@ -84,8 +84,8 @@ export const MonteCarloChart: React.FC<Props> = ({ data, onRerun, loading }) => 
               onClick={() => handleApplyDays(252)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 tradingDays === 252
-                  ? 'bg-emerald-600 text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#0F766E] text-white shadow'
+                  : 'text-[#5B6572] hover:text-[#0B1220]'
               }`}
             >
               1 Year (252d)
@@ -96,10 +96,10 @@ export const MonteCarloChart: React.FC<Props> = ({ data, onRerun, loading }) => 
             type="button"
             onClick={() => onRerun(tradingDays, 1000)}
             disabled={loading}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors disabled:opacity-50"
+            className="p-2.5 rounded-xl bg-[#FAFAF7] hover:bg-gray-100 text-[#0B1220] border border-[#E7E5DF] transition-colors disabled:opacity-50"
             title="Re-run 1,000 simulations"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#0F766E]' : ''}`} />
           </button>
         </div>
       </div>
@@ -107,55 +107,55 @@ export const MonteCarloChart: React.FC<Props> = ({ data, onRerun, loading }) => 
       {/* Outcome Probability Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Profit Probability */}
-        <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+        <div className="p-4 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF]">
+          <div className="flex items-center justify-between text-xs text-[#5B6572] mb-1">
             <span>Probability of Profit</span>
-            <Percent className="w-3.5 h-3.5 text-emerald-400" />
+            <Percent className="w-3.5 h-3.5 text-emerald-600" />
           </div>
-          <div className="text-2xl font-black text-emerald-400 font-mono">
+          <div className="text-2xl font-black text-emerald-600 font-mono">
             {summary.profitProbability}%
           </div>
-          <span className="text-xs text-slate-500">Positive return probability</span>
+          <span className="text-xs text-[#5B6572]">Positive return probability</span>
         </div>
 
         {/* Median 50th Outcome */}
-        <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+        <div className="p-4 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF]">
+          <div className="flex items-center justify-between text-xs text-[#5B6572] mb-1">
             <span>Median Target (50th)</span>
-            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
           </div>
-          <div className="text-xl font-black text-slate-100 font-mono">
+          <div className="text-xl font-black text-[#0B1220] font-mono">
             {formatINR(summary.medianFinal)}
           </div>
-          <span className="text-xs text-emerald-400 font-bold font-mono">
+          <span className="text-xs text-emerald-600 font-bold font-mono">
             +{summary.medianReturn}% expected
           </span>
         </div>
 
         {/* 95th Percentile Bull Case */}
-        <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+          <div className="flex items-center justify-between text-xs text-[#5B6572] mb-1">
             <span>Bull Case (95th %ile)</span>
-            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
           </div>
-          <div className="text-xl font-black text-emerald-300 font-mono">
+          <div className="text-xl font-black text-emerald-700 font-mono">
             {formatINR(summary.bullCaseFinal)}
           </div>
-          <span className="text-xs text-emerald-400 font-bold font-mono">
+          <span className="text-xs text-emerald-600 font-bold font-mono">
             +{summary.bullCaseReturn}% upside
           </span>
         </div>
 
         {/* 5th Percentile Bear Case */}
-        <div className="p-4 rounded-xl bg-rose-950/20 border border-rose-500/30">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200">
+          <div className="flex items-center justify-between text-xs text-[#5B6572] mb-1">
             <span>Bear Case (5th %ile)</span>
-            <TrendingDown className="w-3.5 h-3.5 text-rose-400" />
+            <TrendingDown className="w-3.5 h-3.5 text-rose-600" />
           </div>
-          <div className="text-xl font-black text-rose-300 font-mono">
+          <div className="text-xl font-black text-rose-700 font-mono">
             {formatINR(summary.bearCaseFinal)}
           </div>
-          <span className="text-xs text-rose-400 font-bold font-mono">
+          <span className="text-xs text-rose-600 font-bold font-mono">
             {summary.bearCaseReturn}% downside
           </span>
         </div>
@@ -180,10 +180,10 @@ export const MonteCarloChart: React.FC<Props> = ({ data, onRerun, loading }) => 
               </linearGradient>
             </defs>
 
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-            <XAxis dataKey="day" stroke="#94a3b8" fontSize={11} tickLine={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E7E5DF" opacity={0.8} />
+            <XAxis dataKey="day" stroke="#5B6572" fontSize={11} tickLine={false} />
             <YAxis
-              stroke="#94a3b8"
+              stroke="#5B6572"
               fontSize={11}
               tickLine={false}
               tickFormatter={(v: any) => formatCompactINR(Number(v))}
@@ -191,18 +191,19 @@ export const MonteCarloChart: React.FC<Props> = ({ data, onRerun, loading }) => 
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
+                backgroundColor: '#ffffff',
+                borderColor: '#E7E5DF',
                 borderRadius: '0.75rem',
-                color: '#f8fafc',
+                color: '#0B1220',
                 fontSize: '12px',
+                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
               }}
               formatter={(val: any, name: any) => [formatINR(Number(val)), name]}
             />
             <Legend
               verticalAlign="top"
               height={36}
-              wrapperStyle={{ fontSize: '12px', color: '#cbd5e1' }}
+              wrapperStyle={{ fontSize: '12px', color: '#0B1220' }}
             />
 
             <Area
@@ -236,8 +237,8 @@ export const MonteCarloChart: React.FC<Props> = ({ data, onRerun, loading }) => 
         </ResponsiveContainer>
       </div>
 
-      <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-800/30 border border-slate-700/50 text-xs text-slate-400">
-        <Info className="w-4 h-4 text-emerald-400 shrink-0" />
+      <div className="flex items-center gap-2 p-3 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] text-xs text-[#5B6572]">
+        <Info className="w-4 h-4 text-[#0F766E] shrink-0" />
         <span>
           Starting from portfolio value {formatINR(initialValue)}. Paths account for continuous compound drift with stochastic diffusion calibrated to historical Indian equity dispersion.
         </span>

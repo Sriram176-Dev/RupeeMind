@@ -16,10 +16,10 @@ export const WatchlistTab: React.FC<WatchlistTabProps> = ({
   onToggleWatch,
 }) => {
   return (
-    <div className="rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] overflow-hidden shadow-xs">
+    <div className="rounded-3xl bg-white border border-[#E7E5DF] overflow-hidden shadow-xs">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="bg-[#FAFAF7] dark:bg-[#0B0F14] text-[#5B6572] dark:text-[#8A97A6]">
+          <thead className="bg-[#FAFAF7] text-[#5B6572]">
             <tr>
               <th className="py-3 px-4 font-semibold">Symbol / Company</th>
               <th className="py-3 px-4 font-semibold text-right">LTP (INR)</th>
@@ -28,19 +28,19 @@ export const WatchlistTab: React.FC<WatchlistTabProps> = ({
               <th className="py-3 px-3 text-center">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E7E5DF] dark:divide-[#1F2933]">
+          <tbody className="divide-y divide-[#E7E5DF]">
             {watchlistQuotes.map((stk) => (
-              <tr key={stk.symbol} className="hover:bg-[#FAFAF7] dark:hover:bg-[#1A2330]">
+              <tr key={stk.symbol} className="hover:bg-[#FAFAF7]">
                 <td className="py-3.5 px-4">
                   <Link
                     to={`/market/${stk.symbol}`}
-                    className="font-mono font-bold text-sm text-[#0B1220] dark:text-[#E8EDF2] hover:underline"
+                    className="font-mono font-bold text-sm text-[#0B1220] hover:underline"
                   >
                     {stk.symbol}
                   </Link>
                   <p className="text-[11px] text-[#5B6572]">{stk.companyName}</p>
                 </td>
-                <td className="py-3.5 px-4 text-right font-serif font-bold text-[#0B1220] dark:text-[#E8EDF2] tabular-nums">
+                <td className="py-3.5 px-4 text-right font-serif font-bold text-[#0B1220] tabular-nums">
                   {formatINR(stk.price)}
                 </td>
                 <td className="py-3.5 px-4 text-right">

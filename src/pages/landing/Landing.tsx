@@ -119,55 +119,55 @@ export const Landing: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28 border-b border-[#E7E5DF] dark:border-[#1F2933]">
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28 border-b border-[#E7E5DF]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Hero Content */}
             <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E6F4F1] dark:bg-emerald-950/70 border border-emerald-500/20 text-[#0F766E] dark:text-emerald-300 text-xs font-bold uppercase tracking-[0.08em]">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E6F4F1] border border-emerald-500/20 text-[#0F766E] text-xs font-bold uppercase tracking-[0.08em]">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>SMART INVESTING FOR INDIA</span>
               </div>
 
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0B1220] dark:text-[#E8EDF2] leading-[1.1]">
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0B1220] leading-[1.1]">
                 Invest with clarity, <br className="hidden sm:inline" />
-                <span className="text-[#0F766E] dark:text-emerald-400 italic">not guesswork.</span>
+                <span className="text-[#0F766E] italic">not guesswork.</span>
               </h1>
 
-              <p className="text-base sm:text-lg text-[#5B6572] dark:text-[#8A97A6] max-w-[55ch] leading-relaxed">
+              <p className="text-base sm:text-lg text-[#5B6572] max-w-[55ch] leading-relaxed">
                 A clean, modern Indian personal finance platform blending transparent algorithmic stock signals, risk-matched mutual fund allocation, and precision compounding tools.
               </p>
 
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
                 <Link
                   to={isAuthenticated ? '/dashboard' : '/onboarding'}
-                  className="px-6 py-3.5 rounded-xl text-base font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 min-h-[48px]"
+                  className="px-6 py-3.5 rounded-xl text-base font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 min-h-[48px]"
                 >
                   <span>{isAuthenticated ? 'Go to Dashboard' : 'Get Started Free'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   to="/market"
-                  className="px-6 py-3.5 rounded-xl text-base font-semibold text-[#0B1220] dark:text-[#E8EDF2] bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2 min-h-[48px]"
+                  className="px-6 py-3.5 rounded-xl text-base font-semibold text-[#0B1220] bg-white border border-[#E7E5DF] hover:bg-black/5 transition-all flex items-center justify-center gap-2 min-h-[48px]"
                 >
-                  <TrendingUp className="w-4 h-4 text-[#0F766E] dark:text-emerald-400" />
+                  <TrendingUp className="w-4 h-4 text-[#0F766E]" />
                   <span>Explore Market</span>
                 </Link>
               </div>
 
               {/* Trust Badges */}
-              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-[#5B6572] dark:text-[#8A97A6]">
+              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-[#5B6572]">
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>NSE & BSE Top 50</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>Direct Growth Funds</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>Pure Math & Algorithmic Reasons</span>
                 </div>
               </div>
@@ -175,44 +175,53 @@ export const Landing: React.FC = () => {
 
             {/* Right Hero Preview Composition */}
             <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-md p-6 rounded-3xl bg-gradient-to-b from-white to-[#FAFAF7] dark:from-[#121821] dark:to-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xl space-y-4">
+              <div className="relative mx-auto max-w-md p-6 rounded-3xl bg-gradient-to-b from-white to-[#FAFAF7] border border-[#E7E5DF] shadow-xl space-y-4">
                 
-                {/* Floating Preview Card 1: Score Gauge */}
-                <div className="p-4 rounded-2xl bg-white dark:bg-[#161F2B] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between shadow-xs">
+                {/* Live Index Market Pulse Card */}
+                {indices.length > 0 && (
+                  <div className="p-4 rounded-2xl bg-white border border-[#E7E5DF] space-y-2.5 shadow-xs">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F766E]">Live Indian Benchmark</span>
+                        <p className="font-serif text-base font-bold text-[#0B1220]">{indices[0].name}</p>
+                        <p className="font-serif text-lg font-bold text-[#0B1220] tabular-nums mt-0.5">
+                          {formatINR(indices[0].value, false)}
+                        </p>
+                      </div>
+                      <div className="text-right space-y-1">
+                        <PriceChangeChip change={indices[0].change} changePercent={indices[0].changePercent} size="sm" />
+                        <Sparkline data={indices[0].sparkline} width={75} height={24} isPositive={indices[0].change >= 0} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Algorithmic Profiling Preview Card */}
+                <div className="p-4 rounded-2xl bg-white border border-[#E7E5DF] flex items-center justify-between shadow-xs">
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F766E] dark:text-emerald-400">Risk Assessment</span>
-                    <p className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">Moderately Aggressive</p>
-                    <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6]">70% Equity • 20% Debt • 10% Gold</p>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F766E]">Algorithmic Risk Engine</span>
+                    <p className="font-serif text-lg font-bold text-[#0B1220]">Target Asset Allocation</p>
+                    <p className="text-[11px] text-[#5B6572]">Equities • Debt • Gold Diversification</p>
                   </div>
                   <div className="w-20">
-                    <ScoreGauge score={74} size={76} strokeWidth={6} label="Risk" type="risk" />
+                    <ScoreGauge score={teaserResult ? 70 : 50} size={76} strokeWidth={6} label="Target" type="risk" />
                   </div>
                 </div>
 
-                {/* Floating Preview Card 2: Stock Signal */}
-                <div className="p-4 rounded-2xl bg-white dark:bg-[#161F2B] border border-[#E7E5DF] dark:border-[#1F2933] space-y-2.5 shadow-xs">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-mono text-xs font-bold text-[#0B1220] dark:text-[#E8EDF2]">INFY.NS</p>
-                      <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6]">Infosys Ltd. • ₹1,945.60</p>
-                    </div>
-                    <SignalBadge signal="BUY" signalStrength={100} score={8} />
-                  </div>
-                  <div className="p-2 rounded-lg bg-[#FAFAF7] dark:bg-[#0B0F14] text-[11px] text-[#5B6572] dark:text-[#8A97A6] flex items-center gap-2 border border-[#E7E5DF] dark:border-[#1F2933]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                    <span className="truncate">RSI momentum expansion + Golden Cross confirmation</span>
-                  </div>
-                </div>
-
-                {/* Floating Preview Card 3: SIP Compounding Teaser */}
-                <div className="p-4 rounded-2xl bg-white dark:bg-[#161F2B] border border-[#E7E5DF] dark:border-[#1F2933] flex items-center justify-between shadow-xs">
+                {/* Real Dynamic SIP Compounding Teaser Card */}
+                <div className="p-4 rounded-2xl bg-white border border-[#E7E5DF] flex items-center justify-between shadow-xs">
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-[#5B6572] dark:text-[#8A97A6]">10-Yr Wealth Projection</span>
-                    <p className="font-serif text-xl font-bold text-[#0F766E] dark:text-emerald-400">₹34.86 Lakhs</p>
-                    <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6]">on ₹15,000 / month SIP</p>
+                    <span className="text-[10px] uppercase font-semibold text-[#5B6572]">{teaserYears}-Yr Compounding Goal</span>
+                    <p className="font-serif text-xl font-bold text-[#0F766E]">{formatCompactINR(teaserResult.totalValue)}</p>
+                    <p className="text-[11px] text-[#5B6572]">on {formatINR(teaserSIP, false)} / month</p>
                   </div>
-                  <div className="w-24">
-                    <Sparkline data={[100, 130, 175, 230, 305, 395, 510, 650, 820, 1020]} width={95} height={35} isPositive={true} />
+                  <div className="text-right">
+                    <span className="text-[10px] text-emerald-600 font-bold block">
+                      +{formatCompactINR(teaserResult.estimatedReturns)} gains
+                    </span>
+                    <span className="text-[10px] text-[#5B6572] block">
+                      at 12% annual CAGR
+                    </span>
                   </div>
                 </div>
 
@@ -224,9 +233,9 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* 2. AUTO-SCROLLING LIVE INDICES TICKER STRIP */}
-      <section className="bg-white dark:bg-[#121821] border-b border-[#E7E5DF] dark:border-[#1F2933] overflow-hidden py-3">
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-[#5B6572] dark:text-[#8A97A6]">
-          <span className="flex items-center gap-1.5 text-[#0F766E] dark:text-emerald-400 font-bold">
+      <section className="bg-white border-b border-[#E7E5DF] overflow-hidden py-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-[#5B6572]">
+          <span className="flex items-center gap-1.5 text-[#0F766E] font-bold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             Live Market Ticker
           </span>
@@ -238,13 +247,13 @@ export const Landing: React.FC = () => {
             {indices.concat(indices).map((idx, i) => (
               <div
                 key={`${idx.symbol}-${i}`}
-                className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] shrink-0"
+                className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF] shrink-0"
               >
                 <div>
-                  <p className="text-xs font-bold text-[#0B1220] dark:text-[#E8EDF2] leading-tight">
+                  <p className="text-xs font-bold text-[#0B1220] leading-tight">
                     {idx.name}
                   </p>
-                  <p className="text-sm font-serif font-bold text-[#0B1220] dark:text-[#E8EDF2] tabular-nums">
+                  <p className="text-sm font-serif font-bold text-[#0B1220] tabular-nums">
                     {formatINR(idx.value, false)}
                   </p>
                 </div>
@@ -257,15 +266,15 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* 3. HOW IT WORKS (4 Numbered Steps) */}
-      <section className="py-16 sm:py-24 max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-2">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E] dark:text-emerald-400">
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E]">
             SIMPLE, SCIENTIFIC WORKFLOW
           </p>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0B1220]">
             How Rupee Mind Works
           </h2>
-          <p className="text-sm sm:text-base text-[#5B6572] dark:text-[#8A97A6]">
+          <p className="text-sm sm:text-base text-[#5B6572]">
             Four systematic steps to transform financial ambiguity into clear, disciplined action.
           </p>
         </div>
@@ -276,21 +285,21 @@ export const Landing: React.FC = () => {
             return (
               <div
                 key={s.step}
-                className="p-6 rounded-2xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs flex flex-col justify-between hover:border-[#0F766E]/40 transition-all group"
+                className="p-6 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col justify-between hover:border-[#0F766E]/40 transition-all group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="font-serif text-2xl font-bold text-[#0F766E] dark:text-emerald-400 opacity-60 group-hover:opacity-100 transition-opacity">
+                    <span className="font-serif text-2xl font-bold text-[#0F766E] opacity-60 group-hover:opacity-100 transition-opacity">
                       {s.step}
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] dark:bg-emerald-950/60 text-[#0F766E] dark:text-emerald-400 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] text-[#0F766E] flex items-center justify-center">
                       <Icon className="w-5 h-5" />
                     </div>
                   </div>
-                  <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2] mb-2">
+                  <h3 className="font-serif text-lg font-bold text-[#0B1220] mb-2">
                     {s.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#5B6572] leading-relaxed">
                     {s.desc}
                   </p>
                 </div>
@@ -301,16 +310,16 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* 4. FEATURE GRID (6 Cards) */}
-      <section className="py-16 bg-[#F4F4F0] dark:bg-[#0E131A] border-y border-[#E7E5DF] dark:border-[#1F2933]">
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 bg-[#F4F4F0] border-y border-[#E7E5DF]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E] dark:text-emerald-400">
+            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E]">
               INTEGRATED SUITE
             </p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0B1220]">
               Complete Toolkit for the Indian Investor
             </h2>
-            <p className="text-sm sm:text-base text-[#5B6572] dark:text-[#8A97A6]">
+            <p className="text-sm sm:text-base text-[#5B6572]">
               Everything you need to analyze stocks, discover top mutual funds, plan SIPs, and track your wealth.
             </p>
           </div>
@@ -322,20 +331,20 @@ export const Landing: React.FC = () => {
                 <Link
                   key={f.title}
                   to={f.link}
-                  className="p-6 rounded-2xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs hover:border-[#0F766E]/50 dark:hover:border-emerald-500/50 hover:shadow-md transition-all flex flex-col justify-between group"
+                  className="p-6 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs hover:border-[#0F766E]/50 hover:shadow-md transition-all flex flex-col justify-between group"
                 >
                   <div>
-                    <div className="w-12 h-12 rounded-xl bg-[#E6F4F1] dark:bg-emerald-950/60 text-[#0F766E] dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-xl bg-[#E6F4F1] text-[#0F766E] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                       <Icon className="w-6 h-6" />
                     </div>
-                    <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2] mb-2 group-hover:text-[#0F766E] dark:group-hover:text-emerald-400 transition-colors">
+                    <h3 className="font-serif text-lg font-bold text-[#0B1220] mb-2 group-hover:text-[#0F766E] transition-colors">
                       {f.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[#5B6572] leading-relaxed">
                       {f.desc}
                     </p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-[#E7E5DF] dark:border-[#1F2933] flex items-center text-xs font-semibold text-[#0F766E] dark:text-emerald-400 gap-1 group-hover:translate-x-1 transition-transform">
+                  <div className="mt-4 pt-3 border-t border-[#E7E5DF] flex items-center text-xs font-semibold text-[#0F766E] gap-1 group-hover:translate-x-1 transition-transform">
                     <span>Explore feature</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>
@@ -347,20 +356,20 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* 5. INTERACTIVE MINI SIP CALCULATOR TEASER */}
-      <section className="py-16 sm:py-24 max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-lg">
+      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-[#E7E5DF] shadow-lg">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left Sliders */}
             <div className="lg:col-span-6 space-y-6">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E] dark:text-emerald-400 mb-1">
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E] mb-1">
                   INTERACTIVE TEASER
                 </p>
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220]">
                   See the Power of SIP Compounding
                 </h2>
-                <p className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] mt-1">
+                <p className="text-xs sm:text-sm text-[#5B6572] mt-1">
                   Adjust monthly investment and time horizon to see estimated corpus growth at a healthy 12% expected annual CAGR.
                 </p>
               </div>
@@ -368,8 +377,8 @@ export const Landing: React.FC = () => {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between items-center text-xs mb-1.5">
-                    <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Monthly Investment</span>
-                    <span className="font-serif text-base font-bold text-[#0F766E] dark:text-emerald-400">
+                    <span className="font-semibold text-[#0B1220]">Monthly Investment</span>
+                    <span className="font-serif text-base font-bold text-[#0F766E]">
                       {formatINR(teaserSIP, false)}
                     </span>
                   </div>
@@ -380,9 +389,9 @@ export const Landing: React.FC = () => {
                     step={1000}
                     value={teaserSIP}
                     onChange={(e) => setTeaserSIP(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                   />
-                  <div className="flex justify-between text-[10px] text-[#5B6572] dark:text-[#8A97A6] mt-1">
+                  <div className="flex justify-between text-[10px] text-[#5B6572] mt-1">
                     <span>₹1,000</span>
                     <span>₹50,000</span>
                     <span>₹1,00,000</span>
@@ -391,8 +400,8 @@ export const Landing: React.FC = () => {
 
                 <div>
                   <div className="flex justify-between items-center text-xs mb-1.5">
-                    <span className="font-semibold text-[#0B1220] dark:text-[#E8EDF2]">Time Horizon</span>
-                    <span className="font-serif text-base font-bold text-[#0F766E] dark:text-emerald-400">
+                    <span className="font-semibold text-[#0B1220]">Time Horizon</span>
+                    <span className="font-serif text-base font-bold text-[#0F766E]">
                       {teaserYears} Years
                     </span>
                   </div>
@@ -403,9 +412,9 @@ export const Landing: React.FC = () => {
                     step={1}
                     value={teaserYears}
                     onChange={(e) => setTeaserYears(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0F766E]"
                   />
-                  <div className="flex justify-between text-[10px] text-[#5B6572] dark:text-[#8A97A6] mt-1">
+                  <div className="flex justify-between text-[10px] text-[#5B6572] mt-1">
                     <span>1 Yr</span>
                     <span>15 Yrs</span>
                     <span>30 Yrs</span>
@@ -415,29 +424,29 @@ export const Landing: React.FC = () => {
             </div>
 
             {/* Right Output Card */}
-            <div className="lg:col-span-6 p-6 sm:p-8 rounded-2xl bg-[#FAFAF7] dark:bg-[#0B0F14] border border-[#E7E5DF] dark:border-[#1F2933] space-y-6">
+            <div className="lg:col-span-6 p-6 sm:p-8 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] space-y-6">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#5B6572] dark:text-[#8A97A6]">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#5B6572]">
                   Estimated Future Value
                 </span>
-                <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F766E] dark:text-emerald-400 mt-1 tabular-nums">
+                <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F766E] mt-1 tabular-nums">
                   {formatCompactINR(teaserResult.totalValue)}
                 </p>
-                <p className="text-xs text-[#5B6572] dark:text-[#8A97A6] mt-1">
+                <p className="text-xs text-[#5B6572] mt-1">
                   Full exact value: {formatINR(teaserResult.totalValue, false)}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#E7E5DF] dark:border-[#1F2933]">
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#E7E5DF]">
                 <div>
-                  <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6] uppercase">Total Invested</p>
-                  <p className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                  <p className="text-[11px] text-[#5B6572] uppercase">Total Invested</p>
+                  <p className="font-serif text-lg font-bold text-[#0B1220]">
                     {formatCompactINR(teaserResult.investedAmount)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-[#5B6572] dark:text-[#8A97A6] uppercase">Estimated Wealth Gain</p>
-                  <p className="font-serif text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                  <p className="text-[11px] text-[#5B6572] uppercase">Estimated Wealth Gain</p>
+                  <p className="font-serif text-lg font-bold text-emerald-600">
                     +{formatCompactINR(teaserResult.estimatedReturns)}
                   </p>
                 </div>
@@ -445,7 +454,7 @@ export const Landing: React.FC = () => {
 
               <Link
                 to="/calculators"
-                className="w-full py-3 px-4 rounded-xl text-center text-xs sm:text-sm font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 min-h-[44px]"
+                className="w-full py-3 px-4 rounded-xl text-center text-xs sm:text-sm font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all flex items-center justify-center gap-2 min-h-[44px]"
               >
                 <span>Open Full Compounding Calculator Suite</span>
                 <ArrowRight className="w-4 h-4" />
@@ -457,16 +466,16 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* 6. WHY TRUST RUPEE MIND */}
-      <section className="py-16 bg-[#F4F4F0] dark:bg-[#0E131A] border-t border-[#E7E5DF] dark:border-[#1F2933]">
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 bg-[#F4F4F0] border-t border-[#E7E5DF]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E] dark:text-emerald-400">
+            <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#0F766E]">
               BUILT ON INTEGRITY
             </p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0B1220]">
               Why Indian Investors Trust Rupee Mind
             </h2>
-            <p className="text-sm sm:text-base text-[#5B6572] dark:text-[#8A97A6]">
+            <p className="text-sm sm:text-base text-[#5B6572]">
               Clear algorithms, transparent reasons, and zero hidden distributor kickbacks.
             </p>
           </div>
@@ -475,22 +484,22 @@ export const Landing: React.FC = () => {
             {trustPoints.map((tp, idx) => (
               <div
                 key={tp.title}
-                className="p-6 rounded-2xl bg-white dark:bg-[#121821] border border-[#E7E5DF] dark:border-[#1F2933] shadow-xs space-y-3"
+                className="p-6 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs space-y-3"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] dark:bg-emerald-950/60 text-[#0F766E] dark:text-emerald-400 flex items-center justify-center font-serif font-bold text-lg">
+                <div className="w-10 h-10 rounded-xl bg-[#E6F4F1] text-[#0F766E] flex items-center justify-center font-serif font-bold text-lg">
                   {idx + 1}
                 </div>
-                <h3 className="font-serif text-lg font-bold text-[#0B1220] dark:text-[#E8EDF2]">
+                <h3 className="font-serif text-lg font-bold text-[#0B1220]">
                   {tp.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#5B6572] dark:text-[#8A97A6] leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#5B6572] leading-relaxed">
                   {tp.desc}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-10 p-4 rounded-2xl bg-white/80 dark:bg-[#121821]/80 border border-[#E7E5DF] dark:border-[#1F2933] text-center text-xs text-[#5B6572] dark:text-[#8A97A6]">
+          <div className="mt-10 p-4 rounded-2xl bg-white/80 border border-[#E7E5DF] text-center text-xs text-[#5B6572]">
             <p>
               🛡️ All algorithmic signals and financial calculations are provided for educational and analytical purposes. Mutual fund investments are subject to market risks.
             </p>
@@ -499,7 +508,7 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* 7. FINAL CTA BAND */}
-      <section className="py-16 sm:py-20 bg-[#0F766E] dark:bg-emerald-950 text-white text-center">
+      <section className="py-16 sm:py-20 bg-[#0F766E] text-white text-center">
         <div className="max-w-[800px] mx-auto px-4 sm:px-6 space-y-6">
           <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-white">
             Take command of your wealth journey today.
