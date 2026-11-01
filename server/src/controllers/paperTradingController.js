@@ -5,14 +5,18 @@ import {
   getPaperOrders,
   resetPaperTradingWallet,
   calculateBrokerageCharges,
-} from '../services/paperTradingService.js';
-import { getQuote } from '../services/marketService.js';
+} from "../services/paperTradingService.js";
+import { getQuote } from "../services/marketService.js";
 
 export async function getSummary(req, res, next) {
   try {
     const summary = await getPaperTradingSummary(req.user.id);
     res.json({
       success: true,
+      wallet: summary.wallet,
+      performance: summary.performance,
+      positions: summary.positions,
+      recentOrders: summary.recentOrders,
       data: summary,
       timestamp: new Date().toISOString(),
     });
@@ -37,16 +41,26 @@ export async function getOrders(req, res, next) {
 
 export async function submitOrder(req, res, next) {
   try {
-    const result = await placePaperOrder(req.user.id, req.body);
+    const payload = {
+      ...req.body,
+      transactionType:
+        req.body.transactionType || req.body.side || req.body.type,
+      limitPrice: req.body.limitPrice ?? req.body.targetPrice,
+    };
+    const result = await placePaperOrder(req.user.id, payload);
     res.status(201).json({
       success: true,
+      order: {
+        ...result.order.toObject(),
+        id: result.order._id.toString(),
+      },
       data: result,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      message: error.message || 'Failed to place order',
+      message: error.message || "Failed to place order",
       timestamp: new Date().toISOString(),
     });
   }
@@ -64,7 +78,7 @@ export async function cancelOrder(req, res, next) {
   } catch (error) {
     res.status(400).json({
       success: false,
-      message: error.message || 'Failed to cancel order',
+      message: error.message || "Failed to cancel order",
       timestamp: new Date().toISOString(),
     });
   }
@@ -75,6 +89,7 @@ export async function resetWallet(req, res, next) {
     const result = await resetPaperTradingWallet(req.user.id);
     res.json({
       success: true,
+      wallet: { ...result.wallet.toObject(), positions: [] },
       data: result,
       timestamp: new Date().toISOString(),
     });
@@ -93,10 +108,10 @@ export async function estimateCharges(req, res, next) {
     }
 
     const charges = calculateBrokerageCharges(
-      transactionType || 'BUY',
-      productType || 'DELIVERY',
+      transactionType || "BUY",
+      productType || "DELIVERY",
       sharePrice,
-      parseInt(quantity, 10) || 1
+      parseInt(quantity, 10) || 1,
     );
 
     res.json({

@@ -1,20 +1,40 @@
-import { GoogleGenAI } from '@google/genai';
-import { Fund } from '../models/Fund.js';
-import { Profile } from '../models/Profile.js';
-import { Recommendation } from '../models/Recommendation.js';
-import { User } from '../models/User.js';
-import { Holding } from '../models/Holding.js';
-import { Watchlist } from '../models/Watchlist.js';
+import { GoogleGenAI } from "@google/genai";
+import { Fund } from "../models/Fund.js";
+import { Profile } from "../models/Profile.js";
+import { Recommendation } from "../models/Recommendation.js";
+import { User } from "../models/User.js";
+import { Holding } from "../models/Holding.js";
+import { Watchlist } from "../models/Watchlist.js";
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 // Category mapping based on user's risk tolerance
 const RISK_BAND_ALLOWED_CATEGORIES = {
-  Conservative: ['Liquid', 'Short Duration Debt', 'Corporate Bond', 'Balanced Advantage'],
-  'Moderately Conservative': ['Short Duration Debt', 'Corporate Bond', 'Balanced Advantage', 'Large Cap Index'],
-  Moderate: ['Large Cap Index', 'Flexi Cap', 'Balanced Advantage', 'Corporate Bond'],
-  'Moderately Aggressive': ['Flexi Cap', 'Large & Mid Cap', 'Large Cap Index', 'Mid Cap'],
-  Aggressive: ['Flexi Cap', 'Mid Cap', 'Small Cap', 'Large & Mid Cap', 'ELSS'],
+  Conservative: [
+    "Liquid",
+    "Short Duration Debt",
+    "Corporate Bond",
+    "Balanced Advantage",
+  ],
+  "Moderately Conservative": [
+    "Short Duration Debt",
+    "Corporate Bond",
+    "Balanced Advantage",
+    "Large Cap Index",
+  ],
+  Moderate: [
+    "Large Cap Index",
+    "Flexi Cap",
+    "Balanced Advantage",
+    "Corporate Bond",
+  ],
+  "Moderately Aggressive": [
+    "Flexi Cap",
+    "Large & Mid Cap",
+    "Large Cap Index",
+    "Mid Cap",
+  ],
+  Aggressive: ["Flexi Cap", "Mid Cap", "Small Cap", "Large & Mid Cap", "ELSS"],
 };
 
 /**
@@ -65,17 +85,27 @@ function scoreFund(fund) {
 export async function generateFundRecommendations(userId) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim().length === 0) {
-    throw new Error('Recommendations not configured: GEMINI_API_KEY is not set in environment.');
+    throw new Error(
+      "Recommendations not configured: GEMINI_API_KEY is not set in environment.",
+    );
   }
 
   // 1. Verify user has completed onboarding and profile questionnaire
-  const user = await User.findById(userId).select('onboardingDone');
+  const user = await User.findById(userId).select("onboardingDone");
   const profileDoc = await Profile.findOne({ userId });
 
-  if (!user || !user.onboardingDone || !profileDoc || profileDoc.scores?.risk == null || !profileDoc.scores?.riskBand) {
-    const error = new Error('Please complete your investment onboarding questionnaire before generating fund recommendations.');
+  if (
+    !user ||
+    !user.onboardingDone ||
+    !profileDoc ||
+    profileDoc.scores?.risk == null ||
+    !profileDoc.scores?.riskBand
+  ) {
+    const error = new Error(
+      "Please complete your investment onboarding questionnaire before generating fund recommendations.",
+    );
     error.statusCode = 400;
-    error.code = 'ONBOARDING_REQUIRED';
+    error.code = "ONBOARDING_REQUIRED";
     throw error;
   }
 
@@ -87,25 +117,44 @@ export async function generateFundRecommendations(userId) {
   });
 
   if (recentCount >= 10) {
-    throw new Error('Daily AI recommendation limit reached (10 generations/day). Please check your saved recommendations.');
+    throw new Error(
+      "Daily AI recommendation limit reached (10 generations/day). Please check your saved recommendations.",
+    );
   }
 
-  const effectiveRiskBand = profileDoc.effectiveRiskBand || profileDoc.riskBand || profileDoc.scores?.riskBand || 'Moderate';
+  const effectiveRiskBand =
+    profileDoc.effectiveRiskBand ||
+    profileDoc.riskBand ||
+    profileDoc.scores?.riskBand ||
+    "Moderate";
   const riskToleranceBand = profileDoc.riskToleranceBand || effectiveRiskBand;
-  const riskCapacityBand = profileDoc.riskCapacityBand || 'Moderate';
+  const riskCapacityBand = profileDoc.riskCapacityBand || "Moderate";
   const isRiskConstrained = profileDoc.isRiskConstrained || false;
-  const riskConstraintReason = profileDoc.riskConstraintReason || '';
-  const riskScore = profileDoc.effectiveRiskScore || profileDoc.riskScore || profileDoc.scores?.risk || 55;
+  const riskConstraintReason = profileDoc.riskConstraintReason || "";
+  const riskScore =
+    profileDoc.effectiveRiskScore ||
+    profileDoc.riskScore ||
+    profileDoc.scores?.risk ||
+    55;
   const horizonYears = profileDoc.horizonYears || 5;
-  const goalType = profileDoc.goalType || 'Wealth creation';
+  const goalType = profileDoc.goalType || "Wealth creation";
   const monthlySavings = profileDoc.monthlySavings || 20000;
   const emergencyFund = profileDoc.emergencyFundAmount || 0;
   const monthlyExpenses = profileDoc.monthlyExpenses || 30000;
-  const emergencyMonths = monthlyExpenses > 0 ? (emergencyFund / monthlyExpenses).toFixed(1) : 0;
+  const emergencyMonths =
+    monthlyExpenses > 0 ? (emergencyFund / monthlyExpenses).toFixed(1) : 0;
   const monthlyEMI = profileDoc.monthlyEMI || profileDoc.monthlyEMIs || 0;
-  const goalsList = profileDoc.goals && profileDoc.goals.length > 0
-    ? profileDoc.goals
-    : [{ name: goalType, type: goalType, targetAmount: profileDoc.targetAmount || 2500000, horizonYears }];
+  const goalsList =
+    profileDoc.goals && profileDoc.goals.length > 0
+      ? profileDoc.goals
+      : [
+          {
+            name: goalType,
+            type: goalType,
+            targetAmount: profileDoc.targetAmount || 2500000,
+            horizonYears,
+          },
+        ];
 
   // 2. Query real portfolio holdings and watchlist
   const holdings = await Holding.find({ userId }).lean();
@@ -113,28 +162,37 @@ export async function generateFundRecommendations(userId) {
 
   const totalPortfolioValue = holdings.reduce(
     (sum, h) => sum + (h.quantity || 0) * (h.currentPrice || h.buyPrice || 0),
-    0
+    0,
   );
 
   const holdingsSnapshot = holdings.map((h) => {
     const val = (h.quantity || 0) * (h.currentPrice || h.buyPrice || 0);
     return {
-      assetType: h.type || 'STOCK',
+      assetType: h.type || "STOCK",
       symbol: h.symbolOrCode,
       name: h.name || h.symbolOrCode,
       currentVal: Math.round(val),
-      allocationPercent: totalPortfolioValue > 0 ? Math.round((val / totalPortfolioValue) * 100) : 0,
+      allocationPercent:
+        totalPortfolioValue > 0
+          ? Math.round((val / totalPortfolioValue) * 100)
+          : 0,
     };
   });
 
   const watchedSymbols = watchlist?.items?.map((i) => i.symbol) || [];
 
   // 3. Query allowed funds from MongoDB using Effective Risk Band
-  const allowedCategories = RISK_BAND_ALLOWED_CATEGORIES[effectiveRiskBand] || RISK_BAND_ALLOWED_CATEGORIES.Moderate;
-  const candidates = await Fund.find({ category: { $in: allowedCategories } }).select('-navHistory').lean();
+  const allowedCategories =
+    RISK_BAND_ALLOWED_CATEGORIES[effectiveRiskBand] ||
+    RISK_BAND_ALLOWED_CATEGORIES.Moderate;
+  const candidates = await Fund.find({ category: { $in: allowedCategories } })
+    .select("-navHistory")
+    .lean();
 
   if (candidates.length === 0) {
-    throw new Error('No synchronized mutual funds found in database. Please run fund sync first.');
+    throw new Error(
+      "No synchronized mutual funds found in database. Please run fund sync first.",
+    );
   }
 
   // 4. Rank candidates using quantitative composite formula
@@ -153,10 +211,10 @@ export async function generateFundRecommendations(userId) {
     fundHouse: f.fundHouse,
     category: f.category,
     riskLevel: f.riskLevel,
-    cagr3Y: f.cagr3Y ? `${f.cagr3Y}%` : 'N/A',
-    cagr5Y: f.cagr5Y ? `${f.cagr5Y}%` : 'N/A',
-    volatility: f.volatility ? `${f.volatility}%` : 'N/A',
-    sharpeRatio: f.sharpeRatio ?? 'N/A',
+    cagr3Y: f.cagr3Y ? `${f.cagr3Y}%` : "N/A",
+    cagr5Y: f.cagr5Y ? `${f.cagr5Y}%` : "N/A",
+    volatility: f.volatility ? `${f.volatility}%` : "N/A",
+    sharpeRatio: f.sharpeRatio ?? "N/A",
   }));
 
   const aiPrompt = `You are Rupee Mind's production AI wealth strategist & portfolio engine.
@@ -164,14 +222,14 @@ Investor Dual-Engine Profile & Real Financial Circumstances:
 - Effective Fiduciary Risk Band: ${effectiveRiskBand} (Score: ${riskScore}/100)
 - Psychological Risk Tolerance (Willingness): ${riskToleranceBand}
 - Financial Risk Capacity (Ability): ${riskCapacityBand}
-- Fiduciary Constraint Status: ${isRiskConstrained ? `Constrained (${riskConstraintReason})` : 'Harmoniously Aligned'}
-- Emergency Fund Runway: ${emergencyMonths} months of living expenses (₹${emergencyFund.toLocaleString('en-IN')})
-- Monthly Loan Debt/EMIs: ₹${monthlyEMI.toLocaleString('en-IN')}
-- Investible Monthly Surplus: ₹${monthlySavings.toLocaleString('en-IN')}
-- Individually Defined Goals: ${JSON.stringify(goalsList.map(g => ({ name: g.name || g.type, horizon: `${g.horizonYears} yrs`, target: `₹${(g.targetAmount || 0).toLocaleString('en-IN')}`, priority: g.priority || 'Important' })))}
+- Fiduciary Constraint Status: ${isRiskConstrained ? `Constrained (${riskConstraintReason})` : "Harmoniously Aligned"}
+- Emergency Fund Runway: ${emergencyMonths} months of living expenses (₹${emergencyFund.toLocaleString("en-IN")})
+- Monthly Loan Debt/EMIs: ₹${monthlyEMI.toLocaleString("en-IN")}
+- Investible Monthly Surplus: ₹${monthlySavings.toLocaleString("en-IN")}
+- Individually Defined Goals: ${JSON.stringify(goalsList.map((g) => ({ name: g.name || g.type, horizon: `${g.horizonYears} yrs`, target: `₹${(g.targetAmount || 0).toLocaleString("en-IN")}`, priority: g.priority || "Important" })))}
 
 Current Investor Portfolio Context:
-- Total Portfolio Value: ₹${Math.round(totalPortfolioValue).toLocaleString('en-IN')}
+- Total Portfolio Value: ₹${Math.round(totalPortfolioValue).toLocaleString("en-IN")}
 - Existing Holdings (${holdings.length} assets): ${JSON.stringify(holdingsSnapshot.slice(0, 8))}
 - Watchlist Items (${watchedSymbols.length}): ${JSON.stringify(watchedSymbols.slice(0, 8))}
 
@@ -225,25 +283,35 @@ INSTRUCTIONS & FIDUCIARY CONSTRAINTS:
         contents: aiPrompt,
       });
 
-      const text = response.text || '';
+      const text = response.text || "";
       const cleanJson = text
-        .replace(/```json/gi, '')
-        .replace(/```/g, '')
+        .replace(/```json/gi, "")
+        .replace(/```/g, "")
         .trim();
 
       const result = JSON.parse(cleanJson);
 
       // Validation: verify picks exist and allocation sums to 100
       if (Array.isArray(result.picks) && result.picks.length > 0) {
-        const validPicks = result.picks.filter((p) => fundMap.has(p.schemeCode?.toString()));
+        const validPicks = result.picks.filter((p) =>
+          fundMap.has(p.schemeCode?.toString()),
+        );
         if (validPicks.length >= 2) {
           // Normalize allocations to 100%
-          const sum = validPicks.reduce((acc, p) => acc + (p.allocationPercent || 0), 0);
+          const sum = validPicks.reduce(
+            (acc, p) => acc + (p.allocationPercent || 0),
+            0,
+          );
           if (sum > 0) {
             validPicks.forEach((p) => {
-              p.allocationPercent = Math.round((p.allocationPercent / sum) * 100);
+              p.allocationPercent = Math.round(
+                (p.allocationPercent / sum) * 100,
+              );
             });
-            const newSum = validPicks.reduce((acc, p) => acc + p.allocationPercent, 0);
+            const newSum = validPicks.reduce(
+              (acc, p) => acc + p.allocationPercent,
+              0,
+            );
             if (newSum !== 100) {
               validPicks[0].allocationPercent += 100 - newSum;
             }
@@ -252,27 +320,50 @@ INSTRUCTIONS & FIDUCIARY CONSTRAINTS:
         }
       }
     } catch (err) {
-      console.warn(`[RecommendationService] Gemini attempt ${attempts} failed:`, err.message);
+      console.warn(
+        `[RecommendationService] Gemini attempt ${attempts} failed:`,
+        err.message,
+      );
     }
   }
 
   // Graceful rule-based fallback if AI API response fails
   if (!parsedOutput) {
-    console.warn('[RecommendationService] AI call unsuccessful. Building high-conviction quantitative recommendation.');
+    console.warn(
+      "[RecommendationService] AI call unsuccessful. Building high-conviction quantitative recommendation.",
+    );
     const topPicks = rankedFunds.slice(0, 3);
     const defaultAllocations = [50, 30, 20];
     parsedOutput = {
       confidenceScore: 85,
       assetAllocation: {
-        equity: effectiveRiskBand === 'Aggressive' ? 80 : effectiveRiskBand === 'Conservative' ? 25 : effectiveRiskBand === 'Moderately Conservative' ? 35 : effectiveRiskBand === 'Moderately Aggressive' ? 70 : 55,
-        debt: effectiveRiskBand === 'Aggressive' ? 12 : effectiveRiskBand === 'Conservative' ? 65 : effectiveRiskBand === 'Moderately Conservative' ? 55 : effectiveRiskBand === 'Moderately Aggressive' ? 20 : 35,
+        equity:
+          effectiveRiskBand === "Aggressive"
+            ? 80
+            : effectiveRiskBand === "Conservative"
+              ? 25
+              : effectiveRiskBand === "Moderately Conservative"
+                ? 35
+                : effectiveRiskBand === "Moderately Aggressive"
+                  ? 70
+                  : 55,
+        debt:
+          effectiveRiskBand === "Aggressive"
+            ? 12
+            : effectiveRiskBand === "Conservative"
+              ? 65
+              : effectiveRiskBand === "Moderately Conservative"
+                ? 55
+                : effectiveRiskBand === "Moderately Aggressive"
+                  ? 20
+                  : 35,
         gold: 10,
       },
       aiReasoning: {
-        summary: `Fiduciary recommendation calibrated to ${effectiveRiskBand} posture (${isRiskConstrained ? 'constrained by cash flow & emergency reserves' : 'aligned with investor profile'}) across a ${horizonYears}-year horizon.`,
+        summary: `Fiduciary recommendation calibrated to ${effectiveRiskBand} posture (${isRiskConstrained ? "constrained by cash flow & emergency reserves" : "aligned with investor profile"}) across a ${horizonYears}-year horizon.`,
         keyDrivers: [
-          `Asset allocation strictly constrained by your financial risk capacity (${emergencyMonths} months emergency runway, ${monthlyEMI > 0 ? `₹${monthlyEMI.toLocaleString('en-IN')} EMI commitments` : 'zero active EMI debt'}).`,
-          `Fund selection directly prioritized for your individual goals (${goalsList.map(g => g.name || g.type).join(', ')}).`,
+          `Asset allocation strictly constrained by your financial risk capacity (${emergencyMonths} months emergency runway, ${monthlyEMI > 0 ? `₹${monthlyEMI.toLocaleString("en-IN")} EMI commitments` : "zero active EMI debt"}).`,
+          `Fund selection directly prioritized for your individual goals (${goalsList.map((g) => g.name || g.type).join(", ")}).`,
           `Top-quartile Sharpe ratio and historical consistency across the ${effectiveRiskBand} mutual fund universe.`,
         ],
         portfolioAlignment: `Engineered to complement your current ${holdings.length} holding(s) with systematic downside resilience.`,
@@ -280,10 +371,16 @@ INSTRUCTIONS & FIDUCIARY CONSTRAINTS:
       picks: topPicks.map((f, i) => ({
         schemeCode: f.schemeCode.toString(),
         allocationPercent: defaultAllocations[i] || 20,
-        role: i === 0 ? 'Core Wealth Builder' : i === 1 ? 'Growth Accelerator' : 'Stability & Hedge',
-        reason: `Selected for stellar risk-adjusted return (${f.sharpeRatio ? f.sharpeRatio.toFixed(2) : '3Y CAGR ' + f.cagr3Y + '%'}) matching ${effectiveRiskBand} risk posture.`,
+        role:
+          i === 0
+            ? "Core Wealth Builder"
+            : i === 1
+              ? "Growth Accelerator"
+              : "Stability & Hedge",
+        reason: `Selected for stellar risk-adjusted return (${f.sharpeRatio ? f.sharpeRatio.toFixed(2) : "3Y CAGR " + f.cagr3Y + "%"}) matching ${effectiveRiskBand} risk posture.`,
       })),
-      marketContextNote: 'Generated based on quantitative multi-factor screening and fiduciary balance-sheet constraints.',
+      marketContextNote:
+        "Generated based on quantitative multi-factor screening and fiduciary balance-sheet constraints.",
     };
   }
 
@@ -302,7 +399,7 @@ INSTRUCTIONS & FIDUCIARY CONSTRAINTS:
       cagr3Y: fund.cagr3Y,
       cagr5Y: fund.cagr5Y,
       allocationPercent: pick.allocationPercent,
-      role: pick.role || 'Core Wealth Builder',
+      role: pick.role || "Core Wealth Builder",
       rationale: pick.reason,
     };
   });
@@ -325,25 +422,45 @@ INSTRUCTIONS & FIDUCIARY CONSTRAINTS:
     holdingsSnapshot,
     confidenceScore: parsedOutput.confidenceScore || 85,
     aiReasoning: parsedOutput.aiReasoning || {
-      summary: 'Tailored fund portfolio constructed according to risk tolerance and goals.',
-      keyDrivers: ['Historical 3Y/5Y return consistency', 'Lower volatility relative to peers'],
-      portfolioAlignment: 'Fills allocation gaps and improves risk-adjusted yield.',
+      summary:
+        "Tailored fund portfolio constructed according to risk tolerance and goals.",
+      keyDrivers: [
+        "Historical 3Y/5Y return consistency",
+        "Lower volatility relative to peers",
+      ],
+      portfolioAlignment:
+        "Fills allocation gaps and improves risk-adjusted yield.",
     },
-    marketContextNote: parsedOutput.marketContextNote || 'Generated based on current Indian macroeconomic backdrop.',
-    status: 'active',
+    marketContextNote:
+      parsedOutput.marketContextNote ||
+      "Generated based on current Indian macroeconomic backdrop.",
+    status: "active",
   });
 
-  return recommendationDoc;
+  return {
+    ...(recommendationDoc.toObject
+      ? recommendationDoc.toObject()
+      : recommendationDoc),
+    funds: finalRecs,
+    assetAllocation: {
+      equity: recommendationDoc.assetAllocation?.equity ?? 70,
+      debt: recommendationDoc.assetAllocation?.debt ?? 20,
+      gold: recommendationDoc.assetAllocation?.gold ?? 10,
+    },
+    recommendations: finalRecs,
+  };
 }
 
 /**
  * Get latest active recommendation for user
  */
 export async function getLatestRecommendation(userId) {
-  const latest = await Recommendation.findOne({ userId, status: 'active' })
+  const latest = await Recommendation.findOne({ userId, status: "active" })
     .sort({ createdAt: -1 })
     .lean();
-  return latest || Recommendation.findOne({ userId }).sort({ createdAt: -1 }).lean();
+  return (
+    latest || Recommendation.findOne({ userId }).sort({ createdAt: -1 }).lean()
+  );
 }
 
 /**
@@ -352,7 +469,7 @@ export async function getLatestRecommendation(userId) {
 export async function getRecommendationHistory(userId, options = {}) {
   const { status, limit = 20, page = 1 } = options;
   const filter = { userId };
-  if (status && status !== 'all') {
+  if (status && status !== "all") {
     filter.status = status;
   }
 
@@ -380,9 +497,12 @@ export async function getRecommendationHistory(userId, options = {}) {
  * Get specific recommendation by ID
  */
 export async function getRecommendationById(userId, recommendationId) {
-  const rec = await Recommendation.findOne({ _id: recommendationId, userId }).lean();
+  const rec = await Recommendation.findOne({
+    _id: recommendationId,
+    userId,
+  }).lean();
   if (!rec) {
-    const error = new Error('Recommendation not found');
+    const error = new Error("Recommendation not found");
     error.statusCode = 404;
     throw error;
   }
@@ -399,7 +519,7 @@ export async function compareRecommendations(userId, id1, id2) {
   ]);
 
   if (!rec1 || !rec2) {
-    const error = new Error('One or both recommendations not found');
+    const error = new Error("One or both recommendations not found");
     error.statusCode = 404;
     throw error;
   }
@@ -408,14 +528,24 @@ export async function compareRecommendations(userId, id1, id2) {
   const rec1FundNames = new Set(rec1.recommendations.map((r) => r.fundName));
   const rec2FundNames = new Set(rec2.recommendations.map((r) => r.fundName));
 
-  const commonFunds = [...rec1FundNames].filter((name) => rec2FundNames.has(name));
-  const uniqueToRec1 = [...rec1FundNames].filter((name) => !rec2FundNames.has(name));
-  const uniqueToRec2 = [...rec2FundNames].filter((name) => !rec1FundNames.has(name));
+  const commonFunds = [...rec1FundNames].filter((name) =>
+    rec2FundNames.has(name),
+  );
+  const uniqueToRec1 = [...rec1FundNames].filter(
+    (name) => !rec2FundNames.has(name),
+  );
+  const uniqueToRec2 = [...rec2FundNames].filter(
+    (name) => !rec1FundNames.has(name),
+  );
 
-  const avgCagr3Y1 =
-    rec1.recommendations.reduce((sum, r) => sum + (r.cagr3Y || 0) * (r.allocationPercent / 100), 0);
-  const avgCagr3Y2 =
-    rec2.recommendations.reduce((sum, r) => sum + (r.cagr3Y || 0) * (r.allocationPercent / 100), 0);
+  const avgCagr3Y1 = rec1.recommendations.reduce(
+    (sum, r) => sum + (r.cagr3Y || 0) * (r.allocationPercent / 100),
+    0,
+  );
+  const avgCagr3Y2 = rec2.recommendations.reduce(
+    (sum, r) => sum + (r.cagr3Y || 0) * (r.allocationPercent / 100),
+    0,
+  );
 
   const comparison = {
     rec1: {
@@ -445,10 +575,14 @@ export async function compareRecommendations(userId, id1, id2) {
       commonFunds,
       uniqueToRec1,
       uniqueToRec2,
-      equityAllocationDiff: (rec2.assetAllocation?.equity || 0) - (rec1.assetAllocation?.equity || 0),
-      debtAllocationDiff: (rec2.assetAllocation?.debt || 0) - (rec1.assetAllocation?.debt || 0),
+      equityAllocationDiff:
+        (rec2.assetAllocation?.equity || 0) -
+        (rec1.assetAllocation?.equity || 0),
+      debtAllocationDiff:
+        (rec2.assetAllocation?.debt || 0) - (rec1.assetAllocation?.debt || 0),
       weightedCagr3YDiff: Number((avgCagr3Y2 - avgCagr3Y1).toFixed(2)),
-      confidenceDiff: (rec2.confidenceScore || 85) - (rec1.confidenceScore || 85),
+      confidenceDiff:
+        (rec2.confidenceScore || 85) - (rec1.confidenceScore || 85),
     },
   };
 
@@ -461,12 +595,12 @@ export async function compareRecommendations(userId, id1, id2) {
 export async function archiveRecommendation(userId, recommendationId) {
   const rec = await Recommendation.findOneAndUpdate(
     { _id: recommendationId, userId },
-    { status: 'archived' },
-    { new: true }
+    { status: "archived" },
+    { new: true },
   );
 
   if (!rec) {
-    const error = new Error('Recommendation not found');
+    const error = new Error("Recommendation not found");
     error.statusCode = 404;
     throw error;
   }
@@ -478,9 +612,12 @@ export async function archiveRecommendation(userId, recommendationId) {
  * Delete a recommendation
  */
 export async function deleteRecommendation(userId, recommendationId) {
-  const result = await Recommendation.findOneAndDelete({ _id: recommendationId, userId });
+  const result = await Recommendation.findOneAndDelete({
+    _id: recommendationId,
+    userId,
+  });
   if (!result) {
-    const error = new Error('Recommendation not found');
+    const error = new Error("Recommendation not found");
     error.statusCode = 404;
     throw error;
   }

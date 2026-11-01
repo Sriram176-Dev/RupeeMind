@@ -1,4 +1,4 @@
-import { Watchlist } from '../models/Watchlist.js';
+import { Watchlist } from "../models/Watchlist.js";
 
 const SYMBOL_REGEX = /^[A-Z0-9&.\-^]{1,20}$/;
 
@@ -13,6 +13,7 @@ export async function getWatchlist(req, res, next) {
 
     return res.status(200).json({
       success: true,
+      watchlist: symbols,
       symbols,
       items: wl.items,
     });
@@ -27,7 +28,8 @@ export async function toggleWatchlist(req, res, next) {
     if (!symbol || !SYMBOL_REGEX.test(symbol)) {
       return res.status(400).json({
         success: false,
-        message: 'Valid ticker symbol is required (up to 20 alphanumeric characters)',
+        message:
+          "Valid ticker symbol is required (up to 20 alphanumeric characters)",
       });
     }
 
@@ -46,7 +48,7 @@ export async function toggleWatchlist(req, res, next) {
       if (wl.items.length >= 50) {
         return res.status(400).json({
           success: false,
-          message: 'Watchlist limit reached. Maximum 50 items allowed.',
+          message: "Watchlist limit reached. Maximum 50 items allowed.",
         });
       }
       wl.items.push({ symbol, addedAt: new Date() });

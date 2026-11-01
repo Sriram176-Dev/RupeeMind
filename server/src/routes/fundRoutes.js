@@ -1,17 +1,18 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
   getFundsController,
   getFundDetailController,
   compareFundsController,
   compareFundsSchema,
   getFundsQuerySchema,
-} from '../controllers/fundController.js';
-import { validate, validateQuery } from '../middleware/validate.js';
+} from "../controllers/fundController.js";
+import { validate, validateQuery } from "../middleware/validate.js";
 
 const router = Router();
 
-router.get('/', validateQuery(getFundsQuerySchema), getFundsController);
-router.post('/compare', validate(compareFundsSchema), compareFundsController);
-router.get('/:code', getFundDetailController);
+router.get("/", validateQuery(getFundsQuerySchema), getFundsController);
+router.get("/compare", compareFundsController);
+router.post("/compare", validate(compareFundsSchema), compareFundsController);
+router.get("/:code", getFundDetailController);
 
 export default router;

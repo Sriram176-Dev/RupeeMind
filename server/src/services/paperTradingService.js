@@ -1,8 +1,13 @@
-import { PaperWallet } from '../models/PaperWallet.js';
-import { PaperPosition } from '../models/PaperPosition.js';
-import { PaperOrder } from '../models/PaperOrder.js';
-import { getQuote, getQuotes, toCleanSymbol, toYahooSymbol } from './marketService.js';
-import { NIFTY_50_SYMBOLS } from '../config/marketUniverse.js';
+import { PaperWallet } from "../models/PaperWallet.js";
+import { PaperPosition } from "../models/PaperPosition.js";
+import { PaperOrder } from "../models/PaperOrder.js";
+import {
+  getQuote,
+  getQuotes,
+  toCleanSymbol,
+  toYahooSymbol,
+} from "./marketService.js";
+import { NIFTY_50_SYMBOLS } from "../config/marketUniverse.js";
 
 const INITIAL_CAPITAL = 1000000; // ₹10,00,000
 
@@ -13,12 +18,17 @@ const INITIAL_CAPITAL = 1000000; // ₹10,00,000
  * @param {number} price - Share price
  * @param {number} quantity - Number of shares
  */
-export function calculateBrokerageCharges(transactionType, productType, price, quantity) {
+export function calculateBrokerageCharges(
+  transactionType,
+  productType,
+  price,
+  quantity,
+) {
   const turnover = price * quantity;
 
   // 1. Brokerage: ₹0 for delivery, flat ₹20 or 0.03% (whichever is lower) for intraday
   let brokerage = 0;
-  if (productType === 'INTRADAY') {
+  if (productType === "INTRADAY") {
     brokerage = Math.min(20, Number((turnover * 0.0003).toFixed(2)));
   }
 
@@ -26,9 +36,9 @@ export function calculateBrokerageCharges(transactionType, productType, price, q
   // Delivery: 0.1% on buy & sell turnover
   // Intraday: 0.025% on sell turnover only
   let stt = 0;
-  if (productType === 'DELIVERY') {
+  if (productType === "DELIVERY") {
     stt = Number((turnover * 0.001).toFixed(2));
-  } else if (productType === 'INTRADAY' && transactionType === 'SELL') {
+  } else if (productType === "INTRADAY" && transactionType === "SELL") {
     stt = Number((turnover * 0.00025).toFixed(2));
   }
 
@@ -40,11 +50,13 @@ export function calculateBrokerageCharges(transactionType, productType, price, q
 
   // 5. Stamp Duty: 0.015% on buy turnover only
   let stampDuty = 0;
-  if (transactionType === 'BUY') {
+  if (transactionType === "BUY") {
     stampDuty = Number((turnover * 0.00015).toFixed(2));
   }
 
-  const totalCharges = Number((brokerage + stt + exchangeTurnover + gst + stampDuty).toFixed(2));
+  const totalCharges = Number(
+    (brokerage + stt + exchangeTurnover + gst + stampDuty).toFixed(2),
+  );
 
   return {
     brokerage,
@@ -106,10 +118,15 @@ export async function getPaperTradingSummary(userId) {
       const dayChange = quote?.change ?? 0;
       const dayChangePercent = quote?.changePercent ?? 0;
 
-      const investedValue = Number((pos.quantity * pos.averageBuyPrice).toFixed(2));
+      const investedValue = Number(
+        (pos.quantity * pos.averageBuyPrice).toFixed(2),
+      );
       const currentValue = Number((pos.quantity * currentPrice).toFixed(2));
       const unrealizedPnL = Number((currentValue - investedValue).toFixed(2));
-      const unrealizedPnLPercent = investedValue > 0 ? Number(((unrealizedPnL / investedValue) * 100).toFixed(2)) : 0;
+      const unrealizedPnLPercent =
+        investedValue > 0
+          ? Number(((unrealizedPnL / investedValue) * 100).toFixed(2))
+          : 0;
       const dayPnL = Number((pos.quantity * dayChange).toFixed(2));
 
       totalInvestedValue += investedValue;
@@ -132,10 +149,19 @@ export async function getPaperTradingSummary(userId) {
     });
   }
 
-  const totalPortfolioValue = Number((wallet.cashBalance + totalCurrentValue).toFixed(2));
-  const overallPnL = Number((totalPortfolioValue - wallet.initialCapital).toFixed(2));
-  const overallPnLPercent = Number(((overallPnL / wallet.initialCapital) * 100).toFixed(2));
-  const winRatePercent = wallet.totalTrades > 0 ? Number(((wallet.winningTrades / wallet.totalTrades) * 100).toFixed(1)) : 0;
+  const totalPortfolioValue = Number(
+    (wallet.cashBalance + totalCurrentValue).toFixed(2),
+  );
+  const overallPnL = Number(
+    (totalPortfolioValue - wallet.initialCapital).toFixed(2),
+  );
+  const overallPnLPercent = Number(
+    ((overallPnL / wallet.initialCapital) * 100).toFixed(2),
+  );
+  const winRatePercent =
+    wallet.totalTrades > 0
+      ? Number(((wallet.winningTrades / wallet.totalTrades) * 100).toFixed(1))
+      : 0;
 
   // Recent 5 executed/pending orders
   const recentOrders = await PaperOrder.find({ userId })
@@ -176,20 +202,20 @@ export async function placePaperOrder(userId, payload) {
   const {
     symbol: rawSymbol,
     transactionType, // 'BUY' | 'SELL'
-    orderType = 'MARKET', // 'MARKET' | 'LIMIT'
-    productType = 'DELIVERY', // 'DELIVERY' | 'INTRADAY'
+    orderType = "MARKET", // 'MARKET' | 'LIMIT'
+    productType = "DELIVERY", // 'DELIVERY' | 'INTRADAY'
     quantity: rawQty,
     limitPrice: rawLimitPrice,
   } = payload;
 
   const quantity = parseInt(rawQty, 10);
   if (!quantity || quantity <= 0) {
-    throw new Error('Quantity must be a positive integer');
+    throw new Error("Quantity must be a positive integer");
   }
 
   const symbol = toCleanSymbol(rawSymbol);
   if (!symbol) {
-    throw new Error('Invalid stock symbol provided');
+    throw new Error("Invalid stock symbol provided");
   }
 
   // Fetch live market quote
@@ -205,63 +231,75 @@ export async function placePaperOrder(userId, payload) {
   const wallet = await getOrCreateWallet(userId);
 
   // Determine fill conditions
-  let status = 'EXECUTED';
+  let status = "EXECUTED";
   let executedPrice = null;
-  const requestedPrice = orderType === 'LIMIT' ? Number(parseFloat(rawLimitPrice).toFixed(2)) : null;
+  const requestedPrice =
+    orderType === "LIMIT" ? Number(parseFloat(rawLimitPrice).toFixed(2)) : null;
 
-  if (orderType === 'LIMIT') {
+  if (orderType === "LIMIT") {
     if (!requestedPrice || requestedPrice <= 0) {
-      throw new Error('Valid limit price is required for LIMIT orders');
+      throw new Error("Valid limit price is required for LIMIT orders");
     }
 
     // Limit order execution logic:
     // BUY: executes if marketPrice <= limitPrice
     // SELL: executes if marketPrice >= limitPrice
-    const canFill = (transactionType === 'BUY' && marketPrice <= requestedPrice) ||
-                    (transactionType === 'SELL' && marketPrice >= requestedPrice);
+    const canFill =
+      (transactionType === "BUY" && marketPrice <= requestedPrice) ||
+      (transactionType === "SELL" && marketPrice >= requestedPrice);
 
     if (canFill) {
       executedPrice = requestedPrice;
-      status = 'EXECUTED';
+      status = "EXECUTED";
     } else {
-      status = 'PENDING';
+      status = "PENDING";
     }
   } else {
     // MARKET order fills with minor realistic micro-slippage (±0.02%)
     const slippageFactor = 1 + (Math.random() * 0.0004 - 0.0002);
     executedPrice = Number((marketPrice * slippageFactor).toFixed(2));
-    status = 'EXECUTED';
+    status = "EXECUTED";
   }
 
   // Calculate regulatory statutory charges
   const charges = calculateBrokerageCharges(
     transactionType,
     productType,
-    status === 'EXECUTED' ? executedPrice : (requestedPrice || marketPrice),
-    quantity
+    status === "EXECUTED" ? executedPrice : requestedPrice || marketPrice,
+    quantity,
   );
 
   // If order is executing immediately:
-  if (status === 'EXECUTED') {
-    if (transactionType === 'BUY') {
-      const requiredCash = Number((quantity * executedPrice + charges.totalCharges).toFixed(2));
+  if (status === "EXECUTED") {
+    if (transactionType === "BUY") {
+      const requiredCash = Number(
+        (quantity * executedPrice + charges.totalCharges).toFixed(2),
+      );
       if (wallet.cashBalance < requiredCash) {
         throw new Error(
-          `Insufficient virtual cash. Required: ₹${requiredCash.toLocaleString('en-IN')}, Available: ₹${wallet.cashBalance.toLocaleString('en-IN')}`
+          `Insufficient virtual cash. Required: ₹${requiredCash.toLocaleString("en-IN")}, Available: ₹${wallet.cashBalance.toLocaleString("en-IN")}`,
         );
       }
 
       // Deduct cash from wallet
-      wallet.cashBalance = Number((wallet.cashBalance - requiredCash).toFixed(2));
+      wallet.cashBalance = Number(
+        (wallet.cashBalance - requiredCash).toFixed(2),
+      );
       await wallet.save();
 
       // Upsert position
-      const existingPos = await PaperPosition.findOne({ userId, symbol, productType });
+      const existingPos = await PaperPosition.findOne({
+        userId,
+        symbol,
+        productType,
+      });
       if (existingPos) {
         const totalOldCost = existingPos.quantity * existingPos.averageBuyPrice;
         const totalNewCost = quantity * executedPrice;
         const newTotalQty = existingPos.quantity + quantity;
-        existingPos.averageBuyPrice = Number(((totalOldCost + totalNewCost) / newTotalQty).toFixed(2));
+        existingPos.averageBuyPrice = Number(
+          ((totalOldCost + totalNewCost) / newTotalQty).toFixed(2),
+        );
         existingPos.quantity = newTotalQty;
         await existingPos.save();
       } else {
@@ -275,24 +313,38 @@ export async function placePaperOrder(userId, payload) {
           productType,
         });
       }
-    } else if (transactionType === 'SELL') {
+    } else if (transactionType === "SELL") {
       // Check existing holding
-      const existingPos = await PaperPosition.findOne({ userId, symbol, productType });
+      const existingPos = await PaperPosition.findOne({
+        userId,
+        symbol,
+        productType,
+      });
       if (!existingPos || existingPos.quantity < quantity) {
         const available = existingPos ? existingPos.quantity : 0;
-        throw new Error(`Insufficient shares to sell. Available: ${available}, Requested: ${quantity}`);
+        throw new Error(
+          `Insufficient shares to sell. Available: ${available}, Requested: ${quantity}`,
+        );
       }
 
       const grossProceeds = quantity * executedPrice;
-      const netProceeds = Number((grossProceeds - charges.totalCharges).toFixed(2));
+      const netProceeds = Number(
+        (grossProceeds - charges.totalCharges).toFixed(2),
+      );
 
       // Realized profit calculation
       const costBasis = quantity * existingPos.averageBuyPrice;
-      const realizedPnL = Number((grossProceeds - costBasis - charges.totalCharges).toFixed(2));
+      const realizedPnL = Number(
+        (grossProceeds - costBasis - charges.totalCharges).toFixed(2),
+      );
 
       // Credit wallet
-      wallet.cashBalance = Number((wallet.cashBalance + netProceeds).toFixed(2));
-      wallet.realizedPnL = Number((wallet.realizedPnL + realizedPnL).toFixed(2));
+      wallet.cashBalance = Number(
+        (wallet.cashBalance + netProceeds).toFixed(2),
+      );
+      wallet.realizedPnL = Number(
+        (wallet.realizedPnL + realizedPnL).toFixed(2),
+      );
       wallet.totalTrades += 1;
       if (realizedPnL > 0) wallet.winningTrades += 1;
       else if (realizedPnL < 0) wallet.losingTrades += 1;
@@ -326,16 +378,17 @@ export async function placePaperOrder(userId, payload) {
     status,
     charges,
     realizedPnL: payload.realizedPnL ?? null,
-    executedAt: status === 'EXECUTED' ? new Date() : null,
+    executedAt: status === "EXECUTED" ? new Date() : null,
   });
 
   return {
     success: true,
     order,
     status,
-    message: status === 'EXECUTED' 
-      ? `Order ${orderId} filled at ₹${executedPrice}` 
-      : `Limit order ${orderId} placed (Pending execution)`,
+    message:
+      status === "EXECUTED"
+        ? `Order ${orderId} filled at ₹${executedPrice}`
+        : `Limit order ${orderId} placed (Pending execution)`,
   };
 }
 
@@ -343,28 +396,42 @@ export async function placePaperOrder(userId, payload) {
  * Cancel a pending limit order
  */
 export async function cancelPaperOrder(userId, orderId) {
-  const order = await PaperOrder.findOne({ userId, orderId, status: 'PENDING' });
+  let order = await PaperOrder.findOne({ userId, orderId, status: "PENDING" });
+  if (!order && /^[a-f\d]{24}$/i.test(orderId)) {
+    order = await PaperOrder.findOne({
+      userId,
+      _id: orderId,
+      status: "PENDING",
+    });
+  }
   if (!order) {
-    throw new Error('Order not found or cannot be cancelled');
+    throw new Error("Order not found or cannot be cancelled");
   }
 
-  order.status = 'CANCELLED';
+  order.status = "CANCELLED";
   await order.save();
 
-  return { success: true, orderId, status: 'CANCELLED' };
+  return { success: true, orderId, status: "CANCELLED" };
 }
 
 /**
  * Get paginated order book history
  */
-export async function getPaperOrders(userId, { status, limit = 20, skip = 0 } = {}) {
+export async function getPaperOrders(
+  userId,
+  { status, limit = 20, skip = 0 } = {},
+) {
   const query = { userId };
-  if (status && status !== 'ALL') {
+  if (status && status !== "ALL") {
     query.status = status;
   }
 
   const [orders, total] = await Promise.all([
-    PaperOrder.find(query).sort({ createdAt: -1 }).skip(Number(skip)).limit(Number(limit)).lean(),
+    PaperOrder.find(query)
+      .sort({ createdAt: -1 })
+      .skip(Number(skip))
+      .limit(Number(limit))
+      .lean(),
     PaperOrder.countDocuments(query),
   ]);
 
@@ -394,7 +461,7 @@ export async function resetPaperTradingWallet(userId) {
 
   return {
     success: true,
-    message: 'Paper trading wallet and positions reset to ₹10,00,000.',
+    message: "Paper trading wallet and positions reset to ₹10,00,000.",
     wallet,
   };
 }

@@ -1,7 +1,7 @@
-import { z } from 'zod';
-import * as marketService from '../services/marketService.js';
-import * as signalService from '../services/signalService.js';
-import { getMarketStatus } from '../utils/marketHours.js';
+import { z } from "zod";
+import * as marketService from "../services/marketService.js";
+import * as signalService from "../services/signalService.js";
+import { getMarketStatus } from "../utils/marketHours.js";
 
 const SYMBOL_REGEX = /^[A-Z0-9&.\-^]{1,20}$/;
 
@@ -10,11 +10,27 @@ export const quotesQuerySchema = z.object({
 });
 
 export const historyQuerySchema = z.object({
-  range: z.enum(['1D', '1W', '1M', '1Y', '5Y', '1d', '1w', '1m', '1y', '5y']).optional().default('1M'),
+  range: z
+    .enum([
+      "1D",
+      "1W",
+      "1M",
+      "1Y",
+      "5Y",
+      "1d",
+      "1w",
+      "1m",
+      "1y",
+      "5y",
+      "1MO",
+      "1mo",
+    ])
+    .optional()
+    .default("1M"),
 });
 
 export const searchQuerySchema = z.object({
-  q: z.string().min(1, 'Search query is required').max(50),
+  q: z.string().min(1, "Search query is required").max(50),
 });
 
 export async function getMarketStatusController(req, res) {
@@ -45,7 +61,7 @@ export async function getQuotesController(req, res, next) {
   try {
     const rawSymbols = req.query.symbols
       ? req.query.symbols
-          .split(',')
+          .split(",")
           .map((s) => s.trim().toUpperCase())
           .filter((s) => SYMBOL_REGEX.test(s))
           .slice(0, 50)
@@ -66,11 +82,11 @@ export async function getQuotesController(req, res, next) {
 
 export async function getSingleQuoteController(req, res, next) {
   try {
-    const symbol = (req.params.symbol || '').toUpperCase().trim();
+    const symbol = (req.params.symbol || "").toUpperCase().trim();
     if (!SYMBOL_REGEX.test(symbol)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid symbol format',
+        message: "Invalid symbol format",
       });
     }
 
@@ -98,17 +114,24 @@ export async function getSingleQuoteController(req, res, next) {
 
 export async function getHistoryController(req, res, next) {
   try {
-    const symbol = (req.params.symbol || '').toUpperCase().trim();
+    const symbol = (req.params.symbol || "").toUpperCase().trim();
     if (!SYMBOL_REGEX.test(symbol)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid symbol format',
+        message: "Invalid symbol format",
       });
     }
 
-    const range = (req.query.range || '1M').toString().toUpperCase();
-    const validRanges = ['1D', '1W', '1M', '1Y', '5Y'];
-    const sanitizedRange = validRanges.includes(range) ? range : '1M';
+    const rawRange = (req.query.range || req.query.interval || "1M")
+      .toString()
+      .trim()
+      .toUpperCase();
+    const normalizedRange =
+      rawRange === "1MO" || rawRange === "1MONTH" ? "1M" : rawRange;
+    const validRanges = ["1D", "1W", "1M", "1Y", "5Y"];
+    const sanitizedRange = validRanges.includes(normalizedRange)
+      ? normalizedRange
+      : "1M";
 
     const result = await marketService.getHistory(symbol, sanitizedRange);
     return res.status(200).json({
@@ -127,7 +150,7 @@ export async function getHistoryController(req, res, next) {
 
 export async function searchSymbolsController(req, res, next) {
   try {
-    const query = (req.query.q || '').slice(0, 50);
+    const query = (req.query.q || "").slice(0, 50);
     const result = await marketService.searchSymbols(query);
     return res.status(200).json({
       success: true,
@@ -140,18 +163,23 @@ export async function searchSymbolsController(req, res, next) {
 
 export async function getSignalController(req, res, next) {
   try {
-    const symbol = (req.params.symbol || '').toUpperCase().trim();
+    const symbol = (req.params.symbol || "").toUpperCase().trim();
     if (!SYMBOL_REGEX.test(symbol)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid symbol format',
+        message: "Invalid symbol format",
       });
     }
 
     const data = await signalService.computeStockSignal(symbol);
+    const responseData = {
+      ...data,
+      quantScore: data?.score ?? data?.quantScore ?? 0,
+      score: data?.score ?? data?.quantScore ?? 0,
+    };
     return res.status(200).json({
       success: true,
-      data,
+      data: responseData,
     });
   } catch (error) {
     next(error);
@@ -162,19 +190,19 @@ export async function getBatchSignalsController(req, res, next) {
   try {
     const symbols = req.query.symbols
       ? req.query.symbols
-          .split(',')
+          .split(",")
           .map((s) => s.trim().toUpperCase())
           .filter((s) => SYMBOL_REGEX.test(s))
           .slice(0, 50)
       : [];
 
     const signals = await Promise.allSettled(
-      symbols.map((sym) => signalService.computeStockSignal(sym))
+      symbols.map((sym) => signalService.computeStockSignal(sym)),
     );
 
     const data = {};
     signals.forEach((s, idx) => {
-      if (s.status === 'fulfilled') {
+      if (s.status === "fulfilled") {
         data[symbols[idx]] = s.value;
       }
     });
