@@ -5,20 +5,18 @@
  * GET  /api/internal/jobs/logs    — Get execution history logs
  * Protected by timing-safe CRON_SECRET comparison.
  */
-import { Router } from 'express';
-import crypto from 'crypto';
-import { runSipRemindersJob } from '../jobs/sipRemindersJob.js';
-import { runSignalAlertsJob } from '../jobs/signalAlertsJob.js';
-import { runSyncFundsJob } from '../jobs/syncFundsJob.js';
-import { executeJob, getJobStatus, getJobLogs } from '../services/jobRunner.js';
+import { Router } from "express";
+import crypto from "crypto";
+import { runSignalHistoryJob } from "../jobs/signalHistoryJob.js";
+import { runSyncFundsJob } from "../jobs/syncFundsJob.js";
+import { executeJob, getJobStatus, getJobLogs } from "../services/jobRunner.js";
 
 const router = Router();
 
 const JOB_MAP = {
-  'sip-reminders': runSipRemindersJob,
-  'signal-alerts': runSignalAlertsJob,
-  'sync-funds': runSyncFundsJob,
-  'funds-sync': runSyncFundsJob,
+  "signal-history": runSignalHistoryJob,
+  "sync-funds": runSyncFundsJob,
+  "funds-sync": runSyncFundsJob,
 };
 
 /**
@@ -27,13 +25,15 @@ const JOB_MAP = {
 function isAuthorized(req) {
   const secret = process.env.CRON_SECRET;
   if (!secret) {
-    console.warn('[InternalJobs] CRON_SECRET not set — all job invocations denied.');
+    console.warn(
+      "[InternalJobs] CRON_SECRET not set — all job invocations denied.",
+    );
     return false;
   }
 
-  const provided = req.headers['x-cron-secret'] || '';
+  const provided = req.headers["x-cron-secret"] || "";
   if (!provided || provided.length !== secret.length) {
-    const padded = provided.padEnd(secret.length, '\0');
+    const padded = provided.padEnd(secret.length, "\0");
     crypto.timingSafeEqual(Buffer.from(padded), Buffer.from(secret));
     return false;
   }
@@ -42,9 +42,9 @@ function isAuthorized(req) {
 }
 
 // Status endpoint
-router.get('/jobs/status', async (req, res) => {
+router.get("/jobs/status", async (req, res) => {
   if (!isAuthorized(req)) {
-    return res.status(403).json({ success: false, message: 'Forbidden' });
+    return res.status(403).json({ success: false, message: "Forbidden" });
   }
 
   try {
@@ -61,9 +61,9 @@ router.get('/jobs/status', async (req, res) => {
 });
 
 // Logs endpoint
-router.get('/jobs/logs', async (req, res) => {
+router.get("/jobs/logs", async (req, res) => {
   if (!isAuthorized(req)) {
-    return res.status(403).json({ success: false, message: 'Forbidden' });
+    return res.status(403).json({ success: false, message: "Forbidden" });
   }
 
   try {
@@ -80,9 +80,9 @@ router.get('/jobs/logs', async (req, res) => {
 });
 
 // Trigger endpoint
-router.post('/jobs/:name', async (req, res) => {
+router.post("/jobs/:name", async (req, res) => {
   if (!isAuthorized(req)) {
-    return res.status(403).json({ success: false, message: 'Forbidden' });
+    return res.status(403).json({ success: false, message: "Forbidden" });
   }
 
   const { name } = req.params;
@@ -98,7 +98,7 @@ router.post('/jobs/:name', async (req, res) => {
 
   try {
     const execution = await executeJob(name, jobFn, {
-      trigger: 'manual',
+      trigger: "manual",
       maxAttempts: 2,
     });
 
@@ -125,7 +125,10 @@ router.post('/jobs/:name', async (req, res) => {
       result: execution.result,
     });
   } catch (err) {
-    console.error(`[InternalJobs] Unexpected error for "${name}":`, err.message);
+    console.error(
+      `[InternalJobs] Unexpected error for "${name}":`,
+      err.message,
+    );
     return res.status(500).json({
       success: false,
       job: name,

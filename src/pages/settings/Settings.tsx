@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { SectionHeader } from '../../components/ui/SectionHeader';
+import React, { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { SectionHeader } from "../../components/ui/SectionHeader";
 import {
-  Settings as SettingsIcon,
-  Bell,
   Lock,
   Download,
   Trash2,
@@ -11,99 +9,58 @@ import {
   CheckCircle2,
   X,
   Loader2,
-} from 'lucide-react';
-import { toast } from 'sonner';
+} from "lucide-react";
+import { toast } from "sonner";
 import {
   changePasswordApi,
   deleteAccountApi,
   exportAccountDataApi,
-  updatePreferencesApi,
-} from '../../services/api';
+} from "../../services/api";
 
 export const Settings: React.FC = () => {
   const { user, logout } = useAuth();
 
   // Password state
-  const [currentPass, setCurrentPass] = useState('');
-  const [newPass, setNewPass] = useState('');
-  const [confirmPass, setConfirmPass] = useState('');
+  const [currentPass, setCurrentPass] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
-
-  // Notification Toggles (priceSignalAlerts, sipReminders)
-  const [priceAlerts, setPriceAlerts] = useState(user?.preferences?.priceSignalAlerts ?? true);
-  const [sipReminders, setSipReminders] = useState(user?.preferences?.sipReminders ?? true);
-  const [isUpdatingPref, setIsUpdatingPref] = useState(false);
 
   // Delete modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteConfirmText, setDeleteConfirmText] = useState('');
-  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deletePassword, setDeletePassword] = useState("");
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   // Export state
   const [isExporting, setIsExporting] = useState(false);
 
-  useEffect(() => {
-    if (user?.preferences) {
-      if (typeof user.preferences.priceSignalAlerts === 'boolean') {
-        setPriceAlerts(user.preferences.priceSignalAlerts);
-      }
-      if (typeof user.preferences.sipReminders === 'boolean') {
-        setSipReminders(user.preferences.sipReminders);
-      }
-    }
-  }, [user]);
-
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentPass) {
-      toast.error('Please enter your current password');
+      toast.error("Please enter your current password");
       return;
     }
     if (newPass.length < 6) {
-      toast.error('New password must be at least 6 characters');
+      toast.error("New password must be at least 6 characters");
       return;
     }
     if (newPass !== confirmPass) {
-      toast.error('Passwords do not match');
+      toast.error("Passwords do not match");
       return;
     }
 
     setIsUpdatingPassword(true);
     try {
       await changePasswordApi(currentPass, newPass);
-      setCurrentPass('');
-      setNewPass('');
-      setConfirmPass('');
-      toast.success('Password updated successfully');
+      setCurrentPass("");
+      setNewPass("");
+      setConfirmPass("");
+      toast.success("Password updated successfully");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update password');
+      toast.error(err.response?.data?.message || "Failed to update password");
     } finally {
       setIsUpdatingPassword(false);
-    }
-  };
-
-  const handlePreferenceChange = async (type: 'price' | 'sip', value: boolean) => {
-    const updatedPrice = type === 'price' ? value : priceAlerts;
-    const updatedSip = type === 'sip' ? value : sipReminders;
-
-    if (type === 'price') setPriceAlerts(value);
-    if (type === 'sip') setSipReminders(value);
-
-    setIsUpdatingPref(true);
-    try {
-      await updatePreferencesApi({
-        priceSignalAlerts: updatedPrice,
-        sipReminders: updatedSip,
-      });
-      toast.success('Preferences saved');
-    } catch {
-      toast.error('Failed to update preferences');
-      // Revert
-      if (type === 'price') setPriceAlerts(!value);
-      if (type === 'sip') setSipReminders(!value);
-    } finally {
-      setIsUpdatingPref(false);
     }
   };
 
@@ -111,32 +68,32 @@ export const Settings: React.FC = () => {
     setIsExporting(true);
     try {
       await exportAccountDataApi();
-      toast.success('Your financial data file has been downloaded');
+      toast.success("Your financial data file has been downloaded");
     } catch (err: any) {
-      toast.error('Failed to export account data');
+      toast.error("Failed to export account data");
     } finally {
       setIsExporting(false);
     }
   };
 
   const handleDeleteAccount = async () => {
-    if (deleteConfirmText.trim().toUpperCase() !== 'DELETE') {
+    if (deleteConfirmText.trim().toUpperCase() !== "DELETE") {
       toast.error('Please type "DELETE" to confirm');
       return;
     }
     if (!deletePassword) {
-      toast.error('Please enter your password to confirm deletion');
+      toast.error("Please enter your password to confirm deletion");
       return;
     }
 
     setIsDeletingAccount(true);
     try {
       await deleteAccountApi(deletePassword);
-      toast.info('Your account has been deleted permanently');
+      toast.info("Your account has been deleted permanently");
       logout();
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete account');
+      toast.error(err.response?.data?.message || "Failed to delete account");
     } finally {
       setIsDeletingAccount(false);
     }
@@ -144,18 +101,15 @@ export const Settings: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
-      
       <SectionHeader
         eyebrow="PREFERENCES & SECURITY"
         title="Account & Platform Settings"
-        subtitle="Manage authentication security, alert notifications, theme aesthetics, and data privacy controls."
+        subtitle="Manage authentication security and data privacy controls."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
         {/* Left Column: Security & Preferences (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
-          
           {/* Change Password Card */}
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-5">
             <div className="flex items-center gap-2 border-b border-[#E7E5DF] pb-3">
@@ -212,65 +166,28 @@ export const Settings: React.FC = () => {
                   disabled={isUpdatingPassword}
                   className="px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all min-h-[44px] flex items-center gap-2 disabled:opacity-50"
                 >
-                  {isUpdatingPassword && <Loader2 className="w-4 h-4 animate-spin" />}
-                  <span>{isUpdatingPassword ? 'Updating...' : 'Update Password'}</span>
+                  {isUpdatingPassword && (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  )}
+                  <span>
+                    {isUpdatingPassword ? "Updating..." : "Update Password"}
+                  </span>
                 </button>
               </div>
             </form>
           </div>
-
-          {/* Notification Preferences */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
-            <div className="flex items-center gap-2 border-b border-[#E7E5DF] pb-3">
-              <Bell className="w-5 h-5 text-[#0F766E]" />
-              <h3 className="font-serif text-lg font-bold text-[#0B1220]">
-                Notification & Alert Preferences
-              </h3>
-            </div>
-
-            <div className="space-y-3">
-              <label className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between cursor-pointer">
-                <div>
-                  <p className="font-semibold text-xs text-[#0B1220]">Watchlist Algorithmic Signal Alerts</p>
-                  <p className="text-[11px] text-[#5B6572]">Notify when a tracked stock triggers a BUY or SELL signal</p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={priceAlerts}
-                  disabled={isUpdatingPref}
-                  onChange={(e) => handlePreferenceChange('price', e.target.checked)}
-                  className="w-5 h-5 rounded-md accent-[#0F766E]"
-                />
-              </label>
-
-              <label className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between cursor-pointer">
-                <div>
-                  <p className="font-semibold text-xs text-[#0B1220]">SIP Debit Reminders</p>
-                  <p className="text-[11px] text-[#5B6572]">Get notified 2 days before upcoming scheduled SIP installments</p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={sipReminders}
-                  disabled={isUpdatingPref}
-                  onChange={(e) => handlePreferenceChange('sip', e.target.checked)}
-                  className="w-5 h-5 rounded-md accent-[#0F766E]"
-                />
-              </label>
-            </div>
-          </div>
-
         </div>
 
         {/* Right Column: Appearance & Danger Zone (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
-          
           {/* Data Export Card */}
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
             <h3 className="font-serif text-lg font-bold text-[#0B1220]">
               Data Portability
             </h3>
             <p className="text-xs text-[#5B6572]">
-              Download your complete investor answers, saved portfolios, and calculated scores in structured JSON format.
+              Download your complete investor answers, saved portfolios, and
+              calculated scores in structured JSON format.
             </p>
 
             <button
@@ -278,8 +195,16 @@ export const Settings: React.FC = () => {
               disabled={isExporting}
               className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold border border-[#E7E5DF] text-[#0B1220] hover:bg-black/5 flex items-center justify-center gap-2 min-h-[44px] disabled:opacity-50"
             >
-              {isExporting ? <Loader2 className="w-4 h-4 animate-spin text-[#0F766E]" /> : <Download className="w-4 h-4 text-[#0F766E]" />}
-              <span>{isExporting ? 'Exporting Data...' : 'Export Investor Data (.json)'}</span>
+              {isExporting ? (
+                <Loader2 className="w-4 h-4 animate-spin text-[#0F766E]" />
+              ) : (
+                <Download className="w-4 h-4 text-[#0F766E]" />
+              )}
+              <span>
+                {isExporting
+                  ? "Exporting Data..."
+                  : "Export Investor Data (.json)"}
+              </span>
             </button>
           </div>
 
@@ -290,7 +215,8 @@ export const Settings: React.FC = () => {
               <h3 className="font-serif text-lg font-bold">Danger Zone</h3>
             </div>
             <p className="text-xs text-red-900/80 leading-relaxed">
-              Permanently delete your account, saved holdings, tracked SIPs, investor profile, and preferences from Rupee Mind.
+              Permanently delete your account, saved holdings, tracked SIPs,
+              investor profile, and preferences from Rupee Mind.
             </p>
 
             <button
@@ -300,9 +226,7 @@ export const Settings: React.FC = () => {
               Delete Account & All Data
             </button>
           </div>
-
         </div>
-
       </div>
 
       {/* Delete Confirmation Modal */}
@@ -312,15 +236,22 @@ export const Settings: React.FC = () => {
             <div className="flex items-center justify-between text-red-600">
               <div className="flex items-center gap-2">
                 <Trash2 className="w-5 h-5" />
-                <h3 className="font-serif text-xl font-bold">Confirm Account Deletion</h3>
+                <h3 className="font-serif text-xl font-bold">
+                  Confirm Account Deletion
+                </h3>
               </div>
-              <button onClick={() => setIsDeleteModalOpen(false)} className="text-gray-400 hover:text-black">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="text-gray-400 hover:text-black"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <p className="text-xs text-[#5B6572] leading-relaxed">
-              This action is permanent and cannot be undone. All your profile answers, holdings, SIPs, and notifications will be deleted from the database.
+              This action is permanent and cannot be undone. Your profile
+              answers and associated financial data will be deleted from the
+              database.
             </p>
 
             <div className="space-y-4">
@@ -364,14 +295,17 @@ export const Settings: React.FC = () => {
                 disabled={isDeletingAccount}
                 className="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 flex items-center gap-2 disabled:opacity-50"
               >
-                {isDeletingAccount && <Loader2 className="w-4 h-4 animate-spin" />}
-                <span>{isDeletingAccount ? 'Deleting...' : 'Delete Everything'}</span>
+                {isDeletingAccount && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
+                <span>
+                  {isDeletingAccount ? "Deleting..." : "Delete Everything"}
+                </span>
               </button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 };

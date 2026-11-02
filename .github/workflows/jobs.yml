@@ -4,9 +4,7 @@ on:
   schedule:
     # Every day at 03:30 UTC (09:00 IST) for funds sync
     - cron: '30 3 * * *'
-    # Every day at 04:30 UTC (10:00 IST) for SIP reminders
-    - cron: '30 4 * * *'
-    # Every hour during market hours (03:45 to 10:00 UTC Mon-Fri) for signal alerts
+    # Every hour during market hours (03:45 to 10:00 UTC Mon-Fri) for signal history
     - cron: '45 3-10 * * 1-5'
   workflow_dispatch:
     inputs:
@@ -17,8 +15,7 @@ on:
         type: choice
         options:
           - funds-sync
-          - sip-reminders
-          - signal-alerts
+          - signal-history
 
 jobs:
   funds-sync:
@@ -34,28 +31,15 @@ jobs:
             -H "Content-Type: application/json" \
             -H "x-cron-secret: ${CRON_SECRET}"
 
-  sip-reminders:
+  signal-history:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger SIP Reminders Job
+      - name: Update Signal History
         env:
           API_URL: ${{ secrets.RENDER_API_URL || 'https://rupeemind-api.onrender.com' }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          echo "Triggering sip-reminders job on ${API_URL}..."
-          curl -f -X POST "${API_URL}/api/internal/jobs/sip-reminders" \
-            -H "Content-Type: application/json" \
-            -H "x-cron-secret: ${CRON_SECRET}"
-
-  signal-alerts:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Signal Alerts Job
-        env:
-          API_URL: ${{ secrets.RENDER_API_URL || 'https://rupeemind-api.onrender.com' }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-        run: |
-          echo "Triggering signal-alerts job on ${API_URL}..."
-          curl -f -X POST "${API_URL}/api/internal/jobs/signal-alerts" \
+          echo "Triggering signal-history job on ${API_URL}..."
+          curl -f -X POST "${API_URL}/api/internal/jobs/signal-history" \
             -H "Content-Type: application/json" \
             -H "x-cron-secret: ${CRON_SECRET}"

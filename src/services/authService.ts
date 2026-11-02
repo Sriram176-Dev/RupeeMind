@@ -99,7 +99,6 @@ export async function getMeApi(): Promise<{
         name: user.name,
         email: user.email,
         profile: profile ? mapServerProfileToUserProfile(profile) : undefined,
-        preferences: user.preferences,
       },
       profile: profile ? mapServerProfileToUserProfile(profile) : null,
     };
@@ -157,15 +156,4 @@ export async function exportAccountDataApi(): Promise<void> {
   anchor.click();
   window.URL.revokeObjectURL(url);
   document.body.removeChild(anchor);
-}
-
-export async function updatePreferencesApi(preferences: {
-  priceSignalAlerts?: boolean;
-  sipReminders?: boolean;
-}): Promise<{
-  success: boolean;
-  preferences: { priceSignalAlerts: boolean; sipReminders: boolean };
-}> {
-  const response = await apiClient.put("/account/preferences", preferences);
-  return response.data;
 }

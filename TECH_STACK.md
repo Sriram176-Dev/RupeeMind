@@ -1,6 +1,6 @@
 # 🚀 Rupeemind — Comprehensive Technology Stack & Architecture Specification
 
-> **Version:** 1.0.0 | **Status:** Production-Ready | **Target Platform:** Web (Desktop & Mobile Responsive)  
+> **Version:** 1.0.0 | **Status:** Production-Ready | **Target Platform:** Web (Desktop & Mobile Responsive)
 > **Repository:** `rupeemind` | **Database:** MongoDB (Managed locally via MongoDB Compass at `mongodb://127.0.0.1:27017/rupeemind`)
 
 ---
@@ -53,6 +53,7 @@
 ## 1. Executive Overview
 
 **Rupeemind** is an enterprise-grade, full-stack financial technology platform tailored specifically for Indian retail investors. The system democratizes quantitative investment analysis by combining:
+
 - **Rule-based technical analysis** (RSI, MACD, Bollinger Bands, Moving Average crossovers).
 - **Machine Learning predictive models** (XGBoost with 56 engineered technical indicators).
 - **Generative AI** (Google Gemini 2.5 Flash) for explainable investment theses and contextual risk warnings.
@@ -80,7 +81,7 @@
 ### 2.1 Frontend Tier
 
 | Technology | Version | Purpose & Rationale |
-|---|---|---|
+| --- | --- | --- |
 | **React** | `^19.2.8` | Declarative UI framework with latest concurrent rendering and optimized transitions. |
 | **TypeScript** | `~6.0.2` | Complete compile-time type safety across all components, props, contexts, and API contracts. |
 | **Vite** | `^8.3.0` | Ultra-fast native ESM frontend build tool; generates optimized production chunks in under 4 seconds. |
@@ -89,14 +90,14 @@
 | **Recharts** | `^3.10.1` | High-performance SVG charting library for interactive stock candlestick/line charts, asset allocation donuts, and drawdown graphs. |
 | **Framer Motion** | `^14.0.0` | Spring-physics micro-animations for page transitions, drawers, modal dialogs, and progress bars. |
 | **Lucide React** | `^1.52.0` | Consistent, lightweight SVG iconography across all financial UI components. |
-| **Socket.IO Client** | `^4.8.4` | WebSocket client for bi-directional real-time market quote streaming and live notification alerts. |
+| **Socket.IO Client** | `^4.8.4` | WebSocket client for bi-directional real-time market quote streaming. |
 | **Axios** | `^1.20.0` | HTTP client configured with automatic queued 401 token refresh interceptors. |
-| **Sonner** | `^2.0.8` | Toast notification system with custom glassmorphic financial theme styling. |
+| **Sonner** | `^2.0.8` | Toast feedback system with custom glassmorphic financial theme styling. |
 
 ### 2.2 Backend & API Tier
 
 | Technology | Version | Purpose & Rationale |
-|---|---|---|
+| --- | --- | --- |
 | **Node.js** | `>= 20.x` (ESM) | High-concurrency JavaScript runtime operating natively with ES Modules (`import/export`). |
 | **Express.js** | `^4.21.2` | Minimalist web application framework powering 15 modular RESTful route controllers. |
 | **TypeScript Typecheck** | `^7.0.2` | Server-side TypeScript environment (`tsconfig.json`, `index.d.ts`) enabling `tsc --noEmit` build verification. |
@@ -114,7 +115,7 @@
 ### 2.3 Machine Learning & Data Science Tier
 
 | Technology | Purpose & Rationale |
-|---|---|
+| --- | --- |
 | **Python** (`3.10+`) | Primary scientific computing language powering data transformations and ML pipelines. |
 | **FastAPI** | High-performance asynchronous microservice serving ML predictions over local HTTP (`:8000`). |
 | **XGBoost** | Extreme Gradient Boosting classifier trained on 56 engineered technical indicators for market direction prediction. |
@@ -125,7 +126,7 @@
 ### 2.4 Database, Storage & Caching Tier
 
 | Technology | Configuration / Role | Purpose & Rationale |
-|---|---|---|
+| --- | --- | --- |
 | **MongoDB Local Engine** | Port `27017` | Document-oriented NoSQL database storing user accounts, financial profiles, holdings, and fund data. |
 | **MongoDB Compass** | GUI Tool | Visual database management, index inspection, query profiling, and schema exploration at `mongodb://127.0.0.1:27017/rupeemind`. |
 | **Node-Cache** | In-Memory (Server) | Sub-millisecond volatile caching for stock market quotes (15s), signals (15m), and rate limiter counters. |
@@ -133,7 +134,7 @@
 ### 2.5 DevOps, Build & Testing Infrastructure
 
 | Technology | Purpose |
-|---|---|
+| --- | --- |
 | **Vitest** (`v5.0.3`) | High-speed unit and integration test runner for client math utilities and server auth/security flows (64 tests). |
 | **Supertest** (`^7.3.1`) | Programmatic HTTP assertion library for backend controller and route integration tests. |
 | **ESLint** (`^10.12.0`) | Automated code quality, React hooks linting, and TypeScript syntax enforcement across the monorepo. |
@@ -150,7 +151,7 @@
 flowchart TB
     subgraph ClientLayer ["1. Presentation Layer (Browser Client)"]
         SPA["React 19 SPA (Vite + Tailwind 4)"]
-        State["Contexts: Auth, Market, Theme, Notifications"]
+      State["Contexts: Auth, Market, Theme"]
         AxiosClient["Axios Client (with 401 Interceptor)"]
         WSClient["Socket.IO Client"]
     end
@@ -397,6 +398,7 @@ Users undergo a structured 5-step risk assessment to calculate their risk capaci
 ## 5. Database Architecture & Schema Design
 
 The database is built on **MongoDB** and is accessed and inspected via **MongoDB Compass** at:
+
 ```
 mongodb://127.0.0.1:27017/rupeemind
 ```
@@ -409,7 +411,6 @@ erDiagram
     USER ||--o{ HOLDING : "owns holdings"
     USER ||--o{ RECOMMENDATION : "receives"
     USER ||--o{ SAVED_CALCULATION : "saves"
-    USER ||--o{ NOTIFICATION : "receives"
     USER ||--o{ TRACKED_SIP : "manages"
     USER ||--o{ WATCHLIST : "monitors"
     MUTUAL_FUND ||--o{ RECOMMENDATION : "included in"
@@ -481,8 +482,9 @@ erDiagram
 ### 5.2 Detailed Collection & Model Dictionary
 
 #### 1. `users` Collection ([models/User.js](file:///e:/MainProject/server/src/models/User.js))
+
 | Field | Type | Modifiers | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `_id` | ObjectId | Primary Key | Unique user identifier |
 | `name` | String | Required, Trimmed | Full legal name |
 | `email` | String | Required, Unique, Lowercase | User email address for login |
@@ -490,11 +492,12 @@ erDiagram
 | `role` | String | Enum: `user`, `admin` | Authorization role (default: `user`) |
 | `sessions` | Array of Objects | Max 5 items | Active session array containing `tokenHash`, `userAgent`, `ip`, `createdAt` |
 | `resetPasswordToken` | String | Optional | Hashed token for password recovery |
-| `resetPasswordExpires`| Date | Optional | 1-hour expiry timestamp for reset link |
+| `resetPasswordExpires` | Date | Optional | 1-hour expiry timestamp for reset link |
 
 #### 2. `profiles` Collection ([models/Profile.js](file:///e:/MainProject/server/src/models/Profile.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `userId` | ObjectId (Ref: User) | Associated user account (Unique 1:1) |
 | `ageBracket` | String | Age group (`18-25`, `26-35`, `36-50`, `50+`) |
 | `employmentType` | String | Salaried, Self-Employed, Professional, Retired |
@@ -503,13 +506,14 @@ erDiagram
 | `emergencyFundMonths` | Number | Liquidity safety buffer in months |
 | `riskScore` | Number (0–100) | Mathematically computed investor risk score |
 | `riskBand` | String | `Conservative`, `Moderate`, `Aggressive` |
-| `financialHealthScore`| Number (0–100) | Savings rate, debt ratio, and emergency buffer composite score |
+| `financialHealthScore` | Number (0–100) | Savings rate, debt ratio, and emergency buffer composite score |
 | `financialHealthBand` | String | `Poor`, `Fair`, `Good`, `Excellent` |
 | `investmentGoals` | Array of Strings | Primary target objectives (e.g. Wealth Creation, Tax Saving) |
 
 #### 3. `funds` Collection ([models/Fund.js](file:///e:/MainProject/server/src/models/Fund.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `schemeCode` | Number | Official AMFI Scheme Code (Unique index) |
 | `schemeName` | String | Full registered mutual fund scheme name |
 | `category` | String | Equity: Large Cap, Mid Cap, Small Cap, Flexi Cap, ELSS, Debt |
@@ -521,8 +525,9 @@ erDiagram
 | `riskLevel` | String | Low, Moderate, High, Very High |
 
 #### 4. `holdings` Collection ([models/Holding.js](file:///e:/MainProject/server/src/models/Holding.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `userId` | ObjectId (Ref: User) | Holding owner |
 | `symbol` | String | Stock ticker (e.g. `TCS.NS`) or Fund scheme code |
 | `assetType` | String | Enum: `EQUITY`, `MUTUAL_FUND`, `ETF`, `GOLD` |
@@ -533,8 +538,9 @@ erDiagram
 | `currentValue` | Number | `quantity * currentPrice` |
 
 #### 5. `recommendations` Collection ([models/Recommendation.js](file:///e:/MainProject/server/src/models/Recommendation.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `userId` | ObjectId (Ref: User) | Target recipient |
 | `riskBand` | String | Risk profile applied when generated |
 | `stockAllocations` | Array | Suggested stocks with allocation %, target price, stop-loss |
@@ -543,8 +549,9 @@ erDiagram
 | `isArchived` | Boolean | Archive flag for historical versioning |
 
 #### 6. `trackedsips` Collection ([models/TrackedSIP.js](file:///e:/MainProject/server/src/models/TrackedSIP.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `userId` | ObjectId (Ref: User) | Investor |
 | `fundName` | String | Mutual fund name |
 | `schemeCode` | Number | AMFI Scheme Code |
@@ -554,8 +561,9 @@ erDiagram
 | `status` | String | `ACTIVE`, `PAUSED`, `COMPLETED` |
 
 #### 7. `paperwallets` Collection ([models/PaperWallet.js](file:///e:/MainProject/server/src/models/PaperWallet.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `userId` | ObjectId (Ref: User) | Virtual wallet owner (Unique 1:1) |
 | `cashBalance` | Number | Available virtual cash (default: ₹10,00,000) |
 | `initialCapital` | Number | Initial virtual seed capital (₹10,00,000) |
@@ -566,8 +574,9 @@ erDiagram
 | `resetCount` | Number | Times wallet has been reset |
 
 #### 8. `paperpositions` Collection ([models/PaperPosition.js](file:///e:/MainProject/server/src/models/PaperPosition.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `userId` | ObjectId (Ref: User) | Position owner |
 | `symbol` | String | Clean stock symbol (e.g. `RELIANCE`) |
 | `quantity` | Number | Number of virtual shares held |
@@ -575,8 +584,9 @@ erDiagram
 | `productType` | String | `DELIVERY` (CNC) or `INTRADAY` (MIS) |
 
 #### 9. `paperorders` Collection ([models/PaperOrder.js](file:///e:/MainProject/server/src/models/PaperOrder.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `orderId` | String | Unique reference identifier (e.g. `ORD-XXXXXX`) |
 | `transactionType` | String | `BUY` or `SELL` |
 | `orderType` | String | `MARKET` or `LIMIT` |
@@ -586,15 +596,16 @@ erDiagram
 | `status` | String | `EXECUTED`, `PENDING`, `CANCELLED`, `REJECTED` |
 
 #### 10. `copilotchats` Collection ([models/CopilotChat.js](file:///e:/MainProject/server/src/models/CopilotChat.js))
+
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `userId` | ObjectId (Ref: User) | Chat session owner |
 | `title` | String | Session title (e.g. `RupeeBot Advisory Session`) |
 | `messages` | Array of Objects | Conversation turns with `role` (`user`/`assistant`), `content`, `suggestions`, and timestamps |
 
-#### 11. Other Supporting Collections:
+#### 11. Other Supporting Collections
+
 - **`savedcalculations`**: Stores calculation history (inputs, outputs, calculation type).
-- **`notifications`**: User alerts for price spikes, SIP due dates, and market news.
 - **`watchlists`**: Custom user-monitored asset tickers.
 - **`signalhistories`**: Audit log of historical ML and algorithmic stock signals.
 - **`joblogs`**: System logs recording background cron execution, attempts, and durations.
@@ -611,12 +622,12 @@ db.funds.createIndex({ category: 1, sharpeRatio: -1 });
 db.holdings.createIndex({ userId: 1, symbol: 1 });
 db.recommendations.createIndex({ userId: 1, createdAt: -1 });
 db.trackedsips.createIndex({ userId: 1, status: 1 });
-db.notifications.createIndex({ userId: 1, isRead: 1 });
 db.paperwallets.createIndex({ userId: 1 }, { unique: true });
 db.paperpositions.createIndex({ userId: 1, symbol: 1, productType: 1 }, { unique: true });
 db.paperorders.createIndex({ userId: 1, createdAt: -1 });
 db.copilotchats.createIndex({ userId: 1, updatedAt: -1 });
 ```
+
 ```
 
 ---
@@ -626,6 +637,7 @@ db.copilotchats.createIndex({ userId: 1, updatedAt: -1 });
 ### 6.1 External Data Sources & Ingestion Pipelines
 
 ```
+
 +------------------------+--------------------------+---------------------------------------+
 | Data Source            | Ingestion Method         | Information Ingested                  |
 +------------------------+--------------------------+---------------------------------------+
@@ -644,6 +656,7 @@ db.copilotchats.createIndex({ userId: 1, updatedAt: -1 });
 | Rupeemind ML Engine    | Internal HTTP POST       | 56 Technical Features -> Signal Class |
 | (Python FastAPI :8000) | Circuit Breaker Protected| Probability Distribution (Buy/Hold)   |
 +------------------------+--------------------------+---------------------------------------+
+
 ```
 
 ### 6.2 Internal REST API Endpoints Catalog
@@ -714,12 +727,10 @@ All endpoints are mounted under the base path `/api`:
 - `GET /api/reports/portfolio-audit` — Structured JSON audit dossier containing reference audit hash, investor KYC risk, Basel III VaR metrics, COVID/2008 stress replays, and Indian capital gains tax liability calculation.
 - `GET /api/reports/portfolio-audit/html` — Print-optimized, self-contained HTML report with `@media print` styling, corporate branding, A4 pagination, and zero dark-mode ink bleed for browser print-to-PDF export.
 
-#### News, Calculations & Notifications (`/api/news`, `/api/calculations`, `/api/notifications`)
+#### News & Calculations (`/api/news`, `/api/calculations`)
 - `GET /api/news` — Fetch categorized and sentiment-tagged market news.
 - `GET /api/calculations` — Retrieve user's saved calculator projections.
 - `POST /api/calculations` — Save financial projection (SIP, SWP, Goal).
-- `GET /api/notifications` — Fetch user alerts and market notifications.
-- `PUT /api/notifications/:id/read` — Mark notification as read.
 
 ### 6.3 WebSocket Event Contracts
 
@@ -728,7 +739,6 @@ All endpoints are mounted under the base path `/api`:
 | `subscribe:quotes` | Client → Server | `{ symbols: ["RELIANCE.NS", "TCS.NS"] }` | Subscribes socket to real-time price feed |
 | `market:quote-update`| Server → Client | `{ symbol, price, change, changePercent }` | Live tick update pushed during market hours |
 | `market:status` | Server → Client | `{ isOpen: true, nextSession: "..." }` | Broadcasts current NSE trading status |
-| `notification:new` | Server → Client | `{ title, message, type, timestamp }` | Pushes immediate alert to active user session |
 
 ---
 
@@ -750,7 +760,7 @@ All endpoints are mounted under the base path `/api`:
 ---
 
 ## 8. Verification & Project Health
- 
+
 - **Server Typecheck & Unit Tests**: 17 test suites passed (73 tests passed on server)
 - **Client Build & Typecheck**: Passed (`tsc -b && vite build` — 2,671 modules compiled in 2.52s)
 - **Client Unit Tests**: 2 test suites passed (9 tests passed on client)
@@ -789,6 +799,7 @@ EMAIL_PASS=your_app_specific_password
 ```
 
 #### Frontend Client Configuration (`.env`)
+
 ```env
 VITE_API_URL=http://localhost:5000/api
 VITE_SOCKET_URL=http://localhost:5000
@@ -799,18 +810,21 @@ VITE_SOCKET_URL=http://localhost:5000
 Rupeemind provides multiple convenient startup scripts for cross-platform local development:
 
 1. **Unified NPM Orchestration**:
+
    ```bash
    # From repository root — concurrently spins up React Vite frontend and Express server
    npm run dev
    ```
 
 2. **Windows Fast Launcher (`start-all.bat`)**:
+
    ```cmd
    # Launches MongoDB check, Backend API, Python ML Service, and Vite Client in separate terminal tabs
    start-all.bat
    ```
 
 3. **Unix/macOS Shell Launcher (`start-all.sh`)**:
+
    ```bash
    chmod +x start-all.sh
    ./start-all.sh

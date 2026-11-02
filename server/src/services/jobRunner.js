@@ -6,14 +6,14 @@
  *   - Concurrency locking (one instance per job)
  *   - Structured console logging
  */
-import { JobLog } from '../models/JobLog.js';
+import { JobLog } from "../models/JobLog.js";
 
 const runningJobs = new Set();
 
 /**
  * Execute a job function with retry and logging.
  *
- * @param {string} jobName - Unique name for the job (e.g. 'signal-alerts')
+ * @param {string} jobName - Unique name for the job (e.g. 'signal-history')
  * @param {Function} jobFn - Async function to execute
  * @param {Object} options
  * @param {number} options.maxAttempts - Max retry attempts (default: 3)
@@ -22,16 +22,12 @@ const runningJobs = new Set();
  * @returns {Promise<Object>} - Execution result
  */
 export async function executeJob(jobName, jobFn, options = {}) {
-  const {
-    maxAttempts = 3,
-    baseDelayMs = 2000,
-    trigger = 'cron',
-  } = options;
+  const { maxAttempts = 3, baseDelayMs = 2000, trigger = "cron" } = options;
 
   // Concurrency guard
   if (runningJobs.has(jobName)) {
     console.warn(`[JobRunner] Job "${jobName}" is already running — skipping.`);
-    return { skipped: true, reason: 'already_running' };
+    return { skipped: true, reason: "already_running" };
   }
 
   runningJobs.add(jobName);
@@ -44,13 +40,16 @@ export async function executeJob(jobName, jobFn, options = {}) {
     // Create initial log entry
     logEntry = await JobLog.create({
       jobName,
-      status: 'running',
+      status: "running",
       trigger,
       startedAt: new Date(startTime),
       maxAttempts,
     });
   } catch (err) {
-    console.warn(`[JobRunner] Failed to create job log for "${jobName}":`, err.message);
+    console.warn(
+      `[JobRunner] Failed to create job log for "${jobName}":`,
+      err.message,
+    );
   }
 
   try {
@@ -58,18 +57,22 @@ export async function executeJob(jobName, jobFn, options = {}) {
       attempt++;
 
       try {
-        console.log(`[JobRunner] "${jobName}" attempt ${attempt}/${maxAttempts} (trigger: ${trigger})...`);
+        console.log(
+          `[JobRunner] "${jobName}" attempt ${attempt}/${maxAttempts} (trigger: ${trigger})...`,
+        );
 
         const result = await jobFn();
         const durationMs = Date.now() - startTime;
 
-        console.log(`[JobRunner] "${jobName}" completed in ${durationMs}ms on attempt ${attempt}.`);
+        console.log(
+          `[JobRunner] "${jobName}" completed in ${durationMs}ms on attempt ${attempt}.`,
+        );
 
         // Update log entry
         if (logEntry) {
           try {
             await JobLog.findByIdAndUpdate(logEntry._id, {
-              status: 'completed',
+              status: "completed",
               completedAt: new Date(),
               durationMs,
               attempt,
@@ -81,21 +84,33 @@ export async function executeJob(jobName, jobFn, options = {}) {
           }
         }
 
-        return { success: true, jobName, attempt, durationMs, result: result || {} };
+        return {
+          success: true,
+          jobName,
+          attempt,
+          durationMs,
+          result: result || {},
+        };
       } catch (err) {
         lastError = err;
-        console.error(`[JobRunner] "${jobName}" attempt ${attempt} failed:`, err.message);
+        console.error(
+          `[JobRunner] "${jobName}" attempt ${attempt} failed:`,
+          err.message,
+        );
 
         // Update log as retrying
         if (logEntry && attempt < maxAttempts) {
           try {
             await JobLog.findByIdAndUpdate(logEntry._id, {
-              status: 'retrying',
+              status: "retrying",
               attempt,
               error: err.message,
             });
           } catch (updateErr) {
-            console.warn(`[JobRunner] Failed to update job log:`, updateErr.message);
+            console.warn(
+              `[JobRunner] Failed to update job log:`,
+              updateErr.message,
+            );
           }
         }
 
@@ -110,16 +125,18 @@ export async function executeJob(jobName, jobFn, options = {}) {
 
     // All attempts exhausted
     const durationMs = Date.now() - startTime;
-    console.error(`[JobRunner] "${jobName}" FAILED after ${maxAttempts} attempts (${durationMs}ms). Last error: ${lastError?.message}`);
+    console.error(
+      `[JobRunner] "${jobName}" FAILED after ${maxAttempts} attempts (${durationMs}ms). Last error: ${lastError?.message}`,
+    );
 
     if (logEntry) {
       try {
         await JobLog.findByIdAndUpdate(logEntry._id, {
-          status: 'failed',
+          status: "failed",
           completedAt: new Date(),
           durationMs,
           attempt: maxAttempts,
-          error: lastError?.message || 'Unknown error',
+          error: lastError?.message || "Unknown error",
           errorStack: lastError?.stack?.slice(0, 2000) || null,
         });
       } catch (err) {
@@ -127,7 +144,13 @@ export async function executeJob(jobName, jobFn, options = {}) {
       }
     }
 
-    return { success: false, jobName, attempts: maxAttempts, durationMs, error: lastError?.message };
+    return {
+      success: false,
+      jobName,
+      attempts: maxAttempts,
+      durationMs,
+      error: lastError?.message,
+    };
   } finally {
     runningJobs.delete(jobName);
   }
@@ -144,10 +167,7 @@ export async function getJobLogs({ jobName, limit = 50 } = {}) {
   const filter = {};
   if (jobName) filter.jobName = jobName;
 
-  return JobLog.find(filter)
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .lean();
+  return JobLog.find(filter).sort({ createdAt: -1 }).limit(limit).lean();
 }
 
 /**
@@ -155,7 +175,7 @@ export async function getJobLogs({ jobName, limit = 50 } = {}) {
  * @returns {Promise<Object>}
  */
 export async function getJobStatus() {
-  const jobNames = await JobLog.distinct('jobName');
+  const jobNames = await JobLog.distinct("jobName");
   const statusMap = {};
 
   for (const name of jobNames) {
@@ -170,20 +190,22 @@ export async function getJobStatus() {
     });
     const recentFailures = await JobLog.countDocuments({
       jobName: name,
-      status: 'failed',
+      status: "failed",
       createdAt: { $gte: last24h },
     });
 
     statusMap[name] = {
       isRunning: runningJobs.has(name),
-      lastRun: lastRun ? {
-        status: lastRun.status,
-        startedAt: lastRun.startedAt,
-        completedAt: lastRun.completedAt,
-        durationMs: lastRun.durationMs,
-        trigger: lastRun.trigger,
-        attempt: lastRun.attempt,
-      } : null,
+      lastRun: lastRun
+        ? {
+            status: lastRun.status,
+            startedAt: lastRun.startedAt,
+            completedAt: lastRun.completedAt,
+            durationMs: lastRun.durationMs,
+            trigger: lastRun.trigger,
+            attempt: lastRun.attempt,
+          }
+        : null,
       last24h: {
         totalRuns: recentRuns,
         failures: recentFailures,

@@ -1,28 +1,25 @@
-export type RiskBand = 
-  | 'Conservative' 
-  | 'Moderately Conservative' 
-  | 'Moderate' 
-  | 'Moderately Aggressive' 
-  | 'Aggressive';
+export type RiskBand =
+  | "Conservative"
+  | "Moderately Conservative"
+  | "Moderate"
+  | "Moderately Aggressive"
+  | "Aggressive";
 
-export type HealthBand = 
-  | 'Needs attention' 
-  | 'Stable' 
-  | 'Strong';
+export type HealthBand = "Needs attention" | "Stable" | "Strong";
 
-export type CapacityBand = 'Low' | 'Moderate' | 'High';
+export type CapacityBand = "Low" | "Moderate" | "High";
 
-export type GoalCategory = 
-  | 'Wealth creation' 
-  | 'Retirement' 
-  | 'House' 
-  | 'Education' 
-  | 'Child' 
-  | 'Tax saving' 
-  | 'Emergency' 
-  | 'Other';
+export type GoalCategory =
+  | "Wealth creation"
+  | "Retirement"
+  | "House"
+  | "Education"
+  | "Child"
+  | "Tax saving"
+  | "Emergency"
+  | "Other";
 
-export type GoalPriority = 'Critical' | 'Important' | 'Flexible';
+export type GoalPriority = "Critical" | "Important" | "Flexible";
 
 export interface FinancialGoalItem {
   id: string;
@@ -48,7 +45,13 @@ export interface GoalsAssessmentSummary {
 export interface UserProfile {
   // Step 1: Demographics & Horizon Runway
   age: number;
-  occupation: 'Government' | 'Private' | 'Business' | 'Freelance' | 'Student' | 'Other';
+  occupation:
+    | "Government"
+    | "Private"
+    | "Business"
+    | "Freelance"
+    | "Student"
+    | "Other";
   city: string;
 
   // Step 2: Money (Monthly Cash Flow & Liquidity)
@@ -59,7 +62,13 @@ export interface UserProfile {
   emergencyFundAmount: number;
 
   // Step 3: Individually Assessable Goals
-  goalType: 'Wealth creation' | 'Retirement' | 'House' | 'Education' | 'Child' | 'Tax saving';
+  goalType:
+    | "Wealth creation"
+    | "Retirement"
+    | "House"
+    | "Education"
+    | "Child"
+    | "Tax saving";
   targetAmount: number;
   horizonYears: number;
   goals?: FinancialGoalItem[];
@@ -78,8 +87,8 @@ export interface UserProfile {
   riskCapacityBand?: CapacityBand;
 
   // Step 6: Market Experience & Habits
-  investingExperience: 'None' | 'Beginner' | 'Intermediate' | 'Experienced';
-  investingRegularity?: 'Regularly' | 'Occasionally' | 'Not yet';
+  investingExperience: "None" | "Beginner" | "Intermediate" | "Experienced";
+  investingRegularity?: "Regularly" | "Occasionally" | "Not yet";
 
   // Effective / Constrained Risk & Assessment Engine Outputs
   effectiveRiskBand?: RiskBand;
@@ -108,10 +117,6 @@ export interface User {
   avatarUrl?: string;
   onboardingDone?: boolean;
   profile?: UserProfile;
-  preferences?: {
-    priceSignalAlerts?: boolean;
-    sipReminders?: boolean;
-  };
 }
 
 export interface IndexData {
@@ -143,7 +148,7 @@ export interface StockQuote {
   sparkline: number[];
 }
 
-export type SignalType = 'BUY' | 'SELL' | 'HOLD';
+export type SignalType = "BUY" | "SELL" | "HOLD";
 
 export interface IndicatorData {
   rsi: number;
@@ -163,7 +168,7 @@ export interface BacktestResult {
   winRate: number | null;
   avgReturn: number | null;
   baselineAvgReturn: number | null;
-  status?: 'ok' | 'insufficient_data';
+  status?: "ok" | "insufficient_data";
   message?: string;
   pooledNifty50?: {
     label: string;
@@ -183,7 +188,7 @@ export interface SignalData {
   indicators: IndicatorData;
   reasons: {
     text: string;
-    type: 'positive' | 'negative' | 'neutral';
+    type: "positive" | "negative" | "neutral";
   }[];
   backtest: BacktestResult;
   mlModel?: {
@@ -207,21 +212,26 @@ export interface PricePoint {
   fullDate?: string;
 }
 
-export type TimeRange = '1D' | '1W' | '1M' | '1Y' | '5Y';
+export type TimeRange = "1D" | "1W" | "1M" | "1Y" | "5Y";
 
-export type FundCategory = 
-  | 'Liquid' 
-  | 'Short Duration Debt' 
-  | 'Corporate Bond' 
-  | 'Balanced Advantage' 
-  | 'Large Cap Index' 
-  | 'Flexi Cap' 
-  | 'Large & Mid Cap' 
-  | 'Mid Cap' 
-  | 'Small Cap' 
-  | 'ELSS';
+export type FundCategory =
+  | "Liquid"
+  | "Short Duration Debt"
+  | "Corporate Bond"
+  | "Balanced Advantage"
+  | "Large Cap Index"
+  | "Flexi Cap"
+  | "Large & Mid Cap"
+  | "Mid Cap"
+  | "Small Cap"
+  | "ELSS";
 
-export type FundRiskLevel = 'Low' | 'Moderately Low' | 'Moderate' | 'Moderately High' | 'Very High';
+export type FundRiskLevel =
+  | "Low"
+  | "Moderately Low"
+  | "Moderate"
+  | "Moderately High"
+  | "Very High";
 
 export interface MutualFund {
   code: string;
@@ -247,7 +257,12 @@ export interface NewsItem {
   id: string;
   headline: string;
   source: string;
-  category: 'Markets' | 'Economy' | 'Mutual Funds' | 'Companies' | 'Personal Finance';
+  category:
+    | "Markets"
+    | "Economy"
+    | "Mutual Funds"
+    | "Companies"
+    | "Personal Finance";
   timeAgo: string;
   summary: string;
   url: string;
@@ -259,7 +274,7 @@ export interface NewsItem {
 
 export interface Holding {
   id: string;
-  type: 'STOCK' | 'MUTUAL_FUND';
+  type: "STOCK" | "MUTUAL_FUND";
   symbolOrCode: string;
   name: string;
   quantity: number;
@@ -274,7 +289,7 @@ export interface TrackedSIP {
   fundCode: string;
   fundName: string;
   amount: number;
-  frequency: 'Monthly' | 'Weekly' | 'Quarterly';
+  frequency: "Monthly" | "Weekly" | "Quarterly";
   startDate: string;
   installmentsCompleted: number;
   currentValue: number;
@@ -286,20 +301,6 @@ export interface TrackedSIP {
   nextDate: string;
   partialHistory: boolean;
   latestNav: number | null;
-}
-
-export interface PriceThresholdConfig {
-  upper: number | null;
-  lower: number | null;
-  active: boolean;
-}
-
-export interface UserPreferences {
-  priceSignalAlerts?: boolean;
-  signalFlipAlerts?: boolean;
-  sipReminders?: boolean;
-  emailAlerts?: boolean;
-  priceThresholds?: Record<string, PriceThresholdConfig>;
 }
 
 export interface AIReasoning {
@@ -321,7 +322,11 @@ export interface RecommendationItem {
   fund: MutualFund;
   allocationPercent: number;
   rationale: string;
-  role: 'Core Wealth Builder' | 'Stability & Hedge' | 'Growth Accelerator' | 'Tax Saver & Compounding';
+  role:
+    | "Core Wealth Builder"
+    | "Stability & Hedge"
+    | "Growth Accelerator"
+    | "Tax Saver & Compounding";
 }
 
 export interface FundRecommendationResponse {
@@ -344,7 +349,7 @@ export interface FundRecommendationResponse {
   aiReasoning?: AIReasoning;
   holdingsSnapshot?: HoldingSnapshotItem[];
   marketContextNote: string;
-  status?: 'active' | 'archived';
+  status?: "active" | "archived";
   createdAt?: string;
   generatedAt?: string;
 }
@@ -388,7 +393,7 @@ export interface PortfolioHealthData {
   status: string;
   message?: string;
   healthScore: number;
-  healthGrade: 'Excellent' | 'Good' | 'Moderate' | 'Needs Attention' | 'N/A';
+  healthGrade: "Excellent" | "Good" | "Moderate" | "Needs Attention" | "N/A";
   metrics: {
     totalInvested: number;
     currentValue: number;
@@ -402,7 +407,7 @@ export interface PortfolioHealthData {
     other: number;
   };
   diversification: {
-    concentrationRisk: 'Low' | 'Moderate' | 'High' | 'None';
+    concentrationRisk: "Low" | "Moderate" | "High" | "None";
     topHoldingWeight: number;
     topHoldingName: string;
     holdings: Array<{
@@ -459,7 +464,6 @@ export interface AnalyticsOverviewData {
     picksCount: number;
     summary: string;
   } | null;
-  unreadAlerts: number;
   generatedAt: string;
 }
 
@@ -475,28 +479,6 @@ export interface CalculationResult {
   estimatedReturns: number;
   totalValue: number;
   breakdown: CalculationYearBreakdown[];
-}
-
-export interface NotificationItem {
-  id: string;
-  _id?: string;
-  type: 'price_alert' | 'signal_alert' | 'sip_reminder' | 'portfolio' | 'system' | 'welcome' | 'milestone';
-  severity?: 'info' | 'warning' | 'success' | 'critical';
-  title: string;
-  body: string;
-  meta?: {
-    symbol?: string;
-    route?: string;
-    changePercent?: number;
-    oldSignal?: string;
-    newSignal?: string;
-    price?: number;
-    targetPrice?: number;
-    score?: number;
-    source?: string;
-  };
-  read: boolean;
-  createdAt: string;
 }
 
 export interface SearchResultItem {
@@ -533,7 +515,7 @@ export interface PaperPosition {
   dayChange: number;
   dayChangePercent: number;
   previousClose: number;
-  productType: 'DELIVERY' | 'INTRADAY';
+  productType: "DELIVERY" | "INTRADAY";
   createdAt?: string;
 }
 
@@ -552,13 +534,13 @@ export interface PaperOrder {
   orderId: string;
   symbol: string;
   companyName: string;
-  transactionType: 'BUY' | 'SELL';
-  orderType: 'MARKET' | 'LIMIT';
-  productType: 'DELIVERY' | 'INTRADAY';
+  transactionType: "BUY" | "SELL";
+  orderType: "MARKET" | "LIMIT";
+  productType: "DELIVERY" | "INTRADAY";
   quantity: number;
   requestedPrice?: number | null;
   executedPrice?: number | null;
-  status: 'EXECUTED' | 'PENDING' | 'CANCELLED' | 'REJECTED';
+  status: "EXECUTED" | "PENDING" | "CANCELLED" | "REJECTED";
   charges: BrokerageCharges;
   realizedPnL?: number | null;
   rejectionReason?: string | null;
@@ -586,9 +568,9 @@ export interface PaperTradingSummary {
 
 export interface PlaceOrderPayload {
   symbol: string;
-  transactionType: 'BUY' | 'SELL';
-  orderType: 'MARKET' | 'LIMIT';
-  productType: 'DELIVERY' | 'INTRADAY';
+  transactionType: "BUY" | "SELL";
+  orderType: "MARKET" | "LIMIT";
+  productType: "DELIVERY" | "INTRADAY";
   quantity: number;
   limitPrice?: number;
 }
@@ -625,7 +607,7 @@ export interface StressRecommendation {
 
 export interface StressTestResult {
   scenario: StressScenario;
-  portfolioSource: 'REAL_HOLDINGS' | 'PAPER_POSITIONS' | 'SAMPLE_DEMO';
+  portfolioSource: "REAL_HOLDINGS" | "PAPER_POSITIONS" | "SAMPLE_DEMO";
   initialPortfolioValue: number;
   projectedPortfolioValue: number;
   totalLoss: number;
@@ -695,7 +677,7 @@ export interface MonteCarloSimulationResult {
 
 export interface CopilotMessage {
   _id?: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   suggestions?: string[];
   createdAt?: string;
@@ -709,7 +691,7 @@ export interface CopilotContextSummary {
 }
 
 export interface CopilotChatResponse {
-  role: 'assistant';
+  role: "assistant";
   content: string;
   suggestions: string[];
   contextSummary: CopilotContextSummary;
@@ -818,6 +800,3 @@ export interface InstitutionalAuditDossier {
   };
   disclaimer: string;
 }
-
-
-

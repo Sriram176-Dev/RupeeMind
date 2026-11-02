@@ -198,7 +198,7 @@ MongoDB provides a high-throughput NoSQL document data store ideal for polymorph
 
 ### Socket.IO Real-Time Streaming
 
-Socket.IO establishes persistent, bi-directional WebSocket connections between the client and Express server. During Indian market trading hours (09:15 to 15:30 IST), the server pushes real-time price ticks, index changes, and immediate order fill notifications directly to connected user sessions.
+Socket.IO establishes persistent, bi-directional WebSocket connections between the client and Express server. During Indian market trading hours (09:15 to 15:30 IST), the server pushes real-time price ticks and index changes directly to connected user sessions.
 
 ### Python FastAPI & XGBoost
 
@@ -743,5 +743,5 @@ The platform provides retail investors with an unparalleled competitive advantag
 
 - **Direct Broker API Execution**: Integrate certified broker APIs (Zerodha Kite Connect, Angel One SmartAPI, Upstox API) allowing users to seamlessly transition tested paper trading strategies directly into live trading orders.
 - **Automated Tax-Loss Harvesting Engine**: Develop an automated tax optimization module that identifies unrealized short-term capital losses (STCL) to offset realized capital gains before financial year-end under Indian Income Tax Act Section 112A.
-- **Cross-Platform Mobile Application**: Port the responsive React 19 interface to native iOS and Android environments using React Native, enabling biometric authentication (FaceID/Fingerprint) and push notifications for critical market signals.
+- **Cross-Platform Mobile Application**: Port the responsive React 19 interface to native iOS and Android environments using React Native, enabling biometric authentication (FaceID/Fingerprint) and a native mobile experience.
 - **Multi-Factor Algorithmic Basket Trading**: Introduce multi-asset thematic baskets with automated periodic rebalancing execution.

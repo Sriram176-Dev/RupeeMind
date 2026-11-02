@@ -9,8 +9,7 @@ import {
 import app from "./app.js";
 import { initSocket } from "./socket.js";
 import { syncMutualFunds } from "./scripts/syncFunds.js";
-import { runSipRemindersJob } from "./jobs/sipRemindersJob.js";
-import { runSignalAlertsJob } from "./jobs/signalAlertsJob.js";
+import { runSignalHistoryJob } from "./jobs/signalHistoryJob.js";
 import { startMLService, stopMLService } from "./services/mlProcessManager.js";
 
 import { executeJob } from "./services/jobRunner.js";
@@ -27,19 +26,19 @@ if (enableInternalCron) {
     console.log(
       "[Cron] Running scheduled nightly mutual funds sync at 02:00 IST...",
     );
-    await executeJob("sync-funds", () => syncMutualFunds(), { trigger: "cron", maxAttempts: 3 });
+    await executeJob("sync-funds", () => syncMutualFunds(), {
+      trigger: "cron",
+      maxAttempts: 3,
+    });
   });
 
-  // Daily SIP reminders at 08:00 AM IST (02:30 UTC)
-  cron.schedule("30 2 * * *", async () => {
-    console.log("[Cron] Running daily SIP reminders job...");
-    await executeJob("sip-reminders", () => runSipRemindersJob(), { trigger: "cron", maxAttempts: 2 });
-  });
-
-  // Watchlist signal alerts at 06:00 PM IST (12:30 UTC) — after market close
+  // Watchlist signal history at 06:00 PM IST (12:30 UTC) — after market close
   cron.schedule("30 12 * * 1-5", async () => {
-    console.log("[Cron] Running watchlist signal alerts job...");
-    await executeJob("signal-alerts", () => runSignalAlertsJob(), { trigger: "cron", maxAttempts: 2 });
+    console.log("[Cron] Updating watchlist signal history...");
+    await executeJob("signal-history", () => runSignalHistoryJob(), {
+      trigger: "cron",
+      maxAttempts: 2,
+    });
   });
 
   console.log("[Cron] Internal cron jobs enabled with resilient job runner.");
@@ -65,11 +64,15 @@ async function bootstrap() {
       if (mlChild) {
         console.log("[ML Setup] ML service is healthy and online.");
       } else {
-        console.warn("[ML Setup] ML service unavailable; running with rule-based fallback signals.");
+        console.warn(
+          "[ML Setup] ML service unavailable; running with rule-based fallback signals.",
+        );
       }
     } catch (error) {
       console.warn("[ML Setup] ML startup error:", error.message);
-      console.warn("[ML Setup] Server operating with rule-based fallback signals.");
+      console.warn(
+        "[ML Setup] Server operating with rule-based fallback signals.",
+      );
     }
   } else if (ENV.NODE_ENV === "test") {
     console.log("[ML Setup] Skipping ML service startup in test environment");
@@ -81,7 +84,9 @@ async function bootstrap() {
       `[Rupee Mind Server] Running on http://localhost:${ENV.PORT} (${ENV.NODE_ENV})`,
     );
     if (ENV.NODE_ENV !== "test") {
-      console.log("[ML Service] ML target at http://localhost:8000 (with automatic rule fallback)");
+      console.log(
+        "[ML Service] ML target at http://localhost:8000 (with automatic rule fallback)",
+      );
     }
   });
 

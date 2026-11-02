@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { useNotifications } from '../../context/NotificationContext';
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import {
   TrendingUp,
   PieChart,
@@ -17,7 +16,6 @@ import {
   User as UserIcon,
   Settings,
   ChevronDown,
-  Bell,
   BarChart3,
   Wallet,
   Scale,
@@ -25,73 +23,68 @@ import {
   FileText,
   ArrowRight,
   ShieldCheck,
-} from 'lucide-react';
-import { cn } from '../../lib/utils';
-import { GlobalSearch } from '../market/GlobalSearch';
-import { NotificationPanel } from '../notifications/NotificationPanel';
+} from "lucide-react";
+import { cn } from "../../lib/utils";
+import { GlobalSearch } from "../market/GlobalSearch";
 
 export const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
-  const { unreadCount } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
-  const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
-  const notifDropdownRef = useRef<HTMLDivElement>(null);
 
   // Global Ctrl+K (Search) & Escape handler
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setSearchOpen((prev) => !prev);
       }
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setUserDropdownOpen(false);
         setMegaMenuOpen(false);
-        setNotificationPanelOpen(false);
         setMobileMenuOpen(false);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   // Close menus on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
-      if (userDropdownRef.current && !userDropdownRef.current.contains(target)) {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(target)
+      ) {
         setUserDropdownOpen(false);
       }
       if (megaMenuRef.current && !megaMenuRef.current.contains(target)) {
         setMegaMenuOpen(false);
       }
-      if (notifDropdownRef.current && !notifDropdownRef.current.contains(target)) {
-        setNotificationPanelOpen(false);
-      }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [mobileMenuOpen]);
 
@@ -100,12 +93,11 @@ export const Navbar: React.FC = () => {
     setMobileMenuOpen(false);
     setUserDropdownOpen(false);
     setMegaMenuOpen(false);
-    setNotificationPanelOpen(false);
   }, [location.pathname]);
 
   const isMac =
-    typeof window !== 'undefined' &&
-    /Mac|iPhone|iPod|iPad/.test(navigator.platform || '');
+    typeof window !== "undefined" &&
+    /Mac|iPhone|iPod|iPad/.test(navigator.platform || "");
 
   // Core 1-click links for top bar
   const primaryLinks: Array<{
@@ -115,123 +107,143 @@ export const Navbar: React.FC = () => {
     className?: string;
   }> = isAuthenticated
     ? [
-        { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-        { label: 'Portfolio', path: '/portfolio', icon: Briefcase },
-        { label: 'Market', path: '/market', icon: TrendingUp },
-        { label: 'Mutual Funds', path: '/funds', icon: PieChart },
-        { label: 'Paper Trading', path: '/paper-trading', icon: Wallet, className: 'hidden xl:flex' },
+        { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+        { label: "Portfolio", path: "/portfolio", icon: Briefcase },
+        { label: "Market", path: "/market", icon: TrendingUp },
+        { label: "Mutual Funds", path: "/funds", icon: PieChart },
+        {
+          label: "Paper Trading",
+          path: "/paper-trading",
+          icon: Wallet,
+          className: "hidden xl:flex",
+        },
       ]
     : [
-        { label: 'Market', path: '/market', icon: TrendingUp },
-        { label: 'Mutual Funds', path: '/funds', icon: PieChart },
-        { label: 'Calculators', path: '/calculators', icon: Calculator, className: 'hidden xl:flex' },
-        { label: 'News', path: '/news', icon: Newspaper, className: 'hidden 2xl:flex' },
-        { label: 'Learn', path: '/learn', icon: BookOpen, className: 'hidden 2xl:flex' },
+        { label: "Market", path: "/market", icon: TrendingUp },
+        { label: "Mutual Funds", path: "/funds", icon: PieChart },
+        {
+          label: "Calculators",
+          path: "/calculators",
+          icon: Calculator,
+          className: "hidden xl:flex",
+        },
+        {
+          label: "News",
+          path: "/news",
+          icon: Newspaper,
+          className: "hidden 2xl:flex",
+        },
+        {
+          label: "Learn",
+          path: "/learn",
+          icon: BookOpen,
+          className: "hidden 2xl:flex",
+        },
       ];
 
   // Complete catalog of all platform features grouped by category
   const featureCategories = [
     {
-      title: 'Markets & Securities',
+      title: "Markets & Securities",
       items: [
         {
-          label: 'Stock Market & Signals',
-          path: '/market',
+          label: "Stock Market & Signals",
+          path: "/market",
           icon: TrendingUp,
-          desc: 'NSE/BSE live quotes & algorithmic signals',
+          desc: "NSE/BSE live quotes & algorithmic signals",
         },
         {
-          label: 'Mutual Funds Explorer',
-          path: '/funds',
+          label: "Mutual Funds Explorer",
+          path: "/funds",
           icon: PieChart,
-          desc: 'Quant-screened funds, NAVs & categories',
+          desc: "Quant-screened funds, NAVs & categories",
         },
         {
-          label: 'Fund Comparison Tool',
-          path: '/funds/compare',
+          label: "Fund Comparison Tool",
+          path: "/funds/compare",
           icon: Scale,
-          desc: 'Side-by-side risk, CAGR & expense compare',
+          desc: "Side-by-side risk, CAGR & expense compare",
         },
         {
-          label: 'Market News & Intel',
-          path: '/news',
+          label: "Market News & Intel",
+          path: "/news",
           icon: Newspaper,
-          desc: 'Live financial commentary & sentiment',
+          desc: "Live financial commentary & sentiment",
         },
       ],
     },
     {
-      title: 'Portfolio & Risk Intelligence',
+      title: "Portfolio & Risk Intelligence",
       items: [
         {
-          label: 'Portfolio Holdings & P&L',
-          path: '/portfolio',
+          label: "Portfolio Holdings & P&L",
+          path: "/portfolio",
           icon: Briefcase,
-          desc: 'Asset allocation, holdings & tax lots',
+          desc: "Asset allocation, holdings & tax lots",
         },
         {
-          label: 'Stress Test & VaR Analytics',
-          path: '/analytics',
+          label: "Stress Test & VaR Analytics",
+          path: "/analytics",
           icon: BarChart3,
-          desc: 'Basel III VaR, Monte Carlo & crisis replay',
+          desc: "Basel III VaR, Monte Carlo & crisis replay",
         },
         {
-          label: 'Executive Dashboard',
-          path: '/dashboard',
+          label: "Executive Dashboard",
+          path: "/dashboard",
           icon: LayoutDashboard,
-          desc: 'High-level net worth & portfolio health',
+          desc: "High-level net worth & portfolio health",
         },
         {
-          label: 'Institutional Audit Dossier',
-          path: '/portfolio',
+          label: "Institutional Audit Dossier",
+          path: "/portfolio",
           icon: FileText,
-          desc: 'Full tax, risk & portfolio health audit',
+          desc: "Full tax, risk & portfolio health audit",
         },
       ],
     },
     {
-      title: 'Trading & AI Engine',
+      title: "Trading & AI Engine",
       items: [
         {
-          label: 'Paper Trading Sandbox',
-          path: '/paper-trading',
+          label: "Paper Trading Sandbox",
+          path: "/paper-trading",
           icon: Wallet,
-          desc: 'Risk-free ₹10L simulated execution',
+          desc: "Risk-free ₹10L simulated execution",
         },
         {
-          label: 'AI Quant Recommendations',
-          path: '/recommendations',
+          label: "AI Quant Recommendations",
+          path: "/recommendations",
           icon: Sparkles,
-          desc: 'Personalized ML stock & mutual fund picks',
+          desc: "Personalized ML stock & mutual fund picks",
         },
       ],
     },
     {
-      title: 'Planning, Tools & Academy',
+      title: "Planning, Tools & Academy",
       items: [
         {
-          label: 'Financial Calculators',
-          path: '/calculators',
+          label: "Financial Calculators",
+          path: "/calculators",
           icon: Calculator,
-          desc: 'SIP, Step-Up, SWP, Lumpsum & Retirement',
+          desc: "SIP, Step-Up, SWP, Lumpsum & Retirement",
         },
         {
-          label: 'Learn Academy',
-          path: '/learn',
+          label: "Learn Academy",
+          path: "/learn",
           icon: BookOpen,
-          desc: 'SEBI investor education & tax rules',
+          desc: "SEBI investor education & tax rules",
         },
         {
-          label: 'KYC & Risk Profile',
-          path: '/profile',
+          label: "KYC & Risk Profile",
+          path: "/profile",
           icon: UserIcon,
-          desc: 'Risk tolerance quiz & investor tier',
+          desc: "Risk tolerance quiz & investor tier",
         },
         {
-          label: 'Account Settings',
-          path: '/settings',
+          label: "Account Settings",
+          path: "/settings",
           icon: Settings,
-          desc: 'Security, password & preferences',
+          desc: "Security, password & preferences",
         },
       ],
     },
@@ -247,18 +259,17 @@ export const Navbar: React.FC = () => {
     logout();
     setUserDropdownOpen(false);
     setMobileMenuOpen(false);
-    navigate('/');
+    navigate("/");
   };
 
   return (
     <>
       <header className="sticky top-0 z-40 w-full border-b border-[#E7E5DF] bg-white/95 backdrop-blur-md transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 lg:gap-4 relative">
-          
           {/* Left: Brand Logo & Navigation */}
           <div className="flex items-center gap-3 lg:gap-5 shrink min-w-0">
             <Link
-              to={isAuthenticated ? '/dashboard' : '/'}
+              to={isAuthenticated ? "/dashboard" : "/"}
               className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl p-1 shrink-0 whitespace-nowrap"
               aria-label="Rupee Mind Home"
             >
@@ -273,29 +284,33 @@ export const Navbar: React.FC = () => {
             </Link>
 
             {/* Desktop Navigation Links (>= lg / 1024px) */}
-            <nav className="hidden lg:flex items-center space-x-1 shrink-0" aria-label="Main Navigation">
+            <nav
+              className="hidden lg:flex items-center space-x-1 shrink-0"
+              aria-label="Main Navigation"
+            >
               {primaryLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =
                   location.pathname === link.path ||
-                  (link.path !== '/' && location.pathname.startsWith(`${link.path}/`));
+                  (link.path !== "/" &&
+                    location.pathname.startsWith(`${link.path}/`));
 
                 return (
                   <Link
                     key={link.path}
                     to={link.path}
                     className={cn(
-                      'px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap shrink-0',
+                      "px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap shrink-0",
                       link.className,
                       isActive
-                        ? 'text-[#0F766E] bg-[#E6F4F1] font-semibold shadow-2xs'
-                        : 'text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5'
+                        ? "text-[#0F766E] bg-[#E6F4F1] font-semibold shadow-2xs"
+                        : "text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5",
                     )}
                   >
                     <Icon
                       className={cn(
-                        'w-4 h-4 shrink-0',
-                        isActive ? 'text-[#0F766E]' : 'text-current opacity-70'
+                        "w-4 h-4 shrink-0",
+                        isActive ? "text-[#0F766E]" : "text-current opacity-70",
                       )}
                     />
                     <span>{link.label}</span>
@@ -310,13 +325,12 @@ export const Navbar: React.FC = () => {
                   onClick={() => {
                     setMegaMenuOpen(!megaMenuOpen);
                     setUserDropdownOpen(false);
-                    setNotificationPanelOpen(false);
                   }}
                   className={cn(
-                    'px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 flex items-center gap-1.5 focus:outline-none cursor-pointer whitespace-nowrap shrink-0',
+                    "px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 flex items-center gap-1.5 focus:outline-none cursor-pointer whitespace-nowrap shrink-0",
                     megaMenuOpen
-                      ? 'text-[#0F766E] bg-[#E6F4F1] font-semibold'
-                      : 'text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5'
+                      ? "text-[#0F766E] bg-[#E6F4F1] font-semibold"
+                      : "text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5",
                   )}
                   aria-expanded={megaMenuOpen}
                 >
@@ -324,8 +338,8 @@ export const Navbar: React.FC = () => {
                   <span>All Features</span>
                   <ChevronDown
                     className={cn(
-                      'w-3.5 h-3.5 transition-transform duration-200 shrink-0',
-                      megaMenuOpen && 'rotate-180'
+                      "w-3.5 h-3.5 transition-transform duration-200 shrink-0",
+                      megaMenuOpen && "rotate-180",
                     )}
                   />
                 </button>
@@ -343,7 +357,8 @@ export const Navbar: React.FC = () => {
                             Complete Platform Navigator
                           </h4>
                           <p className="text-[11px] text-[#5B6572]">
-                            Explore and jump directly to any RupeeMind investment or quant capability
+                            Explore and jump directly to any RupeeMind
+                            investment or quant capability
                           </p>
                         </div>
                       </div>
@@ -366,18 +381,18 @@ export const Navbar: React.FC = () => {
                                   type="button"
                                   onClick={() => handleFeatureClick(item)}
                                   className={cn(
-                                    'w-full text-left p-2 rounded-xl transition-all flex items-start gap-2.5 group cursor-pointer',
+                                    "w-full text-left p-2 rounded-xl transition-all flex items-start gap-2.5 group cursor-pointer",
                                     isActive
-                                      ? 'bg-[#E6F4F1] text-[#0F766E]'
-                                      : 'hover:bg-[#FAFAF7] text-[#0B1220]'
+                                      ? "bg-[#E6F4F1] text-[#0F766E]"
+                                      : "hover:bg-[#FAFAF7] text-[#0B1220]",
                                   )}
                                 >
                                   <div
                                     className={cn(
-                                      'p-1.5 rounded-lg shrink-0 mt-0.5 transition-colors',
+                                      "p-1.5 rounded-lg shrink-0 mt-0.5 transition-colors",
                                       isActive
-                                        ? 'bg-[#0F766E] text-white'
-                                        : 'bg-[#FAFAF7] text-[#5B6572] border border-[#E7E5DF] group-hover:border-[#0F766E]/40 group-hover:text-[#0F766E]'
+                                        ? "bg-[#0F766E] text-white"
+                                        : "bg-[#FAFAF7] text-[#5B6572] border border-[#E7E5DF] group-hover:border-[#0F766E]/40 group-hover:text-[#0F766E]",
                                     )}
                                   >
                                     <Icon className="w-3.5 h-3.5" />
@@ -399,8 +414,16 @@ export const Navbar: React.FC = () => {
                     </div>
 
                     <div className="mt-4 pt-3 border-t border-[#E7E5DF] flex items-center justify-between text-[11px] text-[#5B6572] font-mono">
-                      <span>Pro-tip: Press <kbd className="px-1.5 py-0.5 rounded bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220]">Ctrl+K</kbd> to search any page or stock instantly</span>
-                      <span className="hidden sm:inline">SEBI-Aligned Educational Architecture</span>
+                      <span>
+                        Pro-tip: Press{" "}
+                        <kbd className="px-1.5 py-0.5 rounded bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220]">
+                          Ctrl+K
+                        </kbd>{" "}
+                        to search any page or stock instantly
+                      </span>
+                      <span className="hidden sm:inline">
+                        SEBI-Aligned Educational Architecture
+                      </span>
                     </div>
                   </div>
                 )}
@@ -410,39 +433,12 @@ export const Navbar: React.FC = () => {
 
           {/* Right Header Action Items */}
           <div className="flex items-center space-x-2 sm:space-x-2.5 shrink-0">
-            {/* Notification Bell Dropdown */}
-            <div className="relative shrink-0" ref={notifDropdownRef}>
-              <button
-                onClick={() => {
-                  setNotificationPanelOpen(!notificationPanelOpen);
-                  setUserDropdownOpen(false);
-                  setMegaMenuOpen(false);
-                }}
-                className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5 border border-[#E7E5DF] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 shrink-0"
-                aria-label="Notifications"
-                title="Notifications"
-              >
-                <Bell className="w-4 h-4 shrink-0" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-2 right-2 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0F766E]"></span>
-                  </span>
-                )}
-              </button>
-
-              {notificationPanelOpen && (
-                <NotificationPanel onClose={() => setNotificationPanelOpen(false)} />
-              )}
-            </div>
-
             {/* User Profile / Auth State */}
             {isAuthenticated && user ? (
               <div className="relative shrink-0" ref={userDropdownRef}>
                 <button
                   onClick={() => {
                     setUserDropdownOpen(!userDropdownOpen);
-                    setNotificationPanelOpen(false);
                     setMegaMenuOpen(false);
                   }}
                   className="flex items-center gap-2 p-1.5 sm:px-2.5 rounded-xl border border-[#E7E5DF] hover:bg-black/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 whitespace-nowrap shrink-0"
@@ -457,7 +453,7 @@ export const Navbar: React.FC = () => {
                       {user.name}
                     </p>
                     <p className="text-[10px] text-[#5B6572] leading-tight">
-                      {user.profile?.riskBand || 'Investor'}
+                      {user.profile?.riskBand || "Investor"}
                     </p>
                   </div>
                   <ChevronDown className="w-3.5 h-3.5 text-[#5B6572] shrink-0" />
@@ -466,10 +462,14 @@ export const Navbar: React.FC = () => {
                 {userDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-[#E7E5DF] shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                     <div className="px-4 py-2.5 border-b border-[#E7E5DF]">
-                      <p className="text-xs font-semibold text-[#0B1220] truncate">{user.name}</p>
-                      <p className="text-[11px] text-[#5B6572] truncate">{user.email}</p>
+                      <p className="text-xs font-semibold text-[#0B1220] truncate">
+                        {user.name}
+                      </p>
+                      <p className="text-[11px] text-[#5B6572] truncate">
+                        {user.email}
+                      </p>
                       <div className="mt-1.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#E6F4F1] text-[#0F766E]">
-                        {user.profile?.riskBand || 'Moderate'} Investor
+                        {user.profile?.riskBand || "Moderate"} Investor
                       </div>
                     </div>
 
@@ -546,7 +546,11 @@ export const Navbar: React.FC = () => {
               className="lg:hidden w-9 h-9 rounded-xl flex items-center justify-center text-[#0B1220] border border-[#E7E5DF] hover:bg-black/5 transition-colors"
               aria-label="Open navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
@@ -558,11 +562,13 @@ export const Navbar: React.FC = () => {
               {isAuthenticated && user && (
                 <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-[#0B1220]">{user.name}</p>
+                    <p className="text-sm font-bold text-[#0B1220]">
+                      {user.name}
+                    </p>
                     <p className="text-xs text-[#5B6572]">{user.email}</p>
                   </div>
                   <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#E6F4F1] text-[#0F766E]">
-                    {user.profile?.riskBand || 'Moderate'}
+                    {user.profile?.riskBand || "Moderate"}
                   </div>
                 </div>
               )}
@@ -585,18 +591,18 @@ export const Navbar: React.FC = () => {
                             type="button"
                             onClick={() => handleFeatureClick(item)}
                             className={cn(
-                              'w-full p-2.5 rounded-xl text-left flex items-center gap-3 transition-colors border',
+                              "w-full p-2.5 rounded-xl text-left flex items-center gap-3 transition-colors border",
                               isActive
-                                ? 'bg-[#E6F4F1] border-emerald-300 text-[#0F766E]'
-                                : 'bg-[#FAFAF7] border-[#E7E5DF] text-[#0B1220] hover:bg-white'
+                                ? "bg-[#E6F4F1] border-emerald-300 text-[#0F766E]"
+                                : "bg-[#FAFAF7] border-[#E7E5DF] text-[#0B1220] hover:bg-white",
                             )}
                           >
                             <div
                               className={cn(
-                                'p-1.5 rounded-lg shrink-0',
+                                "p-1.5 rounded-lg shrink-0",
                                 isActive
-                                  ? 'bg-[#0F766E] text-white'
-                                  : 'bg-white text-[#5B6572] border border-[#E7E5DF]'
+                                  ? "bg-[#0F766E] text-white"
+                                  : "bg-white text-[#5B6572] border border-[#E7E5DF]",
                               )}
                             >
                               <Icon className="w-4 h-4" />

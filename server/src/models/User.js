@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const sessionSchema = new mongoose.Schema(
   {
@@ -24,10 +24,10 @@ const sessionSchema = new mongoose.Schema(
     },
     userAgent: {
       type: String,
-      default: '',
+      default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const userSchema = new mongoose.Schema(
@@ -61,36 +61,6 @@ const userSchema = new mongoose.Schema(
       type: [sessionSchema],
       default: [],
     },
-    preferences: {
-      priceSignalAlerts: {
-        type: Boolean,
-        default: true,
-      },
-      signalFlipAlerts: {
-        type: Boolean,
-        default: true,
-      },
-      sipReminders: {
-        type: Boolean,
-        default: true,
-      },
-      emailAlerts: {
-        type: Boolean,
-        default: false,
-      },
-      priceThresholds: {
-        type: Map,
-        of: new mongoose.Schema(
-          {
-            upper: { type: Number, default: null },
-            lower: { type: Number, default: null },
-            active: { type: Boolean, default: true },
-          },
-          { _id: false }
-        ),
-        default: {},
-      },
-    },
     resetPasswordTokenHash: {
       type: String,
       default: null,
@@ -102,12 +72,12 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-userSchema.index({ 'sessions.tokenHash': 1 });
-userSchema.index({ 'sessions.previousTokenHash': 1 });
+userSchema.index({ "sessions.tokenHash": 1 });
+userSchema.index({ "sessions.previousTokenHash": 1 });
 userSchema.index({ resetPasswordTokenHash: 1 });
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model("User", userSchema);
 export default User;

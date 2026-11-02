@@ -1,9 +1,8 @@
-import { Holding } from '../models/Holding.js';
-import { Profile } from '../models/Profile.js';
-import { Recommendation } from '../models/Recommendation.js';
-import { SignalHistory } from '../models/SignalHistory.js';
-import { Notification } from '../models/Notification.js';
-import { getPooledNifty50Backtest } from './signalService.js';
+import { Holding } from "../models/Holding.js";
+import { Profile } from "../models/Profile.js";
+import { Recommendation } from "../models/Recommendation.js";
+import { SignalHistory } from "../models/SignalHistory.js";
+import { getPooledNifty50Backtest } from "./signalService.js";
 
 /**
  * Calculate deep portfolio health analytics for a user
@@ -16,10 +15,11 @@ export async function getPortfolioHealth(userId) {
 
   if (!holdings || holdings.length === 0) {
     return {
-      status: 'no_data',
-      message: 'No holdings found in portfolio. Add your stocks or funds to generate health analytics.',
+      status: "no_data",
+      message:
+        "No holdings found in portfolio. Add your stocks or funds to generate health analytics.",
       healthScore: 0,
-      healthGrade: 'N/A',
+      healthGrade: "N/A",
       metrics: {
         totalInvested: 0,
         currentValue: 0,
@@ -28,8 +28,14 @@ export async function getPortfolioHealth(userId) {
         holdingsCount: 0,
       },
       assetAllocation: { stocks: 0, mutualFunds: 0, other: 0 },
-      diversification: { concentrationRisk: 'None', topHoldingWeight: 0, rating: 'Empty' },
-      actionableInsights: ['Start by adding your current stock or mutual fund holdings to track health.'],
+      diversification: {
+        concentrationRisk: "None",
+        topHoldingWeight: 0,
+        rating: "Empty",
+      },
+      actionableInsights: [
+        "Start by adding your current stock or mutual fund holdings to track health.",
+      ],
     };
   }
 
@@ -51,10 +57,10 @@ export async function getPortfolioHealth(userId) {
     totalInvested += invested;
     currentValue += val;
 
-    const typeUpper = (h.type || '').toUpperCase();
-    if (typeUpper === 'STOCK') {
+    const typeUpper = (h.type || "").toUpperCase();
+    if (typeUpper === "STOCK") {
       stockValue += val;
-    } else if (typeUpper === 'FUND' || typeUpper === 'MUTUAL_FUND') {
+    } else if (typeUpper === "FUND" || typeUpper === "MUTUAL_FUND") {
       fundValue += val;
     } else {
       otherValue += val;
@@ -75,7 +81,10 @@ export async function getPortfolioHealth(userId) {
 
   // Calculate weights and top holding concentration
   items.forEach((item) => {
-    item.weight = currentValue > 0 ? Number(((item.currentValue / currentValue) * 100).toFixed(1)) : 0;
+    item.weight =
+      currentValue > 0
+        ? Number(((item.currentValue / currentValue) * 100).toFixed(1))
+        : 0;
   });
 
   items.sort((a, b) => b.weight - a.weight);
@@ -86,8 +95,10 @@ export async function getPortfolioHealth(userId) {
   const totalPnl = currentValue - totalInvested;
   const pnlPercent = totalInvested > 0 ? (totalPnl / totalInvested) * 100 : 0;
 
-  const stocksPct = currentValue > 0 ? Math.round((stockValue / currentValue) * 100) : 0;
-  const fundsPct = currentValue > 0 ? Math.round((fundValue / currentValue) * 100) : 0;
+  const stocksPct =
+    currentValue > 0 ? Math.round((stockValue / currentValue) * 100) : 0;
+  const fundsPct =
+    currentValue > 0 ? Math.round((fundValue / currentValue) * 100) : 0;
   const otherPct = Math.max(0, 100 - stocksPct - fundsPct);
 
   // Compute Health Score (0 - 100)
@@ -118,34 +129,42 @@ export async function getPortfolioHealth(userId) {
 
   healthScore = Math.max(10, Math.min(98, healthScore));
 
-  let healthGrade = 'Good';
-  if (healthScore >= 85) healthGrade = 'Excellent';
-  else if (healthScore >= 70) healthGrade = 'Good';
-  else if (healthScore >= 50) healthGrade = 'Moderate';
-  else healthGrade = 'Needs Attention';
+  let healthGrade = "Good";
+  if (healthScore >= 85) healthGrade = "Excellent";
+  else if (healthScore >= 70) healthGrade = "Good";
+  else if (healthScore >= 50) healthGrade = "Moderate";
+  else healthGrade = "Needs Attention";
 
   // Insights
   const actionableInsights = [];
   if (topHoldingWeight > 30) {
     actionableInsights.push(
-      `High concentration risk: ${topHolding.name} represents ${topHoldingWeight}% of your portfolio. Consider rebalancing.`
+      `High concentration risk: ${topHolding.name} represents ${topHoldingWeight}% of your portfolio. Consider rebalancing.`,
     );
   }
   if (items.length < 4) {
-    actionableInsights.push('Low diversification: Consider expanding across asset classes or broad market funds.');
+    actionableInsights.push(
+      "Low diversification: Consider expanding across asset classes or broad market funds.",
+    );
   }
   if (fundsPct === 0) {
-    actionableInsights.push('No mutual fund exposure: Adding diversified funds can reduce single-stock volatility.');
+    actionableInsights.push(
+      "No mutual fund exposure: Adding diversified funds can reduce single-stock volatility.",
+    );
   }
   if (pnlPercent > 10) {
-    actionableInsights.push(`Strong portfolio momentum: Overall gain of ${pnlPercent.toFixed(1)}% outpaces inflation benchmarks.`);
+    actionableInsights.push(
+      `Strong portfolio momentum: Overall gain of ${pnlPercent.toFixed(1)}% outpaces inflation benchmarks.`,
+    );
   }
   if (actionableInsights.length === 0) {
-    actionableInsights.push('Well-balanced portfolio structure meeting target diversification parameters.');
+    actionableInsights.push(
+      "Well-balanced portfolio structure meeting target diversification parameters.",
+    );
   }
 
   return {
-    status: 'ok',
+    status: "ok",
     healthScore,
     healthGrade,
     metrics: {
@@ -161,13 +180,18 @@ export async function getPortfolioHealth(userId) {
       other: otherPct,
     },
     diversification: {
-      concentrationRisk: topHoldingWeight > 35 ? 'High' : topHoldingWeight > 20 ? 'Moderate' : 'Low',
+      concentrationRisk:
+        topHoldingWeight > 35
+          ? "High"
+          : topHoldingWeight > 20
+            ? "Moderate"
+            : "Low",
       topHoldingWeight,
-      topHoldingName: topHolding?.name || 'N/A',
+      topHoldingName: topHolding?.name || "N/A",
       holdings: items.slice(0, 5),
     },
     riskProfileMatch: {
-      riskBand: profile?.riskBand || 'Moderate',
+      riskBand: profile?.riskBand || "Moderate",
       horizonYears: profile?.horizonYears || 5,
     },
     actionableInsights,
@@ -193,8 +217,8 @@ export async function getSignalQuality(userId) {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   signalHistories.forEach((sh) => {
-    if (sh.currentSignal === 'BUY') buyCount++;
-    else if (sh.currentSignal === 'SELL') sellCount++;
+    if (sh.currentSignal === "BUY") buyCount++;
+    else if (sh.currentSignal === "SELL") sellCount++;
     else holdCount++;
 
     if (sh.mlUsed) mlCount++;
@@ -204,10 +228,11 @@ export async function getSignalQuality(userId) {
     }
   });
 
-  const mlAdoptionPercent = totalTracked > 0 ? Math.round((mlCount / totalTracked) * 100) : 0;
+  const mlAdoptionPercent =
+    totalTracked > 0 ? Math.round((mlCount / totalTracked) * 100) : 0;
 
   return {
-    status: 'ok',
+    status: "ok",
     totalTracked,
     breakdown: {
       BUY: buyCount,
@@ -239,12 +264,14 @@ export async function getSignalQuality(userId) {
  * Unified Analytics Overview for user dashboard
  */
 export async function getAnalyticsOverview(userId) {
-  const [portfolioHealth, signalQuality, latestRecommendation, unreadAlerts] = await Promise.all([
-    getPortfolioHealth(userId),
-    getSignalQuality(userId),
-    Recommendation.findOne({ userId, status: 'active' }).sort({ createdAt: -1 }).lean(),
-    Notification.countDocuments({ userId, read: false }),
-  ]);
+  const [portfolioHealth, signalQuality, latestRecommendation] =
+    await Promise.all([
+      getPortfolioHealth(userId),
+      getSignalQuality(userId),
+      Recommendation.findOne({ userId, status: "active" })
+        .sort({ createdAt: -1 })
+        .lean(),
+    ]);
 
   return {
     portfolioHealth,
@@ -256,10 +283,11 @@ export async function getAnalyticsOverview(userId) {
           confidenceScore: latestRecommendation.confidenceScore || 85,
           assetAllocation: latestRecommendation.assetAllocation,
           picksCount: latestRecommendation.recommendations?.length || 0,
-          summary: latestRecommendation.aiReasoning?.summary || latestRecommendation.marketContextNote,
+          summary:
+            latestRecommendation.aiReasoning?.summary ||
+            latestRecommendation.marketContextNote,
         }
       : null,
-    unreadAlerts,
     generatedAt: new Date().toISOString(),
   };
 }

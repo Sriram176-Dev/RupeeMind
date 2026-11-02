@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { searchSymbols, getFunds } from '../../services/api';
-import type { SearchResultItem, MutualFund } from '../../types';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { searchSymbols, getFunds } from "../../services/api";
+import type { SearchResultItem, MutualFund } from "../../types";
 import {
   Search,
   TrendingUp,
@@ -21,8 +21,8 @@ import {
   Settings,
   Scale,
   Bot,
-} from 'lucide-react';
-import { cn } from '../../lib/utils';
+} from "lucide-react";
+import { cn } from "../../lib/utils";
 
 interface GlobalSearchProps {
   isOpen: boolean;
@@ -40,108 +40,111 @@ interface PlatformFeature {
 
 const PLATFORM_FEATURES: PlatformFeature[] = [
   {
-    name: 'Dashboard Overview',
-    path: '/dashboard',
-    desc: 'High-level net worth, portfolio asset mix & signal health',
-    category: 'Core',
+    name: "Dashboard Overview",
+    path: "/dashboard",
+    desc: "High-level net worth, portfolio asset mix & signal health",
+    category: "Core",
     icon: LayoutDashboard,
   },
   {
-    name: 'Portfolio Holdings & P&L',
-    path: '/portfolio',
-    desc: 'Real-time equity/mutual fund holdings & capital gains audit',
-    category: 'Portfolio',
+    name: "Portfolio Holdings & P&L",
+    path: "/portfolio",
+    desc: "Real-time equity/mutual fund holdings & capital gains audit",
+    category: "Portfolio",
     icon: Briefcase,
   },
   {
-    name: 'Stock Market & Signals',
-    path: '/market',
-    desc: 'Live NSE/BSE quotes with algorithmic BUY/HOLD/SELL signals',
-    category: 'Markets',
+    name: "Stock Market & Signals",
+    path: "/market",
+    desc: "Live NSE/BSE quotes with algorithmic BUY/HOLD/SELL signals",
+    category: "Markets",
     icon: TrendingUp,
   },
   {
-    name: 'Mutual Funds Explorer',
-    path: '/funds',
-    desc: 'Quant-screened mutual funds, categories & historical NAVs',
-    category: 'Funds',
+    name: "Mutual Funds Explorer",
+    path: "/funds",
+    desc: "Quant-screened mutual funds, categories & historical NAVs",
+    category: "Funds",
     icon: PieChart,
   },
   {
-    name: 'Mutual Fund Comparison Tool',
-    path: '/funds/compare',
-    desc: 'Head-to-head risk, expense ratio, Sharpe ratio & returns compare',
-    category: 'Funds',
+    name: "Mutual Fund Comparison Tool",
+    path: "/funds/compare",
+    desc: "Head-to-head risk, expense ratio, Sharpe ratio & returns compare",
+    category: "Funds",
     icon: Scale,
   },
   {
-    name: 'Stress Test & Risk Analytics',
-    path: '/analytics',
-    desc: 'Basel III VaR (95%/99%), Monte Carlo & crisis simulation',
-    category: 'Analytics',
+    name: "Stress Test & Risk Analytics",
+    path: "/analytics",
+    desc: "Basel III VaR (95%/99%), Monte Carlo & crisis simulation",
+    category: "Analytics",
     icon: BarChart3,
   },
   {
-    name: 'Paper Trading Terminal',
-    path: '/paper-trading',
-    desc: 'Virtual trading sandbox with ₹10,00,000 capital & order simulation',
-    category: 'Trading',
+    name: "Paper Trading Terminal",
+    path: "/paper-trading",
+    desc: "Virtual trading sandbox with ₹10,00,000 capital & order simulation",
+    category: "Trading",
     icon: Wallet,
   },
   {
-    name: 'AI Quant Recommendations',
-    path: '/recommendations',
-    desc: 'Personalized ML stock & mutual fund picks tailored to your KYC',
-    category: 'AI',
+    name: "AI Quant Recommendations",
+    path: "/recommendations",
+    desc: "Personalized ML stock & mutual fund picks tailored to your KYC",
+    category: "AI",
     icon: Sparkles,
   },
   {
-    name: 'Financial Calculators (SIP/SWP)',
-    path: '/calculators',
-    desc: 'SIP, Step-Up SIP, SWP, Lumpsum, ELSS Tax & Retirement Planner',
-    category: 'Calculators',
+    name: "Financial Calculators (SIP/SWP)",
+    path: "/calculators",
+    desc: "SIP, Step-Up SIP, SWP, Lumpsum, ELSS Tax & Retirement Planner",
+    category: "Calculators",
     icon: Calculator,
   },
   {
-    name: 'Market News & Intel',
-    path: '/news',
-    desc: 'Live curated Indian market headlines & sentiment analysis',
-    category: 'News',
+    name: "Market News & Intel",
+    path: "/news",
+    desc: "Live curated Indian market headlines & sentiment analysis",
+    category: "News",
     icon: Newspaper,
   },
   {
-    name: 'Learn Academy',
-    path: '/learn',
-    desc: 'SEBI investor education, asset allocation & tax saving rules',
-    category: 'Education',
+    name: "Learn Academy",
+    path: "/learn",
+    desc: "SEBI investor education, asset allocation & tax saving rules",
+    category: "Education",
     icon: BookOpen,
   },
   {
-    name: 'RupeeBot AI Copilot',
-    path: '#copilot',
-    desc: 'Interactive financial assistant for portfolio risk & tax queries',
-    category: 'AI Copilot',
+    name: "RupeeBot AI Copilot",
+    path: "#copilot",
+    desc: "Interactive financial assistant for portfolio risk & tax queries",
+    category: "AI Copilot",
     icon: Bot,
     isCopilot: true,
   },
   {
-    name: 'Investor Profile & KYC',
-    path: '/profile',
-    desc: 'Risk tolerance assessment, demographic tier & KYC settings',
-    category: 'Account',
+    name: "Investor Profile & KYC",
+    path: "/profile",
+    desc: "Risk tolerance assessment, demographic tier & KYC settings",
+    category: "Account",
     icon: User,
   },
   {
-    name: 'Account Settings',
-    path: '/settings',
-    desc: 'Security, password, notifications & preferences',
-    category: 'Account',
+    name: "Account Settings",
+    path: "/settings",
+    desc: "Security, password & account preferences",
+    category: "Account",
     icon: Settings,
   },
 ];
 
-export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
-  const [query, setQuery] = useState('');
+export const GlobalSearch: React.FC<GlobalSearchProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  const [query, setQuery] = useState("");
   const [stockResults, setStockResults] = useState<SearchResultItem[]>([]);
   const [fundResults, setFundResults] = useState<MutualFund[]>([]);
   const [featureResults, setFeatureResults] = useState<PlatformFeature[]>([]);
@@ -154,7 +157,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
   // Focus input when modal opens
   useEffect(() => {
     if (isOpen) {
-      setQuery('');
+      setQuery("");
       setStockResults([]);
       setFundResults([]);
       setFeatureResults([]);
@@ -178,7 +181,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
       (feat) =>
         feat.name.toLowerCase().includes(trimmed) ||
         feat.desc.toLowerCase().includes(trimmed) ||
-        feat.category.toLowerCase().includes(trimmed)
+        feat.category.toLowerCase().includes(trimmed),
     );
     setFeatureResults(matchedFeatures.slice(0, 4));
 
@@ -194,7 +197,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
         setFundResults(funds.slice(0, 4));
         setSelectedIndex(0);
       } catch (err) {
-        console.warn('Search error:', err);
+        console.warn("Search error:", err);
       } finally {
         setLoading(false);
       }
@@ -205,42 +208,46 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
   // Combined list for keyboard arrow navigation
   const allResults = [
-    ...featureResults.map((feat) => ({ type: 'feature' as const, data: feat })),
-    ...stockResults.map((s) => ({ type: 'stock' as const, data: s })),
-    ...fundResults.map((f) => ({ type: 'fund' as const, data: f })),
+    ...featureResults.map((feat) => ({ type: "feature" as const, data: feat })),
+    ...stockResults.map((s) => ({ type: "stock" as const, data: s })),
+    ...fundResults.map((f) => ({ type: "fund" as const, data: f })),
   ];
 
   const handleSelect = useCallback(
-    (item: { type: 'feature' | 'stock' | 'fund'; data: any }) => {
+    (item: { type: "feature" | "stock" | "fund"; data: any }) => {
       onClose();
-      if (item.type === 'feature') {
+      if (item.type === "feature") {
         if (item.data.isCopilot) {
-          window.dispatchEvent(new CustomEvent('toggle-copilot'));
+          window.dispatchEvent(new CustomEvent("toggle-copilot"));
         } else {
           navigate(item.data.path);
         }
-      } else if (item.type === 'stock') {
+      } else if (item.type === "stock") {
         navigate(`/market/${encodeURIComponent(item.data.symbol)}`);
       } else {
         navigate(`/funds/${encodeURIComponent(item.data.code)}`);
       }
     },
-    [navigate, onClose]
+    [navigate, onClose],
   );
 
   // Keyboard navigation (Escape, Up, Down, Enter)
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       onClose();
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setSelectedIndex((prev) => (allResults.length > 0 ? (prev + 1) % allResults.length : 0));
-    } else if (e.key === 'ArrowUp') {
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prev) =>
-        allResults.length > 0 ? (prev - 1 + allResults.length) % allResults.length : 0
+        allResults.length > 0 ? (prev + 1) % allResults.length : 0,
       );
-    } else if (e.key === 'Enter') {
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex((prev) =>
+        allResults.length > 0
+          ? (prev - 1 + allResults.length) % allResults.length
+          : 0,
+      );
+    } else if (e.key === "Enter") {
       e.preventDefault();
       if (allResults[selectedIndex]) {
         handleSelect(allResults[selectedIndex]);
@@ -276,7 +283,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
           />
           {query && (
             <button
-              onClick={() => setQuery('')}
+              onClick={() => setQuery("")}
               className="p-1 rounded-lg text-[#5B6572] hover:text-[#0B1220]"
             >
               <X className="w-4 h-4" />
@@ -312,14 +319,18 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                   return (
                     <button
                       key={feat.path}
-                      onClick={() => handleSelect({ type: 'feature', data: feat })}
+                      onClick={() =>
+                        handleSelect({ type: "feature", data: feat })
+                      }
                       className="p-2.5 rounded-xl border border-[#E7E5DF] bg-[#FAFAF7] hover:bg-[#E6F4F1] hover:border-emerald-300 transition-all text-left group"
                     >
                       <div className="flex items-center gap-2 text-xs font-semibold text-[#0B1220] group-hover:text-[#0F766E]">
                         <Icon className="w-3.5 h-3.5 text-[#0F766E]" />
                         <span className="truncate">{feat.name}</span>
                       </div>
-                      <p className="text-[10px] text-[#5B6572] truncate mt-0.5">{feat.desc}</p>
+                      <p className="text-[10px] text-[#5B6572] truncate mt-0.5">
+                        {feat.desc}
+                      </p>
                     </button>
                   );
                 })}
@@ -330,17 +341,22 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                   Popular Market Searches
                 </p>
                 <div className="flex flex-wrap gap-1.5 px-2">
-                  {['RELIANCE', 'TCS', 'HDFCBANK', 'INFY', 'Parag Parikh Flexi Cap', 'NIFTY 50'].map(
-                    (item) => (
-                      <button
-                        key={item}
-                        onClick={() => setQuery(item)}
-                        className="px-2.5 py-1 rounded-lg bg-[#FAFAF7] border border-[#E7E5DF] text-xs font-medium text-[#0B1220] hover:border-[#0F766E] transition-colors"
-                      >
-                        {item}
-                      </button>
-                    )
-                  )}
+                  {[
+                    "RELIANCE",
+                    "TCS",
+                    "HDFCBANK",
+                    "INFY",
+                    "Parag Parikh Flexi Cap",
+                    "NIFTY 50",
+                  ].map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => setQuery(item)}
+                      className="px-2.5 py-1 rounded-lg bg-[#FAFAF7] border border-[#E7E5DF] text-xs font-medium text-[#0B1220] hover:border-[#0F766E] transition-colors"
+                    >
+                      {item}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -361,13 +377,15 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                   return (
                     <div
                       key={feat.name}
-                      onClick={() => handleSelect({ type: 'feature', data: feat })}
+                      onClick={() =>
+                        handleSelect({ type: "feature", data: feat })
+                      }
                       onMouseEnter={() => setSelectedIndex(globalIdx)}
                       className={cn(
-                        'flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-colors',
+                        "flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-colors",
                         isSelected
-                          ? 'bg-[#E6F4F1] text-[#0F766E]'
-                          : 'hover:bg-black/5 text-[#0B1220]'
+                          ? "bg-[#E6F4F1] text-[#0F766E]"
+                          : "hover:bg-black/5 text-[#0B1220]",
                       )}
                     >
                       <div className="flex items-center gap-3 min-w-0">
@@ -375,8 +393,12 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                           <Icon className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs font-bold truncate">{feat.name}</p>
-                          <p className="text-[11px] text-[#5B6572] truncate">{feat.desc}</p>
+                          <p className="text-xs font-bold truncate">
+                            {feat.name}
+                          </p>
+                          <p className="text-[11px] text-[#5B6572] truncate">
+                            {feat.desc}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -406,13 +428,13 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                   return (
                     <div
                       key={s.symbol}
-                      onClick={() => handleSelect({ type: 'stock', data: s })}
+                      onClick={() => handleSelect({ type: "stock", data: s })}
                       onMouseEnter={() => setSelectedIndex(globalIdx)}
                       className={cn(
-                        'flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-colors',
+                        "flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-colors",
                         isSelected
-                          ? 'bg-[#E6F4F1] text-[#0F766E]'
-                          : 'hover:bg-black/5 text-[#0B1220]'
+                          ? "bg-[#E6F4F1] text-[#0F766E]"
+                          : "hover:bg-black/5 text-[#0B1220]",
                       )}
                     >
                       <div className="flex items-center gap-3 min-w-0">
@@ -420,13 +442,17 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                           <TrendingUp className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs font-bold truncate">{s.symbol}</p>
-                          <p className="text-[11px] text-[#5B6572] truncate">{s.name}</p>
+                          <p className="text-xs font-bold truncate">
+                            {s.symbol}
+                          </p>
+                          <p className="text-[11px] text-[#5B6572] truncate">
+                            {s.name}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-black/5 text-[#5B6572]">
-                          {s.exchange || 'NSE'}
+                          {s.exchange || "NSE"}
                         </span>
                         <ArrowRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100" />
                       </div>
@@ -445,19 +471,20 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
               </p>
               <div className="mt-1 space-y-1">
                 {fundResults.map((f, idx) => {
-                  const globalIdx = featureResults.length + stockResults.length + idx;
+                  const globalIdx =
+                    featureResults.length + stockResults.length + idx;
                   const isSelected = selectedIndex === globalIdx;
 
                   return (
                     <div
                       key={f.code}
-                      onClick={() => handleSelect({ type: 'fund', data: f })}
+                      onClick={() => handleSelect({ type: "fund", data: f })}
                       onMouseEnter={() => setSelectedIndex(globalIdx)}
                       className={cn(
-                        'flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-colors',
+                        "flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-colors",
                         isSelected
-                          ? 'bg-[#E6F4F1] text-[#0F766E]'
-                          : 'hover:bg-black/5 text-[#0B1220]'
+                          ? "bg-[#E6F4F1] text-[#0F766E]"
+                          : "hover:bg-black/5 text-[#0B1220]",
                       )}
                     >
                       <div className="flex items-center gap-3 min-w-0">
