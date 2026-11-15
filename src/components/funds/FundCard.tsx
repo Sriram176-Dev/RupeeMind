@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import type { MutualFund } from '../../types';
 import { RiskMeter } from '../ui/RiskMeter';
-import { formatINR, formatPercent, formatCompactINR } from '../../lib/utils';
-import { ArrowUpRight, Layers } from 'lucide-react';
+import { formatPercent } from '../../lib/utils';
+import { ArrowUpRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 interface FundCardProps {
@@ -20,30 +20,30 @@ export const FundCard: React.FC<FundCardProps> = ({
   showCompareOption = true,
 }) => {
   return (
-    <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col justify-between hover:border-[#0F766E]/40 transition-all group">
+    <div className="p-5 rounded-xl bg-white border border-slate-200/80 shadow-[0_1px_3px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:border-slate-300 hover:shadow-[0_6px_20px_rgba(15,23,42,0.06)] transition-all duration-200 group">
       <div>
         {/* Top Badges & Compare */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#E6F4F1] text-[#0F766E] border border-emerald-500/20">
+            <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/60">
               {fund.category}
             </span>
             {fund.sharpeRatio !== null && fund.sharpeRatio !== undefined ? (
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-300/30">
-                <span>Sharpe {fund.sharpeRatio.toFixed(2)}</span>
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200/60">
+                <span className="font-mono text-[10px]">Sharpe {fund.sharpeRatio.toFixed(2)}</span>
               </div>
             ) : null}
           </div>
 
           {showCompareOption && onToggleCompare && (
-            <label className="flex items-center gap-1.5 text-xs text-[#5B6572] cursor-pointer select-none hover:text-[#0B1220]">
+            <label className="flex items-center gap-1.5 text-xs text-slate-500 cursor-pointer select-none hover:text-slate-900 transition-colors">
               <input
                 type="checkbox"
                 checked={isCompared}
                 onChange={() => onToggleCompare(fund.code)}
-                className="w-4 h-4 rounded-sm text-[#0F766E] focus:ring-emerald-500 focus:ring-offset-0 border-[#E7E5DF]"
+                className="w-3.5 h-3.5 rounded text-emerald-600 focus:ring-emerald-500 focus:ring-offset-0 border-slate-300 cursor-pointer"
               />
-              <span className="text-[11px]">Compare</span>
+              <span className="text-[11px] font-medium">Compare</span>
             </label>
           )}
         </div>
@@ -51,45 +51,45 @@ export const FundCard: React.FC<FundCardProps> = ({
         {/* Fund Title & House */}
         <Link
           to={`/funds/${fund.code}`}
-          className="block font-serif text-lg font-bold text-[#0B1220] group-hover:text-[#0F766E] transition-colors leading-snug line-clamp-2"
+          className="block text-[15px] font-semibold text-slate-900 group-hover:text-emerald-700 transition-colors leading-snug line-clamp-2 tracking-tight"
         >
           {fund.name}
         </Link>
-        <p className="text-xs text-[#5B6572] mt-1">
+        <p className="text-xs text-slate-500 mt-1 font-medium">
           {fund.fundHouse}
         </p>
 
         {/* Risk & Expense ratio */}
-        <div className="mt-4 pt-3 border-t border-[#E7E5DF] flex items-center justify-between">
+        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
           <div>
-            <span className="text-[10px] uppercase tracking-wider text-[#5B6572]">Risk (Indicative)</span>
+            <span className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Risk Profile</span>
             <RiskMeter level={fund.riskLevel as any} />
           </div>
           <div className="text-right">
-            <span className="text-[10px] uppercase tracking-wider text-[#5B6572]">Expense</span>
-            <p className="text-xs font-semibold text-[#0B1220]">
+            <span className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Expense Drag</span>
+            <p className="font-mono font-semibold text-slate-800 mt-0.5">
               {fund.expenseRatio !== null && fund.expenseRatio !== undefined ? `${fund.expenseRatio}%` : '—'}
             </p>
           </div>
         </div>
 
         {/* Returns Grid */}
-        <div className="mt-4 grid grid-cols-3 gap-2 p-3 rounded-xl bg-[#FAFAF7] text-center border border-[#E7E5DF]">
+        <div className="mt-3.5 grid grid-cols-3 gap-2 p-2.5 rounded-lg bg-slate-50 text-center border border-slate-100">
           <div>
-            <p className="text-[10px] uppercase font-semibold text-[#5B6572]">1Y CAGR</p>
-            <p className={cn('text-xs font-bold tabular-nums mt-0.5', (fund.cagr1Y ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600')}>
+            <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">1Y CAGR</p>
+            <p className={cn('text-xs font-mono font-semibold tabular-nums mt-0.5', (fund.cagr1Y ?? 0) >= 0 ? 'text-emerald-700' : 'text-rose-700')}>
               {fund.cagr1Y !== null && fund.cagr1Y !== undefined ? formatPercent(fund.cagr1Y) : '—'}
             </p>
           </div>
-          <div className="border-x border-[#E7E5DF]">
-            <p className="text-[10px] uppercase font-semibold text-[#5B6572]">3Y CAGR</p>
-            <p className={cn('text-xs font-bold tabular-nums mt-0.5', (fund.cagr3Y ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600')}>
+          <div className="border-x border-slate-200/70">
+            <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">3Y CAGR</p>
+            <p className={cn('text-xs font-mono font-semibold tabular-nums mt-0.5', (fund.cagr3Y ?? 0) >= 0 ? 'text-emerald-700' : 'text-rose-700')}>
               {fund.cagr3Y !== null && fund.cagr3Y !== undefined ? formatPercent(fund.cagr3Y) : '—'}
             </p>
           </div>
           <div>
-            <p className="text-[10px] uppercase font-semibold text-[#5B6572]">5Y CAGR</p>
-            <p className={cn('text-xs font-bold tabular-nums mt-0.5', (fund.cagr5Y ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600')}>
+            <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">5Y CAGR</p>
+            <p className={cn('text-xs font-mono font-semibold tabular-nums mt-0.5', (fund.cagr5Y ?? 0) >= 0 ? 'text-emerald-700' : 'text-rose-700')}>
               {fund.cagr5Y !== null && fund.cagr5Y !== undefined ? formatPercent(fund.cagr5Y) : '—'}
             </p>
           </div>
@@ -97,19 +97,15 @@ export const FundCard: React.FC<FundCardProps> = ({
       </div>
 
       {/* Footer / CTA */}
-      <div className="mt-5 pt-3 border-t border-[#E7E5DF] flex items-center justify-between">
-        <div>
-          <span className="text-[10px] text-[#5B6572] uppercase">Current NAV</span>
-          <p className="text-sm font-bold text-[#0B1220] tabular-nums">
-            {formatINR(fund.nav)}
-          </p>
-        </div>
-
+      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+        <span className="text-xs font-mono text-slate-500">
+          NAV: <span className="font-semibold text-slate-900">₹{fund.nav?.toFixed(2) || '—'}</span>
+        </span>
         <Link
           to={`/funds/${fund.code}`}
-          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#0F766E] bg-[#E6F4F1] hover:bg-[#0F766E] hover:text-white transition-all min-h-[36px]"
+          className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
         >
-          <span>View Details</span>
+          <span>Analyze Fund</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
         </Link>
       </div>

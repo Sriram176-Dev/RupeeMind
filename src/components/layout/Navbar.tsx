@@ -23,6 +23,11 @@ import {
   FileText,
   ArrowRight,
   ShieldCheck,
+  Receipt,
+  Sliders,
+  Target,
+  HeartPulse,
+  Bell,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { GlobalSearch } from "../market/GlobalSearch";
@@ -179,7 +184,19 @@ export const Navbar: React.FC = () => {
           label: "Portfolio Holdings & P&L",
           path: "/portfolio",
           icon: Briefcase,
-          desc: "Asset allocation, holdings & tax lots",
+          desc: "Asset allocation, holdings & statement import",
+        },
+        {
+          label: "Capital Gains & Tax Harvesting",
+          path: "/tax",
+          icon: Receipt,
+          desc: "FIFO tax lots, STCG/LTCG & Section 112A harvest",
+        },
+        {
+          label: "Portfolio Rebalancing",
+          path: "/rebalance",
+          icon: Scale,
+          desc: "Fiduciary target vs drift & zero-tax SIP rebalance",
         },
         {
           label: "Stress Test & VaR Analytics",
@@ -188,22 +205,40 @@ export const Navbar: React.FC = () => {
           desc: "Basel III VaR, Monte Carlo & crisis replay",
         },
         {
+          label: "Portfolio Optimization",
+          path: "/optimize",
+          icon: Sliders,
+          desc: "Efficient frontier & max-Sharpe MPT allocation",
+        },
+        {
           label: "Executive Dashboard",
           path: "/dashboard",
           icon: LayoutDashboard,
           desc: "High-level net worth & portfolio health",
-        },
-        {
-          label: "Institutional Audit Dossier",
-          path: "/portfolio",
-          icon: FileText,
-          desc: "Full tax, risk & portfolio health audit",
         },
       ],
     },
     {
       title: "Trading & AI Engine",
       items: [
+        {
+          label: "Price & Signal Alerts",
+          path: "/alerts",
+          icon: Bell,
+          desc: "Real-time rules for prices, signals & drift",
+        },
+        {
+          label: "Strategy Backtest Lab",
+          path: "/backtest",
+          icon: BarChart3,
+          desc: "Simulate SMA crossover & SIP with realistic taxes",
+        },
+        {
+          label: "Model Transparency",
+          path: "/model-transparency",
+          icon: ShieldCheck,
+          desc: "Walk-forward validation audit & baseline benchmarks",
+        },
         {
           label: "Paper Trading Sandbox",
           path: "/paper-trading",
@@ -221,6 +256,18 @@ export const Navbar: React.FC = () => {
     {
       title: "Planning, Tools & Academy",
       items: [
+        {
+          label: "Goal Planning & Simulator",
+          path: "/goals",
+          icon: Target,
+          desc: "Milestones, corpus projection & skip-SIP simulation",
+        },
+        {
+          label: "Insurance & Defense Health",
+          path: "/health-check",
+          icon: HeartPulse,
+          desc: "Audit emergency liquidity, term & health coverage",
+        },
         {
           label: "Financial Calculators",
           path: "/calculators",
@@ -264,20 +311,20 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-[#E7E5DF] bg-white/95 backdrop-blur-md transition-colors duration-200">
+      <header className="sticky top-0 z-40 w-full border-b border-slate-200/90 bg-white/95 backdrop-blur-md transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 lg:gap-4 relative">
           {/* Left: Brand Logo & Navigation */}
           <div className="flex items-center gap-3 lg:gap-5 shrink min-w-0">
             <Link
               to={isAuthenticated ? "/dashboard" : "/"}
-              className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl p-1 shrink-0 whitespace-nowrap"
+              className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg p-1 shrink-0 whitespace-nowrap"
               aria-label="Rupee Mind Home"
             >
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#0F766E] flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-sm group-hover:scale-105 transition-transform duration-200 shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-sm ring-1 ring-emerald-700/20 shadow-xs group-hover:scale-105 transition-transform shrink-0">
                 ₹
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#0B1220] whitespace-nowrap">
+                <span className="font-sans text-base sm:text-lg font-bold tracking-tight text-slate-900 whitespace-nowrap">
                   Rupee Mind
                 </span>
               </div>
@@ -300,17 +347,17 @@ export const Navbar: React.FC = () => {
                     key={link.path}
                     to={link.path}
                     className={cn(
-                      "px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap shrink-0",
+                      "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0",
                       link.className,
                       isActive
-                        ? "text-[#0F766E] bg-[#E6F4F1] font-semibold shadow-2xs"
-                        : "text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5",
+                        ? "text-emerald-700 bg-emerald-50 border border-emerald-200/70 font-semibold"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100",
                     )}
                   >
                     <Icon
                       className={cn(
                         "w-4 h-4 shrink-0",
-                        isActive ? "text-[#0F766E]" : "text-current opacity-70",
+                        isActive ? "text-emerald-700" : "text-slate-400 group-hover:text-slate-600",
                       )}
                     />
                     <span>{link.label}</span>
@@ -327,14 +374,14 @@ export const Navbar: React.FC = () => {
                     setUserDropdownOpen(false);
                   }}
                   className={cn(
-                    "px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 flex items-center gap-1.5 focus:outline-none cursor-pointer whitespace-nowrap shrink-0",
+                    "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 focus:outline-none cursor-pointer whitespace-nowrap shrink-0",
                     megaMenuOpen
-                      ? "text-[#0F766E] bg-[#E6F4F1] font-semibold"
-                      : "text-[#5B6572] hover:text-[#0B1220] hover:bg-black/5",
+                      ? "text-emerald-700 bg-emerald-50 border border-emerald-200/70 font-semibold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100",
                   )}
                   aria-expanded={megaMenuOpen}
                 >
-                  <Grid className="w-4 h-4 text-[#0F766E] shrink-0" />
+                  <Grid className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>All Features</span>
                   <ChevronDown
                     className={cn(
@@ -346,19 +393,18 @@ export const Navbar: React.FC = () => {
 
                 {/* Mega-Menu Panel anchored to max-w-7xl content boundary */}
                 {megaMenuOpen && (
-                  <div className="absolute left-4 sm:left-6 lg:left-8 top-full mt-2 w-[calc(100%-2rem)] sm:w-[calc(100%-3rem)] lg:w-[860px] max-w-[calc(100vw-2rem)] bg-white rounded-3xl border border-[#E7E5DF] shadow-2xl p-5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                    <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#E7E5DF]">
+                  <div className="absolute left-4 sm:left-6 lg:left-8 top-full mt-2 w-[calc(100%-2rem)] sm:w-[calc(100%-3rem)] lg:w-[860px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl border border-slate-200 shadow-xl p-5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
                       <div className="flex items-center gap-2">
-                        <div className="p-1.5 rounded-lg bg-[#E6F4F1] text-[#0F766E]">
+                        <div className="p-1.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60">
                           <Grid className="w-4 h-4" />
                         </div>
                         <div>
-                          <h4 className="text-xs font-bold text-[#0B1220] uppercase tracking-wider font-mono">
+                          <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
                             Complete Platform Navigator
                           </h4>
-                          <p className="text-[11px] text-[#5B6572]">
-                            Explore and jump directly to any RupeeMind
-                            investment or quant capability
+                          <p className="text-[11px] text-slate-500">
+                            Explore and jump directly to any RupeeMind investment or quant capability
                           </p>
                         </div>
                       </div>
@@ -367,7 +413,7 @@ export const Navbar: React.FC = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {featureCategories.map((category) => (
                         <div key={category.title} className="space-y-2">
-                          <h5 className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E] font-mono pb-1 border-b border-[#E7E5DF]/70">
+                          <h5 className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700 font-mono pb-1 border-b border-slate-100">
                             {category.title}
                           </h5>
                           <div className="space-y-1">
@@ -381,27 +427,27 @@ export const Navbar: React.FC = () => {
                                   type="button"
                                   onClick={() => handleFeatureClick(item)}
                                   className={cn(
-                                    "w-full text-left p-2 rounded-xl transition-all flex items-start gap-2.5 group cursor-pointer",
+                                    "w-full text-left p-2 rounded-lg transition-colors flex items-start gap-2.5 group cursor-pointer",
                                     isActive
-                                      ? "bg-[#E6F4F1] text-[#0F766E]"
-                                      : "hover:bg-[#FAFAF7] text-[#0B1220]",
+                                      ? "bg-emerald-50/80 text-emerald-800 border border-emerald-200/60"
+                                      : "hover:bg-slate-50 text-slate-800 border border-transparent",
                                   )}
                                 >
                                   <div
                                     className={cn(
-                                      "p-1.5 rounded-lg shrink-0 mt-0.5 transition-colors",
+                                      "p-1.5 rounded-md shrink-0 mt-0.5 transition-colors",
                                       isActive
-                                        ? "bg-[#0F766E] text-white"
-                                        : "bg-[#FAFAF7] text-[#5B6572] border border-[#E7E5DF] group-hover:border-[#0F766E]/40 group-hover:text-[#0F766E]",
+                                        ? "bg-emerald-600 text-white"
+                                        : "bg-slate-100 text-slate-500 group-hover:bg-emerald-50 group-hover:text-emerald-700",
                                     )}
                                   >
                                     <Icon className="w-3.5 h-3.5" />
                                   </div>
                                   <div className="min-w-0">
-                                    <p className="text-xs font-semibold leading-tight group-hover:text-[#0F766E] truncate">
+                                    <p className="text-xs font-semibold leading-tight group-hover:text-emerald-700 truncate">
                                       {item.label}
                                     </p>
-                                    <p className="text-[10px] text-[#5B6572] leading-snug line-clamp-2 mt-0.5">
+                                    <p className="text-[10px] text-slate-500 leading-snug line-clamp-2 mt-0.5">
                                       {item.desc}
                                     </p>
                                   </div>
@@ -413,15 +459,15 @@ export const Navbar: React.FC = () => {
                       ))}
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-[#E7E5DF] flex items-center justify-between text-[11px] text-[#5B6572] font-mono">
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-mono">
                       <span>
                         Pro-tip: Press{" "}
-                        <kbd className="px-1.5 py-0.5 rounded bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220]">
+                        <kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-800 font-semibold">
                           Ctrl+K
                         </kbd>{" "}
                         to search any page or stock instantly
                       </span>
-                      <span className="hidden sm:inline">
+                      <span className="hidden sm:inline text-slate-400">
                         SEBI-Aligned Educational Architecture
                       </span>
                     </div>
@@ -441,34 +487,34 @@ export const Navbar: React.FC = () => {
                     setUserDropdownOpen(!userDropdownOpen);
                     setMegaMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 p-1.5 sm:px-2.5 rounded-xl border border-[#E7E5DF] hover:bg-black/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 whitespace-nowrap shrink-0"
+                  className="flex items-center gap-2 p-1 sm:px-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 whitespace-nowrap shrink-0"
                   aria-expanded={userDropdownOpen}
                   aria-haspopup="true"
                 >
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] font-bold flex items-center justify-center text-xs sm:text-sm border border-emerald-500/20 shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center text-xs sm:text-sm border border-emerald-200 shrink-0">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="text-left hidden xl:block">
-                    <p className="text-xs font-semibold text-[#0B1220] leading-tight max-w-[100px] truncate">
+                    <p className="text-xs font-semibold text-slate-900 leading-tight max-w-[100px] truncate">
                       {user.name}
                     </p>
-                    <p className="text-[10px] text-[#5B6572] leading-tight">
+                    <p className="text-[10px] text-slate-500 leading-tight font-mono">
                       {user.profile?.riskBand || "Investor"}
                     </p>
                   </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-[#5B6572] shrink-0" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 </button>
 
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-[#E7E5DF] shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                    <div className="px-4 py-2.5 border-b border-[#E7E5DF]">
-                      <p className="text-xs font-semibold text-[#0B1220] truncate">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-slate-200 shadow-lg py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="px-4 py-2.5 border-b border-slate-100">
+                      <p className="text-xs font-semibold text-slate-900 truncate">
                         {user.name}
                       </p>
-                      <p className="text-[11px] text-[#5B6572] truncate">
+                      <p className="text-[11px] text-slate-500 truncate">
                         {user.email}
                       </p>
-                      <div className="mt-1.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#E6F4F1] text-[#0F766E]">
+                      <div className="mt-1.5 inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-mono">
                         {user.profile?.riskBand || "Moderate"} Investor
                       </div>
                     </div>
@@ -477,41 +523,41 @@ export const Navbar: React.FC = () => {
                       <Link
                         to="/dashboard"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[#0B1220] hover:bg-[#FAFAF7] transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       >
-                        <LayoutDashboard className="w-4 h-4 text-[#5B6572]" />
+                        <LayoutDashboard className="w-4 h-4 text-slate-400" />
                         <span>Dashboard</span>
                       </Link>
 
                       <Link
                         to="/portfolio"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[#0B1220] hover:bg-[#FAFAF7] transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       >
-                        <Briefcase className="w-4 h-4 text-[#5B6572]" />
+                        <Briefcase className="w-4 h-4 text-slate-400" />
                         <span>Portfolio Summary</span>
                       </Link>
 
                       <Link
                         to="/profile"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[#0B1220] hover:bg-[#FAFAF7] transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       >
-                        <UserIcon className="w-4 h-4 text-[#5B6572]" />
+                        <UserIcon className="w-4 h-4 text-slate-400" />
                         <span>KYC & Profile</span>
                       </Link>
 
                       <Link
                         to="/settings"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[#0B1220] hover:bg-[#FAFAF7] transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       >
-                        <Settings className="w-4 h-4 text-[#5B6572]" />
+                        <Settings className="w-4 h-4 text-slate-400" />
                         <span>Settings</span>
                       </Link>
                     </div>
 
-                    <div className="my-1 border-t border-[#E7E5DF]" />
+                    <div className="my-1 border-t border-slate-100" />
 
                     <button
                       onClick={handleLogout}
@@ -527,13 +573,13 @@ export const Navbar: React.FC = () => {
               <div className="hidden sm:flex items-center space-x-2 shrink-0">
                 <Link
                   to="/login"
-                  className="px-3.5 py-1.5 text-xs font-semibold text-[#0B1220] hover:text-[#0F766E] hover:bg-black/5 rounded-xl transition-colors flex items-center whitespace-nowrap shrink-0"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors flex items-center whitespace-nowrap shrink-0"
                 >
                   Log In
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-4 py-1.5 text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] rounded-xl shadow-xs transition-all hover:scale-[1.02] flex items-center whitespace-nowrap shrink-0"
+                  className="px-4 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs hover:shadow transition-all flex items-center whitespace-nowrap shrink-0"
                 >
                   Get Started
                 </Link>
@@ -543,7 +589,7 @@ export const Navbar: React.FC = () => {
             {/* Mobile Hamburger Button (< lg) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-9 h-9 rounded-xl flex items-center justify-center text-[#0B1220] border border-[#E7E5DF] hover:bg-black/5 transition-colors"
+              className="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors"
               aria-label="Open navigation menu"
             >
               {mobileMenuOpen ? (
@@ -557,17 +603,17 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Slide-down Full Feature Navigator Sheet */}
         {mobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-16 z-50 bg-white border-t border-[#E7E5DF] overflow-y-auto p-4 sm:p-6 flex flex-col justify-between shadow-2xl">
+          <div className="lg:hidden fixed inset-0 top-16 z-50 bg-white border-t border-slate-200 overflow-y-auto p-4 sm:p-6 flex flex-col justify-between shadow-xl">
             <div className="space-y-5">
               {isAuthenticated && user && (
-                <div className="p-4 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-[#0B1220]">
+                    <p className="text-sm font-semibold text-slate-900">
                       {user.name}
                     </p>
-                    <p className="text-xs text-[#5B6572]">{user.email}</p>
+                    <p className="text-xs text-slate-500 font-mono">{user.email}</p>
                   </div>
-                  <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#E6F4F1] text-[#0F766E]">
+                  <div className="px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-mono">
                     {user.profile?.riskBand || "Moderate"}
                   </div>
                 </div>
@@ -577,7 +623,7 @@ export const Navbar: React.FC = () => {
               <div className="space-y-4">
                 {featureCategories.map((cat) => (
                   <div key={cat.title} className="space-y-2">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E] font-mono px-1">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700 font-mono px-1">
                       {cat.title}
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
@@ -591,18 +637,18 @@ export const Navbar: React.FC = () => {
                             type="button"
                             onClick={() => handleFeatureClick(item)}
                             className={cn(
-                              "w-full p-2.5 rounded-xl text-left flex items-center gap-3 transition-colors border",
+                              "w-full p-2.5 rounded-lg text-left flex items-center gap-3 transition-colors border",
                               isActive
-                                ? "bg-[#E6F4F1] border-emerald-300 text-[#0F766E]"
-                                : "bg-[#FAFAF7] border-[#E7E5DF] text-[#0B1220] hover:bg-white",
+                                ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                                : "bg-slate-50/70 border-slate-200/70 text-slate-800 hover:bg-slate-100",
                             )}
                           >
                             <div
                               className={cn(
-                                "p-1.5 rounded-lg shrink-0",
+                                "p-1.5 rounded-md shrink-0",
                                 isActive
-                                  ? "bg-[#0F766E] text-white"
-                                  : "bg-white text-[#5B6572] border border-[#E7E5DF]",
+                                  ? "bg-emerald-600 text-white"
+                                  : "bg-white text-slate-500 border border-slate-200",
                               )}
                             >
                               <Icon className="w-4 h-4" />
@@ -611,7 +657,7 @@ export const Navbar: React.FC = () => {
                               <p className="text-xs font-semibold leading-tight truncate">
                                 {item.label}
                               </p>
-                              <p className="text-[10px] text-[#5B6572] truncate mt-0.5">
+                              <p className="text-[10px] text-slate-500 truncate mt-0.5">
                                 {item.desc}
                               </p>
                             </div>
@@ -624,11 +670,11 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-6 my-4 border-t border-[#E7E5DF] space-y-3">
+            <div className="pt-6 my-4 border-t border-slate-200 space-y-3">
               {isAuthenticated ? (
                 <button
                   onClick={handleLogout}
-                  className="w-full py-2.5 px-4 rounded-xl text-center text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200"
+                  className="w-full py-2.5 px-4 rounded-lg text-center text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-colors"
                 >
                   Sign Out
                 </button>
@@ -637,14 +683,14 @@ export const Navbar: React.FC = () => {
                   <Link
                     to="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-2.5 px-4 rounded-xl text-center text-xs font-semibold text-[#0B1220] border border-[#E7E5DF] flex items-center justify-center"
+                    className="w-full py-2.5 px-4 rounded-lg text-center text-xs font-semibold text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
                   >
                     Log In
                   </Link>
                   <Link
                     to="/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-2.5 px-4 rounded-xl text-center text-xs font-semibold text-white bg-[#0F766E] flex items-center justify-center shadow-xs"
+                    className="w-full py-2.5 px-4 rounded-lg text-center text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center shadow-xs transition-colors"
                   >
                     Get Started
                   </Link>

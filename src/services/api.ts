@@ -18,6 +18,14 @@ export * from "./paperTradingService";
 export * from "./stressTestService";
 export * from "./copilotService";
 export * from "./reportService";
+export * from "./taxService";
+export * from "./rebalanceService";
+export * from "./goalService";
+export * from "./healthCheckService";
+export * from "./alertService";
+export * from "./backtestService";
+export * from "./optimizationService";
+export * from "./modelTransparencyService";
 
 import { apiClient } from "../lib/apiClient";
 

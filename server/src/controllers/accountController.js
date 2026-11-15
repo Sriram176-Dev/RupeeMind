@@ -4,9 +4,13 @@ import { User } from "../models/User.js";
 import { Profile } from "../models/Profile.js";
 import { Watchlist } from "../models/Watchlist.js";
 import { Holding } from "../models/Holding.js";
+import { Transaction } from "../models/Transaction.js";
 import { TrackedSIP } from "../models/TrackedSIP.js";
 import { SavedCalculation } from "../models/SavedCalculation.js";
 import { Recommendation } from "../models/Recommendation.js";
+import { Goal } from "../models/Goal.js";
+import { Alert } from "../models/Alert.js";
+import { Notification } from "../models/Notification.js";
 import { clearAuthCookies } from "../utils/token.js";
 
 export const deleteAccountSchema = z.object({
@@ -42,9 +46,13 @@ export async function deleteAccount(req, res, next) {
       Profile.deleteMany({ userId }),
       Watchlist.deleteMany({ userId }),
       Holding.deleteMany({ userId }),
+      Transaction.deleteMany({ userId }),
       TrackedSIP.deleteMany({ userId }),
       SavedCalculation.deleteMany({ userId }),
       Recommendation.deleteMany({ userId }),
+      Goal.deleteMany({ userId }),
+      Alert.deleteMany({ userId }),
+      Notification.deleteMany({ userId }),
     ]);
 
     clearAuthCookies(res);

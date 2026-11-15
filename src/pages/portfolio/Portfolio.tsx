@@ -1,8 +1,19 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { getHoldings, addHolding, deleteHolding, getTrackedSIPs, addTrackedSIP, getWatchlist, toggleWatchlist, getQuotes } from '../../services/api';
-import type { Holding, TrackedSIP, StockQuote } from '../../types';
+import { Link } from 'react-router-dom';
+import {
+  getHoldings,
+  addHolding,
+  deleteHolding,
+  getTrackedSIPs,
+  addTrackedSIP,
+  getWatchlist,
+  toggleWatchlist,
+  getQuotes,
+  getPerformanceWithXirrApi,
+} from '../../services/api';
+import type { Holding, TrackedSIP, StockQuote, PerformanceSummary } from '../../types';
 import { SectionHeader } from '../../components/ui/SectionHeader';
-import { Plus, FileText } from 'lucide-react';
+import { Plus, FileText, UploadCloud, Scale, History } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   PortfolioSummaryCards,
@@ -11,15 +22,18 @@ import {
   WatchlistTab,
   AddHoldingModal,
   AddSipModal,
+  BenchmarkTab,
+  TransactionsTab,
 } from '../../components/portfolio';
 import { AuditReportModal } from '../../components/reports';
 
-type PortfolioTab = 'holdings' | 'sips' | 'watchlist';
+type PortfolioTab = 'holdings' | 'benchmark' | 'transactions' | 'sips' | 'watchlist';
 
 export const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState<PortfolioTab>('holdings');
 
   const [holdings, setHoldings] = useState<Holding[]>([]);
+  const [performanceSummary, setPerformanceSummary] = useState<PerformanceSummary | null>(null);
   const [sips, setSips] = useState<TrackedSIP[]>([]);
   const [watchlistSymbols, setWatchlistSymbols] = useState<string[]>([]);
   const [quotes, setQuotes] = useState<StockQuote[]>([]);
@@ -45,13 +59,21 @@ export const Portfolio: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [h, s, w, q] = await Promise.all([
-        getHoldings(),
+      const [perf, s, w, q] = await Promise.all([
+        getPerformanceWithXirrApi().catch(() => null),
         getTrackedSIPs(),
         getWatchlist(),
         getQuotes(),
       ]);
-      setHoldings(h);
+
+      if (perf && perf.holdings && perf.holdings.length > 0) {
+        setHoldings(perf.holdings);
+        setPerformanceSummary(perf.summary);
+      } else {
+        const rawHoldings = await getHoldings();
+        setHoldings(rawHoldings);
+      }
+
       setSips(s);
       setWatchlistSymbols(w);
       setQuotes(q);
@@ -68,6 +90,17 @@ export const Portfolio: React.FC = () => {
 
   // Summary Metrics
   const summary = useMemo(() => {
+    if (performanceSummary && performanceSummary.totalInvested > 0) {
+      return {
+        totalInvested: performanceSummary.totalInvested,
+        totalCurrent: performanceSummary.totalCurrentValue,
+        totalGain: performanceSummary.totalGain,
+        gainPercent: performanceSummary.absoluteReturn,
+        xirr: performanceSummary.xirr,
+        cagr: performanceSummary.cagr,
+      };
+    }
+
     let totalInvested = 0;
     let totalCurrent = 0;
 
@@ -84,8 +117,10 @@ export const Portfolio: React.FC = () => {
       totalCurrent,
       totalGain,
       gainPercent,
+      xirr: null,
+      cagr: null,
     };
-  }, [holdings]);
+  }, [holdings, performanceSummary]);
 
   // Asset Allocation for Holdings
   const assetPieData = useMemo(() => {
@@ -140,6 +175,8 @@ export const Portfolio: React.FC = () => {
       setHoldings(updated);
       setIsAddHoldingOpen(false);
       toast.success('New holding added to portfolio!');
+      // Reload enriched performance
+      loadData();
     } catch {
       toast.error('Could not save holding. Check values.');
     }
@@ -180,35 +217,43 @@ export const Portfolio: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#E7E5DF]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
         <SectionHeader
           eyebrow="WEALTH TRACKER"
           title="Portfolio & Active Holdings"
-          subtitle="Real-time profit & loss tracking across your stocks, mutual funds, and ongoing SIPs."
+          subtitle="Real-time profit & loss, cash-flow weighted XIRR, and NIFTY 50 benchmark tracking."
         />
 
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+          <Link
+            to="/portfolio/import"
+            className="px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 flex items-center gap-1.5 shadow-xs transition-colors"
+          >
+            <UploadCloud className="w-4 h-4 text-emerald-200" />
+            <span>Import Statement (CAS / CSV)</span>
+          </Link>
+
           <button
             onClick={() => setIsAuditModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 flex items-center gap-1.5 shadow-md shadow-emerald-900/20 min-h-[44px] transition-all"
+            className="px-3.5 py-2 rounded-lg text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 flex items-center gap-1.5 shadow-xs transition-colors"
           >
-            <FileText className="w-4 h-4" />
-            <span>Audit Dossier (PDF)</span>
+            <FileText className="w-4 h-4 text-emerald-400" />
+            <span>Audit Dossier</span>
           </button>
 
           <button
             onClick={() => setIsAddHoldingOpen(true)}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] flex items-center gap-1.5 shadow-xs min-h-[44px]"
+            className="px-3.5 py-2 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs transition-colors"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-emerald-600" />
             <span>Add Holding</span>
           </button>
 
           <button
             onClick={() => setIsAddSipOpen(true)}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#0B1220] bg-white border border-[#E7E5DF] hover:bg-black/5 flex items-center gap-1.5 min-h-[44px]"
+            className="px-3.5 py-2 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs transition-colors"
           >
-            <Plus className="w-4 h-4 text-[#0F766E]" />
+            <Plus className="w-4 h-4 text-emerald-600" />
             <span>Track New SIP</span>
           </button>
         </div>
@@ -223,19 +268,21 @@ export const Portfolio: React.FC = () => {
       />
 
       {/* Tabs */}
-      <div className="flex gap-2 p-1.5 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs max-w-md">
+      <div className="flex flex-wrap gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200 shadow-2xs">
         {[
           { id: 'holdings', label: `Holdings (${holdings.length})` },
+          { id: 'benchmark', label: 'Benchmark vs NIFTY 50' },
+          { id: 'transactions', label: 'Transactions Ledger' },
           { id: 'sips', label: `Tracked SIPs (${sips.length})` },
           { id: 'watchlist', label: `Watchlist (${watchlistSymbols.length})` },
         ].map((t) => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id as PortfolioTab)}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all ${
+            className={`py-1.5 px-3.5 rounded-lg text-xs font-medium transition-colors ${
               activeTab === t.id
-                ? 'bg-[#0F766E] text-white shadow-sm'
-                : 'text-[#5B6572] hover:text-[#0B1220]'
+                ? 'bg-white text-emerald-800 font-semibold shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             {t.label}
@@ -251,6 +298,10 @@ export const Portfolio: React.FC = () => {
           onDeleteHolding={handleDeleteHolding}
         />
       )}
+
+      {activeTab === 'benchmark' && <BenchmarkTab />}
+
+      {activeTab === 'transactions' && <TransactionsTab />}
 
       {activeTab === 'sips' && <SipsTab sips={sips} />}
 
@@ -298,3 +349,7 @@ export const Portfolio: React.FC = () => {
 };
 
 export default Portfolio;
+
+
+
+

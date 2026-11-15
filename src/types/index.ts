@@ -282,6 +282,97 @@ export interface Holding {
   currentPrice: number;
   buyDate: string;
   categoryOrSector: string;
+  folio?: string;
+  invested?: number;
+  currentValue?: number;
+  gain?: number;
+  absoluteReturn?: number;
+  cagr?: number | null;
+  xirr?: number | null;
+}
+
+export type TransactionType =
+  | "PURCHASE"
+  | "SIP"
+  | "REDEMPTION"
+  | "SWITCH_IN"
+  | "SWITCH_OUT"
+  | "DIVIDEND_REINVESTMENT";
+
+export interface Transaction {
+  id: string;
+  holdingId?: string | null;
+  folio?: string;
+  schemeName: string;
+  schemeCode: string;
+  type: TransactionType;
+  date: string;
+  units: number;
+  price: number;
+  amount: number;
+  source: "CAS_CAMS" | "CAS_KFINTECH" | "BROKER_CSV" | "MANUAL";
+  unmatched?: boolean;
+}
+
+export interface MatchedCandidate {
+  score: number;
+  fundCode: string;
+  schemeCode: string;
+  name: string;
+  category: string;
+}
+
+export interface ImportPreviewItem {
+  folio?: string;
+  schemeName: string;
+  schemeCode?: string;
+  type: TransactionType;
+  date: string;
+  units: number;
+  price: number;
+  amount: number;
+  unmatched: boolean;
+  confidence?: number;
+  candidates?: MatchedCandidate[];
+  source?: "CAS_CAMS" | "CAS_KFINTECH" | "BROKER_CSV" | "MANUAL";
+}
+
+export interface ImportParsePreview {
+  detectedType: "CAS_CAMS" | "CAS_KFINTECH" | "BROKER_CSV";
+  totalFolios: number;
+  totalTransactions: number;
+  matchedCount: number;
+  unmatchedCount: number;
+  transactions: ImportPreviewItem[];
+}
+
+export interface BenchmarkGrowthPoint {
+  date: string;
+  invested: number;
+  portfolioValue: number;
+  niftyValue: number;
+}
+
+export interface BenchmarkComparisonResponse {
+  hasData: boolean;
+  portfolioXirr: number | null;
+  niftyXirr: number | null;
+  alpha: number | null;
+  portfolioCurrentValue: number;
+  niftySimulatedValue: number;
+  totalInvested: number;
+  totalGain: number;
+  niftyGain: number;
+  growthCurve: BenchmarkGrowthPoint[];
+}
+
+export interface PerformanceSummary {
+  totalInvested: number;
+  totalCurrentValue: number;
+  totalGain: number;
+  absoluteReturn: number;
+  cagr: number | null;
+  xirr: number | null;
 }
 
 export interface TrackedSIP {
@@ -317,6 +408,39 @@ export interface HoldingSnapshotItem {
   allocationPercent: number;
 }
 
+export interface FundExplainability {
+  categoryFit: {
+    userRiskBand: string;
+    fundRiskLevel: string;
+    fitScore: number;
+    reason: string;
+  };
+  cagrComparison: {
+    fund3YCagr: number;
+    categoryAvg3Y: number;
+    fund5YCagr: number;
+    categoryAvg5Y: number;
+    outperformancePercent: number;
+    reason: string;
+  };
+  sharpeRatio: {
+    fundSharpe: number;
+    benchmarkSharpe: number;
+    reason: string;
+  };
+  expenseRatio: {
+    fundExpenseRatio: number;
+    categoryAvgExpenseRatio: number;
+    reason: string;
+  };
+  maxDrawdown: {
+    fundDrawdown: number;
+    benchmarkDrawdown: number;
+    reason: string;
+  };
+  oneLineSummary: string;
+}
+
 export interface RecommendationItem {
   rank: number;
   fund: MutualFund;
@@ -327,6 +451,7 @@ export interface RecommendationItem {
     | "Stability & Hedge"
     | "Growth Accelerator"
     | "Tax Saver & Compounding";
+  explainability?: FundExplainability;
 }
 
 export interface FundRecommendationResponse {
@@ -680,6 +805,7 @@ export interface CopilotMessage {
   role: "user" | "assistant" | "system";
   content: string;
   suggestions?: string[];
+  sources?: RagCitationSource[];
   createdAt?: string;
 }
 
@@ -694,6 +820,7 @@ export interface CopilotChatResponse {
   role: "assistant";
   content: string;
   suggestions: string[];
+  sources?: RagCitationSource[];
   contextSummary: CopilotContextSummary;
   timestamp: string;
 }
@@ -799,4 +926,547 @@ export interface InstitutionalAuditDossier {
     winRate: number;
   };
   disclaimer: string;
+}
+
+// -------------------------------------------------------------
+// Phase 2 Types: Tax, Rebalancing, Goals, Insurance Health
+// -------------------------------------------------------------
+
+export interface RealizedTaxLot {
+  holdingId: string | null;
+  name: string;
+  symbolOrCode: string;
+  assetClass: 'EQUITY' | 'DEBT' | 'GOLD' | 'HYBRID';
+  buyDate: string;
+  sellDate: string;
+  financialYear: string;
+  units: number;
+  buyPrice: number;
+  sellPrice: number;
+  buyCost: number;
+  sellProceeds: number;
+  gain: number;
+  holdingDays: number;
+  gainType: 'STCG' | 'LTCG';
+  estimatedTaxRate: number;
+  estimatedTax: number;
+}
+
+export interface UnrealizedTaxLot {
+  holdingId: string | null;
+  name: string;
+  symbolOrCode: string;
+  assetClass: 'EQUITY' | 'DEBT' | 'GOLD' | 'HYBRID';
+  buyDate: string;
+  units: number;
+  buyPrice: number;
+  currentPrice: number;
+  buyCost: number;
+  currentValue: number;
+  gain: number;
+  holdingDays: number;
+  gainType: 'STCG' | 'LTCG';
+  isEligibleForHarvesting: boolean;
+}
+
+export interface TaxHarvestingOpportunity {
+  holdingId: string | null;
+  name: string;
+  symbolOrCode: string;
+  currentPrice: number;
+  unitsToSell: number;
+  saleValue: number;
+  gainHarvested: number;
+  estimatedTaxSaved: number;
+  rationale: string;
+}
+
+export interface TaxReportResponse {
+  currentFinancialYear: string;
+  selectedFinancialYear: string;
+  availableFinancialYears: string[];
+  selectedFySummary: {
+    financialYear: string;
+    equityStcg: number;
+    equityLtcg: number;
+    debtGains: number;
+    totalGains: number;
+    totalEstimatedTax: number;
+    equityLtcgExemptionUsed: number;
+    equityLtcgTaxable: number;
+    remainingLtcgExemption: number;
+  };
+  unrealizedSummary: {
+    equityStcg: number;
+    equityLtcg: number;
+    debtGains: number;
+    totalUnrealizedGains: number;
+  };
+  harvestingSuggestions: {
+    annualExemptionLimit: number;
+    exemptionUsedSoFar: number;
+    remainingExemption: number;
+    totalTaxSavable: number;
+    opportunities: TaxHarvestingOpportunity[];
+  };
+  realizedLots: RealizedTaxLot[];
+  unrealizedLots: UnrealizedTaxLot[];
+}
+
+export interface RebalanceAssetTrade {
+  assetClass: string;
+  currentValue: number;
+  currentWeight: number;
+  targetWeight: number;
+  driftPercent: number;
+  isDriftViolated: boolean;
+  action: 'BUY' | 'SELL' | 'HOLD';
+  amount: number;
+  targetValue: number;
+}
+
+export interface RebalanceFundTrade {
+  holdingId: string | null;
+  name: string;
+  symbolOrCode: string;
+  assetClass: string;
+  action: 'BUY' | 'SELL';
+  amount: number;
+  units: number | null;
+  estimatedTax: number;
+  rationale: string;
+}
+
+export interface SipRedirectionItem {
+  assetClass: string;
+  monthlyAmount: number;
+  targetAmountToAccumulate: number;
+  monthsRequired: number;
+  recommendation: string;
+}
+
+export interface RebalancePlanResponse {
+  portfolioValue: number;
+  driftThreshold: number;
+  maxDrift: number;
+  rebalanceNeeded: boolean;
+  targetSource: string;
+  currentAllocation: {
+    equity: number;
+    debt: number;
+    gold: number;
+    cash: number;
+  };
+  targetAllocation: {
+    equity: number;
+    debt: number;
+    gold: number;
+    cash: number;
+  };
+  currentAssetValues: {
+    equity: number;
+    debt: number;
+    gold: number;
+    cash: number;
+  };
+  assetClassTrades: RebalanceAssetTrade[];
+  fundTrades: RebalanceFundTrade[];
+  sipRedirectionPlan: {
+    monthlyCapacity: number;
+    totalInflowNeeded: number;
+    estimatedMonthsToBalance: number;
+    allocations: SipRedirectionItem[];
+  };
+  taxImpact: {
+    estimatedTotalTax: number;
+    isTaxFreeSipOptionAvailable: boolean;
+    taxNotes: string[];
+  };
+}
+
+export interface GoalProjections {
+  targetAmount: number;
+  currentAmount: number;
+  monthlyContribution: number;
+  horizonYears: number;
+  expectedReturnRate: number;
+  projectedCorpus: number;
+  fvLumpsum: number;
+  fvSip: number;
+  isOnTrack: boolean;
+  status: 'ON_TRACK' | 'OFF_TRACK';
+  shortfall: number;
+  surplus: number;
+  requiredTotalMonthlySip: number;
+  extraSipNeeded: number;
+  progressPercent: number;
+  projectedProgressPercent: number;
+}
+
+export interface UserGoal {
+  _id: string;
+  name: string;
+  category: string;
+  targetAmount: number;
+  currentAmount: number;
+  horizonYears: number;
+  targetDate: string;
+  priority: 'Critical' | 'Important' | 'Flexible';
+  monthlyContribution: number;
+  expectedReturnRate: number;
+  status: 'ACTIVE' | 'ACHIEVED' | 'PAUSED';
+  projections?: GoalProjections;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GoalSkipSimulationResponse {
+  goalId: string;
+  goalName: string;
+  skipCount: number;
+  baselineProjectedCorpus: number;
+  simulatedProjectedCorpus: number;
+  corpusDrop: number;
+  monthsDelayed: number;
+  targetAmount: number;
+  stillOnTrack: boolean;
+  summary: string;
+}
+
+export interface InsuranceEmergencyAuditResponse {
+  compositeScore: number;
+  monthlyBurn: number;
+  annualIncome: number;
+  dependents: number;
+  emergencyFund: {
+    status: 'HEALTHY' | 'INADEQUATE' | 'CRITICAL';
+    isAdequate: boolean;
+    actualAmount: number;
+    recommendedAmount: number;
+    actualMonths: number;
+    targetMonths: number;
+    shortfall: number;
+    reason: string;
+  };
+  termInsurance: {
+    status: 'HEALTHY' | 'INADEQUATE' | 'CRITICAL';
+    isAdequate: boolean;
+    hasInsurance: boolean;
+    actualCover: number;
+    recommendedCover: number;
+    multipleOfIncome: number;
+    shortfall: number;
+    reason: string;
+  };
+  healthInsurance: {
+    status: 'HEALTHY' | 'INADEQUATE' | 'CRITICAL';
+    isAdequate: boolean;
+    hasInsurance: boolean;
+    actualCover: number;
+    recommendedCover: number;
+    shortfall: number;
+    reason: string;
+  };
+  actionItems: Array<{
+    priority: 'HIGH' | 'MEDIUM' | 'LOW';
+    category: string;
+    title: string;
+    action: string;
+    shortfall: number;
+  }>;
+}
+
+// -------------------------------------------------------------
+// Phase 3 Types: Alerts & Notifications Engine
+// -------------------------------------------------------------
+
+export type AlertType =
+  | 'PRICE_ABOVE'
+  | 'PRICE_BELOW'
+  | 'PERCENT_CHANGE'
+  | 'SIGNAL_FLIP'
+  | 'DRIFT_THRESHOLD'
+  | 'SIP_DUE';
+
+export type AlertComparator =
+  | 'GREATER_THAN'
+  | 'LESS_THAN'
+  | 'PERCENT_CHANGE_ABS'
+  | 'FLIPS_TO'
+  | 'DRIFT_EXCEEDED'
+  | 'IS_DUE';
+
+export type AlertDeliveryChannel = 'IN_APP' | 'EMAIL' | 'PUSH';
+
+export type AlertStatus = 'ACTIVE' | 'PAUSED' | 'TRIGGERED' | 'DISABLED';
+
+export interface AlertItem {
+  _id: string;
+  userId: string;
+  name: string;
+  type: AlertType;
+  targetSymbol: string;
+  targetName: string;
+  targetValue: number;
+  comparator: AlertComparator;
+  targetSignal?: string;
+  deliveryChannels: AlertDeliveryChannel[];
+  status: AlertStatus;
+  triggerCount: number;
+  lastTriggeredAt: string | null;
+  lastEvaluatedAt: string | null;
+  lastTriggerValue: any;
+  cooldownMinutes: number;
+  metadata?: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateAlertPayload {
+  name: string;
+  type: AlertType;
+  targetSymbol?: string;
+  targetName?: string;
+  targetValue: number;
+  comparator?: AlertComparator;
+  targetSignal?: string;
+  deliveryChannels: AlertDeliveryChannel[];
+  cooldownMinutes?: number;
+}
+
+export interface NotificationItem {
+  _id: string;
+  userId: string;
+  alertId?: {
+    _id: string;
+    name: string;
+    type: string;
+    targetSymbol: string;
+  } | null;
+  title: string;
+  message: string;
+  type: 'PRICE' | 'SIGNAL' | 'DRIFT' | 'SIP' | 'SYSTEM';
+  severity: 'INFO' | 'SUCCESS' | 'WARNING' | 'CRITICAL';
+  isRead: boolean;
+  readAt: string | null;
+  deliveryStatus: {
+    inApp: { sent: boolean; sentAt: string };
+    email: { sent: boolean; sentAt: string | null; error: string | null; skipped: boolean };
+    push: { status: string; note: string };
+  };
+  metadata?: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AlertListResponse {
+  alerts: AlertItem[];
+  meta: {
+    total: number;
+    active: number;
+    paused: number;
+    maxLimit: number;
+  };
+}
+
+// ==========================================
+// Phase 4: Analytics, Backtest & Optimization
+// ==========================================
+
+export type BacktestStrategy = 'SIP_VS_LUMPSUM' | 'SMA_CROSSOVER' | 'BUY_AND_HOLD';
+
+export interface BacktestParams {
+  symbol: string;
+  strategy: BacktestStrategy;
+  startDate?: string;
+  endDate?: string;
+  initialCapital?: number;
+  monthlySipAmount?: number;
+  fastPeriod?: number;
+  slowPeriod?: number;
+  transactionCostPercent?: number;
+  stcgTaxPercent?: number;
+  ltcgTaxPercent?: number;
+}
+
+export interface BacktestTrade {
+  type: 'BUY' | 'SELL' | 'SIP_INSTALLMENT';
+  date: string;
+  price: number;
+  units: number;
+  amount: number;
+  costs?: number;
+  capitalGain?: number;
+  taxPaid?: number;
+  reason?: string;
+}
+
+export interface EquityCurvePoint {
+  date: string;
+  strategyPortfolio: number;
+  benchmarkPortfolio: number;
+  investedCapital: number;
+}
+
+export interface BacktestMetrics {
+  totalReturnPercent: number;
+  cagrPercent: number;
+  xirrPercent: number;
+  maxDrawdownPercent: number;
+  sharpeRatio: number;
+  winRatePercent: number;
+  totalTrades: number;
+  winningTrades: number;
+  losingTrades: number;
+  totalTransactionCostsPaid: number;
+  totalTaxPaid: number;
+}
+
+export interface BacktestResponse {
+  symbol: string;
+  strategy: BacktestStrategy;
+  dateRange: {
+    start: string;
+    end: string;
+    totalTradingDays: number;
+  };
+  capital: {
+    initial: number;
+    totalInvested: number;
+    strategyFinalValue: number;
+    benchmarkFinalValue: number;
+  };
+  metrics: {
+    strategy: BacktestMetrics;
+    benchmark: {
+      totalReturnPercent: number;
+      cagrPercent: number;
+      xirrPercent: number;
+      maxDrawdownPercent: number;
+      sharpeRatio: number;
+    };
+  };
+  equityCurve: EquityCurvePoint[];
+  trades: BacktestTrade[];
+  disclaimer: string;
+}
+
+export interface AssetWeightAllocations {
+  equity: number;
+  debt: number;
+  gold: number;
+  cash: number;
+}
+
+export interface EfficientFrontierPoint {
+  volatilityPercent: number;
+  returnPercent: number;
+  sharpeRatio: number;
+  weights: AssetWeightAllocations;
+}
+
+export interface PortfolioStats {
+  totalValue?: number;
+  volatilityPercent: number;
+  returnPercent: number;
+  sharpeRatio: number;
+  weights: AssetWeightAllocations;
+}
+
+export interface OptimizationResponse {
+  riskBand: string;
+  constraints: {
+    maxEquityPercent: number;
+    minDebtPercent: number;
+  };
+  currentPortfolio: PortfolioStats;
+  maxSharpePortfolio: PortfolioStats;
+  minVariancePortfolio: PortfolioStats;
+  efficientFrontier: EfficientFrontierPoint[];
+  assetAssumptions: Record<string, { expectedReturn: number; volatility: number; label: string }>;
+  disclaimer: string;
+}
+
+export interface WalkForwardFold {
+  fold: number;
+  trainBars: number;
+  testBars: number;
+  accuracy: number;
+  precision: number;
+  recall: number;
+  f1: number;
+  majorityBaselineAccuracy: number;
+  strategyReturn: number;
+  buyAndHoldReturn: number;
+}
+
+export interface ModelTransparencyReport {
+  generatedAt: string;
+  modelType: string;
+  modelSizeMb: number;
+  featureCount: number;
+  featuresList: string[];
+  totalValidatedBars: number;
+  nSplits: number;
+  overallMetrics: {
+    accuracy: number;
+    precision: number;
+    recall: number;
+    f1: number;
+    majorityClassBaseline: number;
+    beatsBaseline: boolean;
+  };
+  folds: WalkForwardFold[];
+  transparencyNotes: {
+    lookaheadBiasPrevention: string;
+    scaleFreeNormalization: string;
+    walkForwardTemporalSplit: string;
+    fallbackRulePolicy: string;
+  };
+}
+
+// ==========================================
+// Phase 5: RAG & Portfolio News Types
+// ==========================================
+
+export interface RagCitationSource {
+  title: string;
+  url: string;
+  category: string;
+  relevanceScore?: number;
+}
+
+export interface CopilotMessageResponse {
+  role: 'assistant';
+  content: string;
+  suggestions?: string[];
+  sources?: RagCitationSource[];
+  contextSummary?: {
+    riskTolerance: string;
+    totalHoldingsValue: number;
+    holdingsCount: number;
+    paperCashBalance: number;
+  };
+  timestamp?: string;
+}
+
+export interface PortfolioNewsItem {
+  id: string;
+  headline: string;
+  source: string;
+  category: string;
+  timeAgo: string;
+  summary: string;
+  url: string;
+  gradient?: string;
+  readTime?: string;
+  publishedAt: string;
+  imageUrl?: string;
+  matchedAsset: {
+    symbol: string;
+    name: string;
+    type: 'HOLDING' | 'WATCHLIST' | 'BENCHMARK';
+  };
+  sentiment: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+  sentimentScore: number;
 }

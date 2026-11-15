@@ -16,23 +16,23 @@ export const StockQuoteHeader: React.FC<StockQuoteHeaderProps> = ({
   onToggleWatchlist,
 }) => {
   return (
-    <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+    <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-5">
       <div>
         <div className="flex items-center gap-2">
-          <span className="font-mono text-sm font-bold px-2 py-0.5 rounded-md bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220]">
+          <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-900">
             {quote.symbol}
           </span>
-          <span className="text-xs text-[#5B6572]">
+          <span className="text-xs text-slate-500 font-mono">
             • {quote.sector}
           </span>
         </div>
 
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#0B1220] mt-1">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-1">
           {quote.companyName}
         </h1>
 
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <span className="font-serif text-3xl sm:text-4xl font-bold text-[#0B1220] tabular-nums">
+        <div className="mt-2.5 flex flex-wrap items-center gap-3">
+          <span className="font-mono text-2xl sm:text-3xl font-bold text-slate-900 tabular-nums tracking-tight">
             {formatINR(quote.price)}
           </span>
           <PriceChangeChip change={quote.change} changePercent={quote.changePercent} showAmount={true} />
@@ -42,13 +42,13 @@ export const StockQuoteHeader: React.FC<StockQuoteHeaderProps> = ({
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleWatchlist}
-          className={`px-4 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all min-h-[44px] ${
+          className={`px-3.5 py-2 rounded-lg border text-xs font-medium flex items-center gap-2 transition-colors ${
             isWatchlist
               ? 'bg-amber-50 border-amber-300 text-amber-800'
-              : 'border-[#E7E5DF] text-[#0B1220] hover:bg-black/5'
+              : 'border-slate-200 text-slate-700 hover:bg-slate-50'
           }`}
         >
-          <Star className={`w-4 h-4 ${isWatchlist ? 'fill-amber-500 text-amber-500' : 'text-gray-400'}`} />
+          <Star className={`w-4 h-4 ${isWatchlist ? 'fill-amber-500 text-amber-500' : 'text-slate-400'}`} />
           <span>{isWatchlist ? 'In Watchlist' : 'Add to Watchlist'}</span>
         </button>
       </div>

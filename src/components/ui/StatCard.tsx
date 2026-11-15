@@ -25,23 +25,23 @@ export const StatCard: React.FC<StatCardProps> = ({
   return (
     <div
       className={cn(
-        'p-5 sm:p-6 rounded-2xl bg-white border border-[#E7E5DF] shadow-xs flex flex-col justify-between transition-all hover:border-[#0F766E]/30',
+        'p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between transition-colors hover:border-slate-300',
         className
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wider text-[#5B6572]">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 font-mono">
           {label}
         </span>
         {Icon && (
-          <div className="w-8 h-8 rounded-xl bg-[#E6F4F1] text-[#0F766E] flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200/60">
             <Icon className="w-4 h-4" />
           </div>
         )}
       </div>
 
       <div className="mt-3">
-        <p className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#0B1220] tabular-nums">
+        <p className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums">
           {value}
         </p>
 
@@ -49,17 +49,17 @@ export const StatCard: React.FC<StatCardProps> = ({
           {trend && (
             <span
               className={cn(
-                'text-xs font-semibold px-1.5 py-0.5 rounded-md',
+                'text-xs font-mono font-semibold px-2 py-0.5 rounded-md border',
                 trend.isPositive
-                  ? 'text-emerald-700 bg-emerald-50'
-                  : 'text-rose-700 bg-rose-50'
+                  ? 'text-emerald-700 bg-emerald-50 border-emerald-200/80'
+                  : 'text-rose-700 bg-rose-50 border-rose-200/80'
               )}
             >
               {trend.value}
             </span>
           )}
           {subtext && (
-            <span className="text-xs text-[#5B6572]">
+            <span className="text-xs text-slate-400 font-mono">
               {subtext}
             </span>
           )}

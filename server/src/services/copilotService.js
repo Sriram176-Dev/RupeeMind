@@ -6,6 +6,7 @@ import { PaperWallet } from '../models/PaperWallet.js';
 import { PaperPosition } from '../models/PaperPosition.js';
 import { Recommendation } from '../models/Recommendation.js';
 import { CopilotChat } from '../models/CopilotChat.js';
+import { retrieveTopKChunks } from './embeddingService.js';
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
@@ -105,9 +106,17 @@ export async function getUserFinancialContext(userId) {
 /**
  * Intelligent deterministic fallback when Gemini API key is missing or encounters rate limits
  */
-function generateDeterministicFallback(message, context) {
+function generateDeterministicFallback(message, context, retrievedSources = []) {
   const q = message.toLowerCase();
   const { profile, realPortfolio, paperTrading } = context;
+
+  const citationsBlock =
+    retrievedSources && retrievedSources.length > 0
+      ? `\n\n#### 📚 Verified Statutory & Circular Sources:\n` +
+        retrievedSources
+          .map((s) => `* [${s.chunk.title}](${s.chunk.url}) — *${s.chunk.category}*`)
+          .join('\n')
+      : `\n\n*(Note: No verified statutory or circular documents directly match this query; answering from general financial principles.)*`;
 
   // Intent: Risk & Concentration
   if (q.includes('risk') || q.includes('concentration') || q.includes('diversif')) {
@@ -239,11 +248,19 @@ How can I assist your financial journey today? You can ask me to:
 }
 
 /**
- * Main chat handler: combines full context + Google Gemini LLM with robust fallback
+ * Main chat handler: combines full context + RAG statutory search + Google Gemini LLM with robust fallback
  */
 export async function chatWithCopilot(userId, userMessage, chatHistory = []) {
   const context = await getUserFinancialContext(userId);
   const apiKey = process.env.GEMINI_API_KEY;
+
+  // RAG: Retrieve top relevant regulatory/statutory chunks
+  let retrievedSources = [];
+  try {
+    retrievedSources = await retrieveTopKChunks(userMessage, 3, 0.35);
+  } catch (err) {
+    console.warn('[CopilotService] RAG retrieval error:', err.message);
+  }
 
   let assistantContent = '';
   let suggestions = [];
@@ -251,6 +268,22 @@ export async function chatWithCopilot(userId, userMessage, chatHistory = []) {
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
+
+      const ragInstruction =
+        retrievedSources && retrievedSources.length > 0
+          ? `\n\n### STATUTORY & REGULATORY KNOWLEDGE GROUNDING (RAG):
+The following verified public circulars and guidance documents matched this query:
+${retrievedSources
+  .map((s) => `- **${s.chunk.title}** (${s.chunk.url}):\n${s.chunk.content}`)
+  .join('\n\n')}
+
+MANDATORY CITATION INSTRUCTION:
+You MUST cite the sources you rely upon using markdown links: e.g. [Document Title](URL). Reference specific circular details, tax sections, or rules.`
+          : `\n\n### STATUTORY & REGULATORY KNOWLEDGE GROUNDING (RAG):
+No official public circulars or guidance documents in our database directly matched this query.
+MANDATORY INSTRUCTION:
+You MUST include this exact disclaimer note at the end of your answer:
+*(Note: No verified statutory or circular documents directly match this query; answering from general financial principles.)*`;
 
       const systemInstruction = `You are "RupeeBot", an institutional-grade, SEBI-compliant AI financial copilot and quantitative analyst for the Rupeemind platform.
 You assist Indian retail and semi-institutional investors in portfolio optimization, asset allocation, risk management, and Indian tax planning.
@@ -267,7 +300,7 @@ You assist Indian retail and semi-institutional investors in portfolio optimizat
 3. Format output with clean, professional GitHub-flavored Markdown: bold key numbers, use concise bullet points, and tables where comparative data aids clarity.
 4. Conclude your response with a JSON block at the very end containing 3 helpful follow-up suggestions in this exact format:
 <<<SUGGESTIONS>>>["Question 1", "Question 2", "Question 3"]<<<END_SUGGESTIONS>>>
-5. Always preserve educational neutrality and include a brief SEBI educational disclaimer.`;
+5. Always preserve educational neutrality and include a brief SEBI educational disclaimer.${ragInstruction}`;
 
       // Build conversation turns
       const contents = [];
@@ -310,13 +343,13 @@ You assist Indian retail and semi-institutional investors in portfolio optimizat
       }
     } catch (err) {
       console.warn('[CopilotService] Gemini API call failed, activating quant fallback:', err.message);
-      const fallback = generateDeterministicFallback(userMessage, context);
+      const fallback = generateDeterministicFallback(userMessage, context, retrievedSources);
       assistantContent = fallback.content;
       suggestions = fallback.suggestions;
     }
   } else {
-    // No API key provided: use intelligent domain analyzer
-    const fallback = generateDeterministicFallback(userMessage, context);
+    // No API key provided: use intelligent domain analyzer with RAG citations
+    const fallback = generateDeterministicFallback(userMessage, context, retrievedSources);
     assistantContent = fallback.content;
     suggestions = fallback.suggestions;
   }
@@ -351,6 +384,14 @@ You assist Indian retail and semi-institutional investors in portfolio optimizat
         role: 'assistant',
         content: assistantContent,
         suggestions,
+        metadata: {
+          sources: retrievedSources.map((s) => ({
+            title: s.chunk.title,
+            url: s.chunk.url,
+            category: s.chunk.category,
+            relevanceScore: s.score,
+          })),
+        },
       });
 
       // Keep last 30 messages to avoid unbounded growth
@@ -368,6 +409,12 @@ You assist Indian retail and semi-institutional investors in portfolio optimizat
     role: 'assistant',
     content: assistantContent,
     suggestions,
+    sources: retrievedSources.map((s) => ({
+      title: s.chunk.title,
+      url: s.chunk.url,
+      category: s.chunk.category,
+      relevanceScore: s.score,
+    })),
     contextSummary: {
       riskTolerance: context.profile.riskTolerance,
       totalHoldingsValue: context.realPortfolio.totalValue,

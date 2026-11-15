@@ -35,6 +35,38 @@ const recommendationSchema = new mongoose.Schema(
         allocationPercent: Number,
         role: String,
         rationale: String,
+        explainability: {
+          categoryFit: {
+            userRiskBand: String,
+            fundRiskLevel: String,
+            fitScore: Number,
+            reason: String,
+          },
+          cagrComparison: {
+            fund3YCagr: Number,
+            categoryAvg3Y: Number,
+            fund5YCagr: Number,
+            categoryAvg5Y: Number,
+            outperformancePercent: Number,
+            reason: String,
+          },
+          sharpeRatio: {
+            fundSharpe: Number,
+            benchmarkSharpe: Number,
+            reason: String,
+          },
+          expenseRatio: {
+            fundExpenseRatio: Number,
+            categoryAvgExpenseRatio: Number,
+            reason: String,
+          },
+          maxDrawdown: {
+            fundDrawdown: Number,
+            benchmarkDrawdown: Number,
+            reason: String,
+          },
+          oneLineSummary: String,
+        },
       },
     ],
     holdingsSnapshot: [

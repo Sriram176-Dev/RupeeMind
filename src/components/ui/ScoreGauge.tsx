@@ -44,20 +44,18 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({
 
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  // Use a 270 degree arc for gauge look
   const strokeDashoffset = circumference - (displayScore / 100) * circumference;
 
   // Determine color gradient
   const getColor = () => {
     if (type === 'health') {
-      if (score >= 71) return { stroke: '#16A34A', bg: '#DCFCE7', text: 'text-emerald-600' };
-      if (score >= 41) return { stroke: '#D97706', bg: '#FEF3C7', text: 'text-amber-600' };
-      return { stroke: '#DC2626', bg: '#FEE2E2', text: 'text-red-600' };
+      if (score >= 71) return { stroke: '#059669', bg: '#ECFDF5', text: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+      if (score >= 41) return { stroke: '#D97706', bg: '#FFFBEB', text: 'text-amber-700 bg-amber-50 border-amber-200' };
+      return { stroke: '#DC2626', bg: '#FEF2F2', text: 'text-rose-700 bg-rose-50 border-rose-200' };
     } else {
-      // Risk score: 0-30 blue/teal, 31-70 amber, 71-100 purple/rose
-      if (score <= 30) return { stroke: '#0F766E', bg: '#E6F4F1', text: 'text-teal-700' };
-      if (score <= 70) return { stroke: '#4F46E5', bg: '#EEF2FF', text: 'text-indigo-600' };
-      return { stroke: '#EA580C', bg: '#FFEDD5', text: 'text-orange-600' };
+      if (score <= 30) return { stroke: '#047857', bg: '#ECFDF5', text: 'text-emerald-800 bg-emerald-50 border-emerald-200' };
+      if (score <= 70) return { stroke: '#3B82F6', bg: '#EFF6FF', text: 'text-blue-700 bg-blue-50 border-blue-200' };
+      return { stroke: '#E11D48', bg: '#FFF1F2', text: 'text-rose-700 bg-rose-50 border-rose-200' };
     }
   };
 
@@ -74,7 +72,7 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({
             r={radius}
             stroke="currentColor"
             strokeWidth={strokeWidth}
-            className="text-gray-100"
+            className="text-slate-100"
             fill="transparent"
           />
           {/* Animated score arc */}
@@ -88,27 +86,27 @@ export const ScoreGauge: React.FC<ScoreGaugeProps> = ({
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
             fill="transparent"
-            style={{ transition: 'stroke-dashoffset 0.8s ease-out' }}
+            style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}
           />
         </svg>
 
         {/* Center score text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#0B1220] tabular-nums">
+          <span className="font-mono text-3xl font-bold tracking-tight text-slate-900 tabular-nums">
             {displayScore}
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#5B6572]">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
             / 100
           </span>
         </div>
       </div>
 
-      <div className="mt-3">
-        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${themeColors.text} bg-black/5`}>
+      <div className="mt-2.5">
+        <span className={`inline-block px-2.5 py-0.5 rounded-md text-xs font-semibold border ${themeColors.text}`}>
           {label}
         </span>
         {sublabel && (
-          <p className="text-xs text-[#5B6572] mt-1 max-w-[160px] mx-auto">
+          <p className="text-xs text-slate-500 mt-1 max-w-[160px] mx-auto leading-normal">
             {sublabel}
           </p>
         )}

@@ -50,8 +50,35 @@ const FundCompare = lazy(() =>
 const Portfolio = lazy(() =>
   import("../pages/portfolio/Portfolio").then((m) => ({ default: m.Portfolio })),
 );
+const PortfolioImport = lazy(() =>
+  import("../pages/portfolio/PortfolioImport").then((m) => ({ default: m.PortfolioImport })),
+);
 const Analytics = lazy(() =>
   import("../pages/portfolio/Analytics").then((m) => ({ default: m.Analytics })),
+);
+const TaxReport = lazy(() =>
+  import("../pages/tax/TaxReport").then((m) => ({ default: m.TaxReport })),
+);
+const RebalanceDashboard = lazy(() =>
+  import("../pages/rebalance/RebalanceDashboard").then((m) => ({ default: m.RebalanceDashboard })),
+);
+const GoalDashboard = lazy(() =>
+  import("../pages/goals/GoalDashboard").then((m) => ({ default: m.GoalDashboard })),
+);
+const HealthCheckPage = lazy(() =>
+  import("../pages/healthCheck/HealthCheckPage").then((m) => ({ default: m.HealthCheckPage })),
+);
+const AlertsManagement = lazy(() =>
+  import("../pages/alerts/AlertsManagement").then((m) => ({ default: m.AlertsManagement })),
+);
+const BacktestLab = lazy(() =>
+  import("../pages/backtest/BacktestLab").then((m) => ({ default: m.BacktestLab })),
+);
+const PortfolioOptimizer = lazy(() =>
+  import("../pages/optimize/PortfolioOptimizer").then((m) => ({ default: m.PortfolioOptimizer })),
+);
+const ModelTransparency = lazy(() =>
+  import("../pages/analytics/ModelTransparency").then((m) => ({ default: m.ModelTransparency })),
 );
 
 // ── Trading pages ─────────────────────────────────────────────
@@ -159,6 +186,78 @@ export function AppRoutes() {
           element={
             <ProtectedRoute requireOnboarding>
               <Portfolio />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/portfolio/import"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <PortfolioImport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tax"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <TaxReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rebalance"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <RebalanceDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/goals"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <GoalDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/health-check"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <HealthCheckPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/alerts"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <AlertsManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/backtest"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <BacktestLab />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/optimize"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <PortfolioOptimizer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/model-transparency"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <ModelTransparency />
             </ProtectedRoute>
           }
         />

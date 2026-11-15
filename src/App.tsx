@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -6,8 +7,11 @@ import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
 import { AppRoutes } from "./app/AppRoutes";
-import { CopilotDrawer } from "./components/copilot";
 import { Toaster } from "sonner";
+
+const CopilotDrawer = lazy(() =>
+  import("./components/copilot").then((m) => ({ default: m.CopilotDrawer })),
+);
 
 export function App() {
   return (
@@ -16,7 +20,7 @@ export function App() {
         <MarketProvider>
           <BrowserRouter>
             <ScrollToTop />
-            <div className="min-h-screen flex flex-col bg-[#FAFAF7] text-[#0B1220] selection:bg-emerald-500/20 selection:text-emerald-800">
+            <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-emerald-500/15 selection:text-emerald-900 font-sans">
               <Navbar />
 
               <main className="flex-1">
@@ -26,8 +30,10 @@ export function App() {
               <Footer />
             </div>
 
-            {/* Global AI Financial Copilot (RupeeBot) */}
-            <CopilotDrawer />
+            {/* Global AI Financial Copilot (RupeeBot) - Lazy Loaded */}
+            <Suspense fallback={null}>
+              <CopilotDrawer />
+            </Suspense>
 
             <Toaster
               position="top-right"

@@ -1,3 +1,4 @@
+// Express API Router Index
 import { Router } from "express";
 import authRoutes from "./authRoutes.js";
 import profileRoutes from "./profileRoutes.js";
@@ -13,6 +14,16 @@ import analyticsRoutes from "./analyticsRoutes.js";
 import paperTradingRoutes from "./paperTradingRoutes.js";
 import copilotRoutes from "./copilotRoutes.js";
 import reportRoutes from "./reportRoutes.js";
+import taxRoutes from "./taxRoutes.js";
+import rebalanceRoutes from "./rebalanceRoutes.js";
+import goalRoutes from "./goalRoutes.js";
+import healthCheckRoutes from "./healthCheckRoutes.js";
+import alertRoutes from "./alertRoutes.js";
+import notificationRoutes from "./notificationRoutes.js";
+import backtestRoutes from "./backtestRoutes.js";
+import optimizationRoutes from "./optimizationRoutes.js";
+import modelTransparencyRoutes from "./modelTransparencyRoutes.js";
+import ragRoutes from "./ragRoutes.js";
 
 import accountRoutes from "./accountRoutes.js";
 import { getHealth, getSimpleHealth } from "../controllers/healthController.js";
@@ -43,5 +54,15 @@ apiRouter.use("/analytics", analyticsRoutes);
 apiRouter.use("/paper-trading", paperTradingRoutes);
 apiRouter.use("/copilot", copilotRoutes);
 apiRouter.use("/reports", reportRoutes);
+apiRouter.use("/tax", taxRoutes);
+apiRouter.use("/rebalance", rebalanceRoutes);
+apiRouter.use("/goals", goalRoutes);
+apiRouter.use("/health-check", healthCheckRoutes);
+apiRouter.use("/alerts", alertRoutes);
+apiRouter.use("/notifications", notificationRoutes);
+apiRouter.use("/backtest", backtestRoutes);
+apiRouter.use("/optimize", optimizationRoutes);
+apiRouter.use("/model-transparency", modelTransparencyRoutes);
+apiRouter.use("/rag", ragRoutes);
 
 export default apiRouter;

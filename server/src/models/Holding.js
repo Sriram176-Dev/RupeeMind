@@ -49,6 +49,23 @@ const holdingSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    folio: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    xirr: {
+      type: Number,
+      default: null,
+    },
+    cagr: {
+      type: Number,
+      default: null,
+    },
+    absoluteReturn: {
+      type: Number,
+      default: null,
+    },
   },
   {
     timestamps: true,

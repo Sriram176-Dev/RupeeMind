@@ -48,8 +48,11 @@ const profileSchema = new mongoose.Schema(
     monthlyEMIs: { type: Number, default: 0 }, // compatibility alias
     monthlySavings: { type: Number, default: null },
     emergencyFundAmount: { type: Number, default: 0 },
+    emergencyFundMonthsTarget: { type: Number, default: 6 },
     hasLifeInsurance: { type: Boolean, default: false },
+    termInsuranceCover: { type: Number, default: 0 },
     hasHealthInsurance: { type: Boolean, default: false },
+    healthInsuranceCover: { type: Number, default: 0 },
     dependents: { type: Number, default: 0 },
     dependentsCount: { type: Number, default: 0 }, // compatibility alias
     experienceLevel: { type: String, default: null },

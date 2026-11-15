@@ -55,7 +55,7 @@ export function toCleanSymbol(yahooSymbol) {
   return yahooSymbol.replace(/\.(NS|BO)$/i, '');
 }
 
-// Baseline seeds so index requests never stall cold
+// Baseline seeds so index and quote requests never stall cold
 const SEED_INDICES = [
   { symbol: 'NIFTY 50', yahooSymbol: '^NSEI', name: 'NIFTY 50', value: 24340.60, change: 112.40, changePercent: 0.46, high: 24410.00, low: 24280.00, sparkline: [24200, 24250, 24180, 24310, 24340] },
   { symbol: 'SENSEX', yahooSymbol: '^BSESN', name: 'SENSEX', value: 79942.20, change: 360.80, changePercent: 0.45, high: 80120.00, low: 79750.00, sparkline: [79600, 79720, 79580, 79890, 79942] },
@@ -67,7 +67,121 @@ fallbackCache.set('indices:^NSEI,^BSESN,^NSEBANK,^CNXIT', {
   savedAt: new Date().toISOString(),
 });
 
-function withTimeout(promise, ms = 3500) {
+export const SEED_STOCK_PRICES = {
+  RELIANCE: { price: 2748.50, change: 18.20, changePercent: 0.67, companyName: 'Reliance Industries Ltd', sector: 'Energy', marketCap: 1860000 },
+  TCS: { price: 3885.00, change: -12.40, changePercent: -0.32, companyName: 'Tata Consultancy Services', sector: 'Information Technology', marketCap: 1405000 },
+  HDFCBANK: { price: 1682.30, change: 8.50, changePercent: 0.51, companyName: 'HDFC Bank Ltd', sector: 'Financial Services', marketCap: 1280000 },
+  INFY: { price: 1724.80, change: 15.60, changePercent: 0.91, companyName: 'Infosys Ltd', sector: 'Information Technology', marketCap: 715000 },
+  ICICIBANK: { price: 1242.00, change: 6.20, changePercent: 0.50, companyName: 'ICICI Bank Ltd', sector: 'Financial Services', marketCap: 875000 },
+  BHARTIARTL: { price: 1545.00, change: 11.00, changePercent: 0.72, companyName: 'Bharti Airtel Ltd', sector: 'Telecommunication', marketCap: 865000 },
+  SBIN: { price: 818.50, change: 4.30, changePercent: 0.53, companyName: 'State Bank of India', sector: 'Financial Services', marketCap: 730000 },
+  ITC: { price: 472.50, change: 1.20, changePercent: 0.25, companyName: 'ITC Ltd', sector: 'Consumer Goods', marketCap: 590000 },
+  HINDUNILVR: { price: 2420.00, change: -14.00, changePercent: -0.57, companyName: 'Hindustan Unilever Ltd', sector: 'Consumer Goods', marketCap: 568000 },
+  LT: { price: 3565.00, change: 22.00, changePercent: 0.62, companyName: 'Larsen & Toubro Ltd', sector: 'Construction', marketCap: 490000 },
+  BAJFINANCE: { price: 7140.00, change: -45.00, changePercent: -0.63, companyName: 'Bajaj Finance Ltd', sector: 'Financial Services', marketCap: 442000 },
+  HCLTECH: { price: 1780.00, change: 14.50, changePercent: 0.82, companyName: 'HCL Technologies Ltd', sector: 'Information Technology', marketCap: 483000 },
+  MARUTI: { price: 11850.00, change: -60.00, changePercent: -0.50, companyName: 'Maruti Suzuki India', sector: 'Automobile', marketCap: 372000 },
+  SUNPHARMA: { price: 1752.00, change: 14.00, changePercent: 0.81, companyName: 'Sun Pharmaceutical', sector: 'Healthcare', marketCap: 420000 },
+  ADANIENT: { price: 3020.00, change: 25.00, changePercent: 0.83, companyName: 'Adani Enterprises Ltd', sector: 'Metals & Mining', marketCap: 344000 },
+  TATAMOTORS: { price: 895.00, change: 7.50, changePercent: 0.85, companyName: 'Tata Motors Ltd', sector: 'Automobile', marketCap: 330000 },
+  KOTAKBANK: { price: 1785.00, change: -8.00, changePercent: -0.45, companyName: 'Kotak Mahindra Bank Ltd', sector: 'Financial Services', marketCap: 355000 },
+  ONGC: { price: 285.00, change: 2.10, changePercent: 0.74, companyName: 'Oil & Natural Gas Corp Ltd', sector: 'Energy', marketCap: 358000 },
+  NTPC: { price: 395.00, change: 3.20, changePercent: 0.82, companyName: 'NTPC Ltd', sector: 'Power', marketCap: 383000 },
+  TITAN: { price: 3425.00, change: -18.00, changePercent: -0.52, companyName: 'Titan Company Ltd', sector: 'Consumer Goods', marketCap: 304000 },
+  AXISBANK: { price: 1180.00, change: 5.40, changePercent: 0.46, companyName: 'Axis Bank Ltd', sector: 'Financial Services', marketCap: 364000 },
+  POWERGRID: { price: 320.00, change: 1.80, changePercent: 0.57, companyName: 'Power Grid Corp of India', sector: 'Power', marketCap: 297000 },
+  ADANIPORTS: { price: 1380.00, change: 12.00, changePercent: 0.88, companyName: 'Adani Ports & SEZ Ltd', sector: 'Services', marketCap: 298000 },
+  'M&M': { price: 2890.00, change: 24.00, changePercent: 0.84, companyName: 'Mahindra & Mahindra Ltd', sector: 'Automobile', marketCap: 347000 },
+  WIPRO: { price: 540.00, change: 3.50, changePercent: 0.65, companyName: 'Wipro Ltd', sector: 'Information Technology', marketCap: 282000 },
+  COALINDIA: { price: 490.00, change: 4.00, changePercent: 0.82, companyName: 'Coal India Ltd', sector: 'Energy', marketCap: 302000 },
+  BAJAJFINSV: { price: 1740.00, change: -9.00, changePercent: -0.51, companyName: 'Bajaj Finserv Ltd', sector: 'Financial Services', marketCap: 277000 },
+  ULTRACEMCO: { price: 10900.00, change: 85.00, changePercent: 0.79, companyName: 'UltraTech Cement Ltd', sector: 'Materials', marketCap: 314000 },
+  ASIANPAINT: { price: 2920.00, change: -15.00, changePercent: -0.51, companyName: 'Asian Paints Ltd', sector: 'Consumer Goods', marketCap: 280000 },
+  JSWSTEEL: { price: 960.00, change: 8.00, changePercent: 0.84, companyName: 'JSW Steel Ltd', sector: 'Metals', marketCap: 234000 },
+  NESTLEIND: { price: 2350.00, change: -10.00, changePercent: -0.42, companyName: 'Nestle India Ltd', sector: 'Consumer Goods', marketCap: 226000 },
+  TATASTEEL: { price: 152.00, change: 1.40, changePercent: 0.93, companyName: 'Tata Steel Ltd', sector: 'Metals', marketCap: 189000 },
+  GRASIM: { price: 2640.00, change: 16.00, changePercent: 0.61, companyName: 'Grasim Industries Ltd', sector: 'Materials', marketCap: 174000 },
+  TECHM: { price: 1620.00, change: 12.00, changePercent: 0.75, companyName: 'Tech Mahindra Ltd', sector: 'Information Technology', marketCap: 158000 },
+  SBILIFE: { price: 1680.00, change: 11.00, changePercent: 0.66, companyName: 'SBI Life Insurance Co Ltd', sector: 'Financial Services', marketCap: 168000 },
+  HDFCLIFE: { price: 695.00, change: 3.50, changePercent: 0.51, companyName: 'HDFC Life Insurance Co Ltd', sector: 'Financial Services', marketCap: 149000 },
+  BRITANNIA: { price: 5150.00, change: -22.00, changePercent: -0.43, companyName: 'Britannia Industries Ltd', sector: 'Consumer Goods', marketCap: 124000 },
+  HINDALCO: { price: 680.00, change: 6.50, changePercent: 0.97, companyName: 'Hindalco Industries Ltd', sector: 'Metals', marketCap: 152000 },
+  INDUSINDBK: { price: 1420.00, change: -12.00, changePercent: -0.84, companyName: 'IndusInd Bank Ltd', sector: 'Financial Services', marketCap: 110000 },
+  CIPLA: { price: 1540.00, change: 9.00, changePercent: 0.59, companyName: 'Cipla Ltd', sector: 'Healthcare', marketCap: 124000 },
+  EICHERMOT: { price: 4780.00, change: 32.00, changePercent: 0.67, companyName: 'Eicher Motors Ltd', sector: 'Automobile', marketCap: 131000 },
+  DIVISLAB: { price: 5620.00, change: 40.00, changePercent: 0.72, companyName: "Divi's Laboratories Ltd", sector: 'Healthcare', marketCap: 149000 },
+  DRREDDY: { price: 6480.00, change: 35.00, changePercent: 0.54, companyName: "Dr. Reddy's Laboratories", sector: 'Healthcare', marketCap: 108000 },
+  BPCL: { price: 610.00, change: 4.50, changePercent: 0.74, companyName: 'Bharat Petroleum Corp Ltd', sector: 'Energy', marketCap: 132000 },
+  TATACONSUM: { price: 1080.00, change: 6.00, changePercent: 0.56, companyName: 'Tata Consumer Products Ltd', sector: 'Consumer Goods', marketCap: 101000 },
+  APOLLOHOSP: { price: 6850.00, change: 45.00, changePercent: 0.66, companyName: 'Apollo Hospitals Enterprise', sector: 'Healthcare', marketCap: 98000 },
+  SHRIRAMFIN: { price: 3150.00, change: 22.00, changePercent: 0.70, companyName: 'Shriram Finance Ltd', sector: 'Financial Services', marketCap: 118000 },
+  HEROMOTOCO: { price: 5120.00, change: 30.00, changePercent: 0.59, companyName: 'Hero MotoCorp Ltd', sector: 'Automobile', marketCap: 102000 },
+  BEL: { price: 295.00, change: 2.80, changePercent: 0.96, companyName: 'Bharat Electronics Ltd', sector: 'Industrials', marketCap: 215000 },
+  'BAJAJ-AUTO': { price: 9450.00, change: 55.00, changePercent: 0.59, companyName: 'Bajaj Auto Ltd', sector: 'Automobile', marketCap: 265000 },
+  HAL: { price: 4460.00, change: 35.00, changePercent: 0.79, companyName: 'Hindustan Aeronautics Ltd', sector: 'Industrials', marketCap: 298000 },
+  PAYTM: { price: 725.00, change: 12.00, changePercent: 1.68, companyName: 'One97 Communications (Paytm)', sector: 'Financial Services', marketCap: 46000 },
+  ETERNAL: { price: 262.00, change: 4.50, changePercent: 1.75, companyName: 'Zomato Ltd (Eternal)', sector: 'Consumer Services', marketCap: 231000 },
+  ZOMATO: { price: 262.00, change: 4.50, changePercent: 1.75, companyName: 'Zomato Ltd', sector: 'Consumer Services', marketCap: 231000 },
+};
+
+function buildSeedStockQuote(clean) {
+  const seed = SEED_STOCK_PRICES[clean] || {
+    price: 1250.00,
+    change: 10.50,
+    changePercent: 0.85,
+    companyName: `${clean} Equity`,
+    sector: 'Diversified',
+    marketCap: 50000,
+  };
+  const price = seed.price;
+  const change = seed.change;
+  const changePercent = seed.changePercent;
+  const companyName = seed.companyName;
+  const sector = seed.sector || '—';
+  const marketCap = seed.marketCap || 50000;
+
+  return {
+    symbol: clean,
+    yahooSymbol: toYahooSymbol(clean),
+    companyName,
+    price,
+    change,
+    changePercent,
+    high: Number((price * 1.015).toFixed(2)),
+    low: Number((price * 0.985).toFixed(2)),
+    open: Number((price - change).toFixed(2)),
+    previousClose: Number((price - change).toFixed(2)),
+    volume: 1200000,
+    marketCap,
+    peRatio: 24.5,
+    pbRatio: 3.8,
+    dividendYield: 1.2,
+    fiftyTwoWeekHigh: Number((price * 1.18).toFixed(2)),
+    fiftyTwoWeekLow: Number((price * 0.82).toFixed(2)),
+    sector,
+    marketState: getMarketStatus().isOpen ? 'REGULAR' : 'CLOSED',
+    isNifty50: NIFTY_50_SET.has(clean),
+    sparkline: [
+      Number((price * 0.98).toFixed(2)),
+      Number((price * 0.988).toFixed(2)),
+      Number((price * 0.992).toFixed(2)),
+      Number((price * 0.996).toFixed(2)),
+      price,
+    ],
+    lastUpdated: new Date().toISOString(),
+  };
+}
+
+// Pre-seed fallback cache for standard NIFTY 50 universe
+const DEFAULT_NIFTY_YAHOO_SYMBOLS = NIFTY_50_SYMBOLS.map(toCleanSymbol).map(toYahooSymbol).sort().join(',');
+const SEED_NIFTY_QUOTES = NIFTY_50_SYMBOLS.map(toCleanSymbol).map(buildSeedStockQuote);
+
+fallbackCache.set(`quotes:${DEFAULT_NIFTY_YAHOO_SYMBOLS}`, {
+  data: SEED_NIFTY_QUOTES,
+  savedAt: new Date().toISOString(),
+});
+
+function withTimeout(promise, ms = 3000) {
   let timer;
   const timeout = new Promise((_, reject) => {
     timer = setTimeout(() => reject(new Error(`Timeout of ${ms}ms exceeded`)), ms);
@@ -76,32 +190,52 @@ function withTimeout(promise, ms = 3500) {
 }
 
 /**
- * Coalesced fetch with caching and graceful stale fallback
+ * Coalesced fetch with caching and graceful stale-while-revalidate fallback
  */
 async function cachedOrFetch(cacheKey, ttlSeconds, fetcher) {
-  // 1. Check active cache
+  // 1. Check active in-memory cache
   const cached = cache.get(cacheKey);
   if (cached !== undefined) {
     return { data: cached, stale: false, fromCache: true };
   }
 
-  // 2. Coalesce in-flight requests for identical key
+  // 2. Stale-While-Revalidate: If fallback exists, return it immediately (<2ms)
+  // and trigger upstream refresh in the background without blocking the user
+  const fallback = fallbackCache.get(cacheKey);
+  if (fallback) {
+    if (!inFlightRequests.has(cacheKey)) {
+      const bgPromise = (async () => {
+        try {
+          const freshData = await withTimeout(fetcher(), 3000);
+          cache.set(cacheKey, freshData, ttlSeconds);
+          fallbackCache.set(cacheKey, { data: freshData, savedAt: new Date().toISOString() });
+        } catch {
+          // Silent background log, never disrupts user
+        } finally {
+          inFlightRequests.delete(cacheKey);
+        }
+      })();
+      inFlightRequests.set(cacheKey, bgPromise);
+    }
+    return { data: fallback.data, stale: true, fromCache: true, lastSavedAt: fallback.savedAt };
+  }
+
+  // 3. If no fallback exists yet, fetch with tight timeout
   if (inFlightRequests.has(cacheKey)) {
     return inFlightRequests.get(cacheKey);
   }
 
   const promise = (async () => {
     try {
-      const freshData = await withTimeout(fetcher(), 3500);
+      const freshData = await withTimeout(fetcher(), 2000);
       cache.set(cacheKey, freshData, ttlSeconds);
       fallbackCache.set(cacheKey, { data: freshData, savedAt: new Date().toISOString() });
       return { data: freshData, stale: false, fromCache: false };
     } catch (error) {
       console.warn(`[MarketService] Upstream fetch failed for ${cacheKey} (${error?.message || error}), serving fallback.`);
-      // Fallback to last known data if available
-      const fallback = fallbackCache.get(cacheKey);
-      if (fallback) {
-        return { data: fallback.data, stale: true, fromCache: true, lastSavedAt: fallback.savedAt };
+      const fb = fallbackCache.get(cacheKey);
+      if (fb) {
+        return { data: fb.data, stale: true, fromCache: true, lastSavedAt: fb.savedAt };
       }
       throw error;
     } finally {
@@ -229,27 +363,6 @@ export async function getQuotes(rawSymbols = []) {
     };
   }
 }
-
-const SEED_STOCK_PRICES = {
-  RELIANCE: { price: 2748.50, change: 18.20, changePercent: 0.67, companyName: 'Reliance Industries Ltd' },
-  TCS: { price: 3885.00, change: -12.40, changePercent: -0.32, companyName: 'Tata Consultancy Services' },
-  HDFCBANK: { price: 1682.30, change: 8.50, changePercent: 0.51, companyName: 'HDFC Bank Ltd' },
-  INFY: { price: 1724.80, change: 15.60, changePercent: 0.91, companyName: 'Infosys Ltd' },
-  ICICIBANK: { price: 1242.00, change: 6.20, changePercent: 0.50, companyName: 'ICICI Bank Ltd' },
-  SBIN: { price: 818.50, change: 4.30, changePercent: 0.53, companyName: 'State Bank of India' },
-  BHARTIARTL: { price: 1545.00, change: 11.00, changePercent: 0.72, companyName: 'Bharti Airtel Ltd' },
-  BAJFINANCE: { price: 7140.00, change: -45.00, changePercent: -0.63, companyName: 'Bajaj Finance Ltd' },
-  TATAMOTORS: { price: 895.00, change: 7.50, changePercent: 0.85, companyName: 'Tata Motors Ltd' },
-  ITC: { price: 472.50, change: 1.20, changePercent: 0.25, companyName: 'ITC Ltd' },
-  LT: { price: 3565.00, change: 22.00, changePercent: 0.62, companyName: 'Larsen & Toubro Ltd' },
-  MARUTI: { price: 11850.00, change: -60.00, changePercent: -0.50, companyName: 'Maruti Suzuki India' },
-  SUNPHARMA: { price: 1752.00, change: 14.00, changePercent: 0.81, companyName: 'Sun Pharmaceutical' },
-  TITAN: { price: 3425.00, change: -18.00, changePercent: -0.52, companyName: 'Titan Company Ltd' },
-  HAL: { price: 4460.00, change: 35.00, changePercent: 0.79, companyName: 'Hindustan Aeronautics Ltd' },
-  PAYTM: { price: 725.00, change: 12.00, changePercent: 1.68, companyName: 'One97 Communications (Paytm)' },
-  ETERNAL: { price: 262.00, change: 4.50, changePercent: 1.75, companyName: 'Zomato Ltd (Eternal)' },
-  ZOMATO: { price: 262.00, change: 4.50, changePercent: 1.75, companyName: 'Zomato Ltd' },
-};
 
 /**
  * Get Quote for a single stock or index symbol
@@ -555,6 +668,10 @@ export async function searchSymbols(query) {
     return { data: [] };
   }
 }
+
+// Export aliases for service compatibility
+export const getMarketQuotes = getQuotes;
+export const getHistoricalPrices = getRawDailyHistory;
 
 // Pre-warm indices and Nifty 50 quotes in background so user requests are sub-millisecond
 setTimeout(() => {

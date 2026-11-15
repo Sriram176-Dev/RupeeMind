@@ -167,26 +167,26 @@ export const Analytics: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       {/* Top Banner */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-[#0F766E]/15 via-[#4F46E5]/10 to-transparent border border-emerald-500/20 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200 border-l-4 border-l-emerald-600 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#0F766E] flex items-center gap-1.5">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700 font-mono flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" />
-            INSTITUTIONAL QUANT ANALYTICS & SIMULATION
+            Institutional Quantitative Analytics & Stress Suite
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#0B1220] mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight mt-1">
             Portfolio Health, Crisis Stress-Testing & Monte Carlo
           </h1>
-          <p className="text-xs text-[#5B6572] mt-1">
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
             End-to-end diagnostic suite: concentration risk, 2008/2020 historical crisis replay, parametric VaR, and 1,000-path stochastic projections.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setIsAuditModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 transition-all flex items-center gap-2 shadow-md shadow-emerald-900/20 min-h-[44px]"
+            className="px-3.5 py-2 rounded-lg text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 transition-colors flex items-center gap-1.5 shadow-xs"
           >
-            <FileText className="w-4 h-4" />
+            <FileText className="w-4 h-4 text-emerald-400" />
             <span>Audit Dossier (PDF)</span>
           </button>
 
@@ -198,45 +198,45 @@ export const Analytics: React.FC = () => {
               fetchMonteCarlo();
             }}
             disabled={loading || stressLoading}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#0F766E] hover:bg-[#0B5F58] transition-all flex items-center gap-2 shadow-xs shrink-0 min-h-[44px]"
+            className="px-3.5 py-2 rounded-lg text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center gap-1.5 shadow-xs shrink-0"
           >
-            <RefreshCw className={`w-4 h-4 ${loading || stressLoading ? 'animate-spin' : ''}`} />
-            <span>Refresh All Models</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${loading || stressLoading ? 'animate-spin' : ''}`} />
+            <span>Refresh Models</span>
           </button>
         </div>
       </div>
 
       {/* Navigation Tab Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-slate-200">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-200">
         <button
           onClick={() => handleTabChange('health')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
             activeTab === 'health'
-              ? 'bg-[#0F766E] text-white shadow-sm'
+              ? 'bg-emerald-600 text-white shadow-xs font-semibold'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
-          <Activity className="w-4 h-4" />
-          <span>Portfolio Health & Signal Telemetry</span>
+          <Activity className="w-3.5 h-3.5" />
+          <span>Portfolio Health & Signals</span>
         </button>
 
         <button
           onClick={() => handleTabChange('stress-test')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
             activeTab === 'stress-test'
-              ? 'bg-rose-600 text-white shadow-sm'
+              ? 'bg-rose-600 text-white shadow-xs font-semibold'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
-          <ShieldAlert className="w-4 h-4" />
-          <span>Crisis Stress Simulator (Option B)</span>
+          <ShieldAlert className="w-3.5 h-3.5" />
+          <span>Crisis Stress Simulator</span>
         </button>
 
         <button
           onClick={() => handleTabChange('var')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
             activeTab === 'var'
-              ? 'bg-indigo-600 text-white shadow-sm'
+              ? 'bg-indigo-600 text-white shadow-xs font-semibold'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >

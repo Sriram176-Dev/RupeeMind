@@ -180,22 +180,22 @@ export const StockPriceChart: React.FC<StockPriceChartProps> = ({
   };
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
+    <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs space-y-4">
       
       {/* Top Header: Real-Time OHLC HUD Display & Controls */}
-      <div className="space-y-3 border-b border-[#E7E5DF] pb-4">
+      <div className="space-y-3 border-b border-slate-100 pb-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           
           {/* Time Range Selector */}
-          <div className="inline-flex items-center gap-1 bg-[#FAFAF7] p-1 rounded-xl border border-[#E7E5DF]">
+          <div className="inline-flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
             {(['1D', '1W', '1M', '1Y', '5Y'] as TimeRange[]).map((r) => (
               <button
                 key={r}
                 onClick={() => setRange(r)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                   range === r
-                    ? 'bg-[#0F766E] text-white shadow-xs'
-                    : 'text-[#5B6572] hover:text-[#0B1220] hover:bg-white'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white'
                 }`}
               >
                 {r}
@@ -210,26 +210,26 @@ export const StockPriceChart: React.FC<StockPriceChartProps> = ({
             {chartType === 'candles' && (
               <button
                 onClick={() => setShowSMA(!showSMA)}
-                className={`px-2.5 py-1 rounded-xl text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer flex items-center gap-1.5 ${
                   showSMA
                     ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
-                    : 'bg-[#FAFAF7] border-[#E7E5DF] text-[#5B6572] hover:text-[#0B1220]'
+                    : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900'
                 }`}
                 title="Toggle 20-period Simple Moving Average (SMA)"
               >
-                <span className="w-2 h-2 rounded-full bg-indigo-600" />
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
                 <span>SMA (20)</span>
               </button>
             )}
 
             {/* Chart Type Selector */}
-            <div className="inline-flex items-center gap-1 bg-[#FAFAF7] p-1 rounded-xl border border-[#E7E5DF]">
+            <div className="inline-flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
               <button
                 onClick={() => setChartType('candles')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   chartType === 'candles'
-                    ? 'bg-[#0F766E] text-white shadow-xs'
-                    : 'text-[#5B6572] hover:text-[#0B1220] hover:bg-white'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white'
                 }`}
                 title="Japanese Candlestick Chart"
               >
@@ -239,10 +239,10 @@ export const StockPriceChart: React.FC<StockPriceChartProps> = ({
 
               <button
                 onClick={() => setChartType('area')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   chartType === 'area'
-                    ? 'bg-[#0F766E] text-white shadow-xs'
-                    : 'text-[#5B6572] hover:text-[#0B1220] hover:bg-white'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white'
                 }`}
                 title="Gradient Area Chart"
               >
@@ -252,10 +252,10 @@ export const StockPriceChart: React.FC<StockPriceChartProps> = ({
 
               <button
                 onClick={() => setChartType('line')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   chartType === 'line'
-                    ? 'bg-[#0F766E] text-white shadow-xs'
-                    : 'text-[#5B6572] hover:text-[#0B1220] hover:bg-white'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white'
                 }`}
                 title="Closing Price Line Chart"
               >
@@ -269,21 +269,21 @@ export const StockPriceChart: React.FC<StockPriceChartProps> = ({
 
         {/* Real-Time Institutional OHLC HUD Bar */}
         {activeBar && (
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono pt-1 text-[#5B6572]">
-            <span className="font-bold text-[#0B1220]">{activeBar.date}</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono pt-1 text-slate-500">
+            <span className="font-semibold text-slate-900">{activeBar.date}</span>
             <div className="flex items-center gap-3">
               <span>
-                O: <span className="text-[#0B1220] font-semibold">₹{activeBar.open.toFixed(2)}</span>
+                O: <span className="text-slate-900 font-medium">₹{activeBar.open.toFixed(2)}</span>
               </span>
               <span>
-                H: <span className="text-emerald-700 font-semibold">₹{activeBar.high.toFixed(2)}</span>
+                H: <span className="text-emerald-700 font-medium">₹{activeBar.high.toFixed(2)}</span>
               </span>
               <span>
-                L: <span className="text-rose-700 font-semibold">₹{activeBar.low.toFixed(2)}</span>
+                L: <span className="text-rose-700 font-medium">₹{activeBar.low.toFixed(2)}</span>
               </span>
               <span>
                 C:{' '}
-                <span className={`font-bold ${isActivePositive ? 'text-emerald-600' : 'text-rose-600'}`}>
+                <span className={`font-semibold ${isActivePositive ? 'text-emerald-600' : 'text-rose-600'}`}>
                   ₹{activeBar.close.toFixed(2)}
                 </span>
               </span>
@@ -292,8 +292,8 @@ export const StockPriceChart: React.FC<StockPriceChartProps> = ({
                 {activeBarChangePercent.toFixed(2)}%
               </span>
               {activeBar.volume > 0 && (
-                <span className="hidden md:inline text-[11px] text-[#5B6572]">
-                  Vol: <span className="text-[#0B1220] font-medium">{formatNumber(activeBar.volume)}</span>
+                <span className="hidden md:inline text-[11px] text-slate-400">
+                  Vol: <span className="text-slate-700 font-medium">{formatNumber(activeBar.volume)}</span>
                 </span>
               )}
             </div>
@@ -602,28 +602,28 @@ export const StockPriceChart: React.FC<StockPriceChartProps> = ({
       </div>
 
       {/* Range High/Low & Volume Statistics Summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-[#E7E5DF] text-center text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-100 text-center text-xs">
         <div>
-          <p className="text-[10px] uppercase font-bold text-[#5B6572] font-mono">Period High</p>
-          <p className="font-serif font-bold text-emerald-700 text-sm tabular-nums mt-0.5">
+          <p className="text-[10px] uppercase font-semibold text-slate-500 font-mono">Period High</p>
+          <p className="font-mono font-bold text-emerald-700 text-sm tabular-nums mt-0.5">
             {formatINR(periodHigh)}
           </p>
         </div>
-        <div className="border-l sm:border-x border-[#E7E5DF]">
-          <p className="text-[10px] uppercase font-bold text-[#5B6572] font-mono">Period Low</p>
-          <p className="font-serif font-bold text-rose-700 text-sm tabular-nums mt-0.5">
+        <div className="border-l sm:border-x border-slate-100">
+          <p className="text-[10px] uppercase font-semibold text-slate-500 font-mono">Period Low</p>
+          <p className="font-mono font-bold text-rose-700 text-sm tabular-nums mt-0.5">
             {formatINR(periodLow)}
           </p>
         </div>
         <div className="border-t sm:border-t-0 pt-2 sm:pt-0">
-          <p className="text-[10px] uppercase font-bold text-[#5B6572] font-mono">Avg Daily Vol</p>
-          <p className="font-serif font-bold text-[#0B1220] text-sm tabular-nums mt-0.5">
+          <p className="text-[10px] uppercase font-semibold text-slate-500 font-mono">Avg Daily Vol</p>
+          <p className="font-mono font-bold text-slate-900 text-sm tabular-nums mt-0.5">
             {formatNumber(quote.volume)}
           </p>
         </div>
-        <div className="border-t sm:border-t-0 border-l border-[#E7E5DF] pt-2 sm:pt-0">
-          <p className="text-[10px] uppercase font-bold text-[#5B6572] font-mono">52W Range</p>
-          <p className="font-serif font-bold text-[#0B1220] text-sm tabular-nums mt-0.5">
+        <div className="border-t sm:border-t-0 border-l border-slate-100 pt-2 sm:pt-0">
+          <p className="text-[10px] uppercase font-semibold text-slate-500 font-mono">52W Range</p>
+          <p className="font-mono font-bold text-slate-900 text-sm tabular-nums mt-0.5">
             {quote.fiftyTwoWeekLow ? `₹${quote.fiftyTwoWeekLow.toFixed(0)} - ₹${quote.fiftyTwoWeekHigh?.toFixed(0)}` : '—'}
           </p>
         </div>

@@ -22,6 +22,8 @@ import {
   Shield,
   HelpCircle,
   Lightbulb,
+  BookOpen,
+  ExternalLink,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -196,6 +198,7 @@ export const CopilotDrawer: React.FC = () => {
         role: 'assistant',
         content: response.content,
         suggestions: response.suggestions,
+        sources: response.sources,
         createdAt: response.timestamp,
       };
 
@@ -232,20 +235,20 @@ export const CopilotDrawer: React.FC = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-40 group flex items-center gap-2.5 p-3.5 sm:px-5 sm:py-3.5 rounded-full bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-semibold shadow-2xl shadow-emerald-900/40 hover:scale-105 transition-all duration-300 border border-emerald-400/30"
+          className="fixed bottom-6 right-6 z-40 group flex items-center gap-2 p-3 sm:px-4 sm:py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-lg hover:shadow-xl transition-all border border-slate-700/60"
           title="Open RupeeBot AI Copilot (Ctrl + J)"
         >
           <div className="relative">
-            <Bot className="w-5 h-5 text-white" />
-            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
+            <Bot className="w-4 h-4 text-emerald-400" />
+            <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
           </div>
-          <span className="hidden sm:inline-block text-xs font-bold tracking-wide">
+          <span className="hidden sm:inline-block text-xs font-semibold tracking-tight">
             RupeeBot Copilot
           </span>
-          <span className="hidden md:inline-block text-[10px] px-1.5 py-0.5 rounded bg-black/30 font-mono text-emerald-200 border border-white/10">
+          <span className="hidden md:inline-block text-[10px] px-1.5 py-0.5 rounded bg-slate-800 font-mono text-slate-300 border border-slate-700">
             Ctrl+J
           </span>
         </button>
@@ -256,26 +259,26 @@ export const CopilotDrawer: React.FC = () => {
         <div
           className={`fixed z-50 transition-all duration-300 flex flex-col ${
             isExpanded
-              ? 'inset-3 sm:inset-6 max-w-4xl mx-auto rounded-3xl'
-              : 'bottom-4 right-4 sm:bottom-6 sm:right-6 w-[94vw] sm:w-[480px] h-[640px] max-h-[88vh] rounded-3xl'
-          } bg-white/95 border border-[#E7E5DF] shadow-2xl backdrop-blur-2xl overflow-hidden`}
+              ? 'inset-3 sm:inset-6 max-w-4xl mx-auto rounded-2xl'
+              : 'bottom-4 right-4 sm:bottom-6 sm:right-6 w-[94vw] sm:w-[480px] h-[640px] max-h-[88vh] rounded-2xl'
+          } bg-white border border-slate-200 shadow-2xl overflow-hidden`}
         >
           {/* Header */}
-          <div className="px-5 py-3.5 bg-gradient-to-r from-[#FAFAF7] via-white to-[#FAFAF7] border-b border-[#E7E5DF] flex items-center justify-between gap-3 shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="relative p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600">
-                <Bot className="w-5 h-5" />
-                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white" />
+          <div className="px-4 py-3 bg-slate-50/90 border-b border-slate-200 flex items-center justify-between gap-3 shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="relative p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700">
+                <Bot className="w-4 h-4" />
+                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-600 ring-2 ring-white" />
               </div>
 
               <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-[#0B1220] text-sm">RupeeBot Copilot</h3>
-                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    Live Quant AI
+                <div className="flex items-center gap-1.5">
+                  <h3 className="font-bold text-slate-900 text-xs sm:text-sm">RupeeBot Copilot</h3>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/80 font-mono">
+                    Quant AI
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-[11px] text-[#5B6572] font-mono mt-0.5">
+                <div className="flex items-center gap-2 text-[11px] text-slate-500 font-mono mt-0.5">
                   {contextSummary ? (
                     <span>
                       {contextSummary.holdingsCount} Assets • {formatCompactINR(contextSummary.totalHoldingsValue)} • {contextSummary.riskTolerance}
@@ -290,60 +293,82 @@ export const CopilotDrawer: React.FC = () => {
             <div className="flex items-center gap-1">
               <button
                 onClick={handleClearHistory}
-                className="p-1.5 rounded-lg text-[#5B6572] hover:text-rose-600 hover:bg-[#FAFAF7] transition-colors"
+                className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-slate-100 transition-colors"
                 title="Clear conversation"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1.5 rounded-lg text-[#5B6572] hover:text-[#0B1220] hover:bg-[#FAFAF7] transition-colors hidden sm:block"
+                className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors hidden sm:block"
                 title={isExpanded ? 'Collapse' : 'Expand'}
               >
-                {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-[#5B6572] hover:text-[#0B1220] hover:bg-[#FAFAF7] transition-colors"
+                className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
                 title="Close (Esc)"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
           {/* Messages Scroll Area */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
             {messages.map((msg, index) => {
               const isUser = msg.role === 'user';
               return (
                 <div
                   key={msg._id || index}
-                  className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
+                  className={`flex gap-2.5 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
-                    <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <Bot className="w-4 h-4" />
+                    <div className="w-6 h-6 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <Bot className="w-3.5 h-3.5" />
                     </div>
                   )}
 
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm ${
+                    className={`max-w-[85%] rounded-xl px-3.5 py-2.5 shadow-2xs ${
                       isUser
-                        ? 'bg-gradient-to-r from-[#0F766E] to-teal-700 text-white rounded-tr-none'
-                        : 'bg-[#FAFAF7] border border-[#E7E5DF] text-[#0B1220] rounded-tl-none'
+                        ? 'bg-slate-900 text-white rounded-tr-xs'
+                        : 'bg-slate-50 border border-slate-200 text-slate-900 rounded-tl-xs'
                     }`}
                   >
                     {isUser ? (
-                      <p className="text-xs sm:text-sm font-medium whitespace-pre-wrap">{msg.content}</p>
+                      <p className="text-xs sm:text-sm font-normal whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                     ) : (
-                      <FormattedMessage text={msg.content} />
+                      <>
+                        <FormattedMessage text={msg.content} />
+                        {msg.sources && msg.sources.length > 0 && (
+                          <div className="mt-2.5 pt-2 border-t border-slate-200 flex flex-wrap gap-1.5 items-center">
+                            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1 font-mono">
+                              <BookOpen className="w-3 h-3 text-teal-600" />
+                              Sources:
+                            </span>
+                            {msg.sources.map((src, sIdx) => (
+                              <a
+                                key={sIdx}
+                                href={src.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-teal-50 border border-teal-200 text-teal-800 text-[10px] hover:bg-teal-100 transition-colors font-medium"
+                              >
+                                <span className="truncate max-w-[140px]">{src.title}</span>
+                                <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
 
                   {isUser && (
-                    <div className="w-7 h-7 rounded-lg bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0 mt-0.5">
-                      <User className="w-4 h-4" />
+                    <div className="w-6 h-6 rounded-md bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <User className="w-3.5 h-3.5" />
                     </div>
                   )}
                 </div>
@@ -351,18 +376,18 @@ export const CopilotDrawer: React.FC = () => {
             })}
 
             {loading && (
-              <div className="flex gap-3 justify-start items-center text-xs text-[#5B6572]">
-                <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
-                  <Bot className="w-4 h-4 animate-spin" />
+              <div className="flex gap-2.5 justify-start items-center text-xs text-slate-500">
+                <div className="w-6 h-6 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Bot className="w-3.5 h-3.5 animate-spin" />
                 </div>
-                <div className="p-3 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center gap-2">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
                   <div className="flex gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.4s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce [animation-delay:0.4s]" />
                   </div>
-                  <span className="text-xs font-medium text-[#5B6572]">
-                    Synthesizing quantitative portfolio insight...
+                  <span className="text-xs font-mono text-slate-500">
+                    Computing portfolio response...
                   </span>
                 </div>
               </div>
@@ -373,8 +398,8 @@ export const CopilotDrawer: React.FC = () => {
 
           {/* Suggestions Bar */}
           {activeSuggestions.length > 0 && !loading && (
-            <div className="px-4 py-2 border-t border-[#E7E5DF] bg-[#FAFAF7] overflow-x-auto shrink-0 flex items-center gap-1.5 scrollbar-none">
-              <span className="text-[10px] font-bold text-[#5B6572] uppercase tracking-wider shrink-0 flex items-center gap-1">
+            <div className="px-3.5 py-2 border-t border-slate-100 bg-slate-50 overflow-x-auto shrink-0 flex items-center gap-1.5 scrollbar-none">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1 font-mono">
                 <Lightbulb className="w-3 h-3 text-amber-500" />
                 Suggestions:
               </span>
@@ -383,7 +408,7 @@ export const CopilotDrawer: React.FC = () => {
                   key={i}
                   type="button"
                   onClick={() => handleSendMessage(sug)}
-                  className="px-2.5 py-1 text-xs rounded-full bg-white hover:bg-emerald-50 text-[#0B1220] hover:text-emerald-700 border border-[#E7E5DF] hover:border-emerald-300 whitespace-nowrap transition-all shrink-0 shadow-xs"
+                  className="px-2.5 py-1 text-xs rounded-md bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200 whitespace-nowrap transition-colors shrink-0 shadow-2xs font-mono text-[11px]"
                 >
                   {sug}
                 </button>
@@ -392,7 +417,7 @@ export const CopilotDrawer: React.FC = () => {
           )}
 
           {/* Input Box */}
-          <div className="p-3.5 bg-white border-t border-[#E7E5DF] shrink-0">
+          <div className="p-3 bg-white border-t border-slate-200 shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -405,21 +430,21 @@ export const CopilotDrawer: React.FC = () => {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="Ask RupeeBot anything about your portfolio, risk, or Indian taxes..."
+                placeholder="Ask RupeeBot about your portfolio, risk, or taxes..."
                 disabled={loading}
-                className="flex-1 bg-[#FAFAF7] border border-[#E7E5DF] focus:border-emerald-500 focus:bg-white rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#0B1220] placeholder:text-[#5B6572]/60 focus:outline-none transition-all disabled:opacity-50"
+                className="flex-1 bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:bg-white rounded-lg px-3.5 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none transition-colors disabled:opacity-50"
               />
 
               <button
                 type="submit"
                 disabled={!inputText.trim() || loading}
-                className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-emerald-900/10"
+                className="p-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
                 title="Send message"
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
-            <div className="flex items-center justify-between text-[10px] text-[#5B6572] mt-1.5 px-1 font-mono">
+            <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1.5 px-0.5 font-mono">
               <span>SEBI-aligned educational AI model</span>
               <span>Press Enter to send</span>
             </div>

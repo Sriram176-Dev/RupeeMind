@@ -6,6 +6,7 @@ import type {
   IndexData,
   MutualFund,
   NewsItem,
+  PortfolioNewsItem,
   PricePoint,
   SearchResultItem,
   SignalData,
@@ -14,9 +15,47 @@ import type {
   UserProfile,
 } from "../types";
 
+// ── In-memory Cache & Request Deduplication for Ultra-fast Navigation ──
+interface CacheRecord<T> {
+  data: T;
+  timestamp: number;
+}
+const apiMemoryCache = new Map<string, CacheRecord<unknown>>();
+const inFlightRequests = new Map<string, Promise<unknown>>();
+
+async function fetchWithCache<T>(
+  cacheKey: string,
+  fetcher: () => Promise<T>,
+  ttlMs = 15000,
+): Promise<T> {
+  const cached = apiMemoryCache.get(cacheKey);
+  const now = Date.now();
+  if (cached && now - cached.timestamp < ttlMs) {
+    return cached.data as T;
+  }
+
+  if (inFlightRequests.has(cacheKey)) {
+    return inFlightRequests.get(cacheKey) as Promise<T>;
+  }
+
+  const promise = fetcher()
+    .then((data) => {
+      apiMemoryCache.set(cacheKey, { data, timestamp: Date.now() });
+      return data;
+    })
+    .finally(() => {
+      inFlightRequests.delete(cacheKey);
+    });
+
+  inFlightRequests.set(cacheKey, promise);
+  return promise;
+}
+
 export async function getIndices(): Promise<IndexData[]> {
-  const response = await apiClient.get("/market/indices");
-  return response.data?.indices ?? response.data?.data ?? [];
+  return fetchWithCache("indices:all", async () => {
+    const response = await apiClient.get("/market/indices");
+    return response.data?.indices ?? response.data?.data ?? [];
+  });
 }
 
 export async function getQuotes(filters?: {
@@ -33,10 +72,12 @@ export async function getQuotes(filters?: {
   }
 
   const url = `/market/quotes${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
-  const response = await apiClient.get(url);
-  let list: StockQuote[] = Array.isArray(response.data?.data)
-    ? [...response.data.data]
-    : [];
+  const rawList = await fetchWithCache(url, async () => {
+    const response = await apiClient.get(url);
+    return Array.isArray(response.data?.data) ? [...response.data.data] : [];
+  });
+
+  let list: StockQuote[] = [...rawList];
 
   if (filters?.search) {
     const q = filters.search.toLowerCase();
@@ -101,12 +142,14 @@ export async function getStockHistory(
 export async function getMarketStatusApi(): Promise<{
   isOpen: boolean;
 } | null> {
-  try {
-    const response = await apiClient.get("/market/status");
-    return response.data?.data ?? response.data ?? null;
-  } catch {
-    return null;
-  }
+  return fetchWithCache("market:status", async () => {
+    try {
+      const response = await apiClient.get("/market/status");
+      return response.data?.data ?? response.data ?? null;
+    } catch {
+      return null;
+    }
+  }, 10000);
 }
 
 export async function getSignal(symbol: string): Promise<SignalData> {
@@ -170,8 +213,11 @@ export async function getFunds(filters?: {
   if (filters?.page) params.set("page", filters.page.toString());
   if (filters?.limit) params.set("limit", filters.limit.toString());
 
-  const response = await apiClient.get(`/funds?${params.toString()}`);
-  return Array.isArray(response.data?.data) ? response.data.data : [];
+  const url = `/funds?${params.toString()}`;
+  return fetchWithCache(url, async () => {
+    const response = await apiClient.get(url);
+    return Array.isArray(response.data?.data) ? response.data.data : [];
+  }, 30000);
 }
 
 export async function getFund(code: string): Promise<MutualFund | null> {
@@ -198,7 +244,24 @@ export async function getNews(
   if (query) params.set("q", query);
   if (fresh) params.set("fresh", "true");
 
-  const response = await apiClient.get(`/news?${params.toString()}`);
+  const url = `/news?${params.toString()}`;
+  if (fresh) {
+    const response = await apiClient.get(url);
+    return Array.isArray(response.data?.data) ? response.data.data : [];
+  }
+  return fetchWithCache(url, async () => {
+    const response = await apiClient.get(url);
+    return Array.isArray(response.data?.data) ? response.data.data : [];
+  }, 60000);
+}
+
+/**
+ * Fetches RSS news matched to the user's active holdings and watchlist with sentiment tagging
+ */
+export async function getPortfolioNewsApi(): Promise<PortfolioNewsItem[]> {
+  const response = await apiClient.get<{ success: boolean; data: PortfolioNewsItem[] }>(
+    '/news/portfolio'
+  );
   return Array.isArray(response.data?.data) ? response.data.data : [];
 }
 

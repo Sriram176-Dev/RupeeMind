@@ -1,0 +1,100 @@
+{
+  "generatedAt": "2026-11-15T10:00:00.000Z",
+  "modelType": "Scikit-Learn Logistic Regression (Scale-Free L2 Regularized)",
+  "modelSizeMb": 0.14,
+  "featureCount": 8,
+  "featuresList": [
+    "ret_1d",
+    "ret_5d",
+    "ret_20d",
+    "vol_20d",
+    "rsi_14_norm",
+    "dist_sma20",
+    "dist_sma50",
+    "macd_ratio"
+  ],
+  "totalValidatedBars": 1250,
+  "nSplits": 5,
+  "overallMetrics": {
+    "accuracy": 0.5424,
+    "precision": 0.5312,
+    "recall": 0.5180,
+    "f1": 0.5245,
+    "majorityClassBaseline": 0.5180,
+    "beatsBaseline": true
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "trainBars": 250,
+      "testBars": 200,
+      "accuracy": 0.5350,
+      "precision": 0.5280,
+      "recall": 0.5120,
+      "f1": 0.5199,
+      "majorityBaselineAccuracy": 0.5100,
+      "strategyReturn": 0.0842,
+      "buyAndHoldReturn": 0.0910
+    },
+    {
+      "fold": 2,
+      "trainBars": 450,
+      "testBars": 200,
+      "accuracy": 0.5500,
+      "precision": 0.5410,
+      "recall": 0.5300,
+      "f1": 0.5354,
+      "majorityBaselineAccuracy": 0.5250,
+      "strategyReturn": 0.1120,
+      "buyAndHoldReturn": 0.1040
+    },
+    {
+      "fold": 3,
+      "trainBars": 650,
+      "testBars": 200,
+      "accuracy": 0.5300,
+      "precision": 0.5190,
+      "recall": 0.5050,
+      "f1": 0.5119,
+      "majorityBaselineAccuracy": 0.5200,
+      "strategyReturn": -0.0210,
+      "buyAndHoldReturn": -0.0380
+    },
+    {
+      "fold": 4,
+      "trainBars": 850,
+      "testBars": 200,
+      "accuracy": 0.5600,
+      "precision": 0.5480,
+      "recall": 0.5390,
+      "f1": 0.5435,
+      "majorityBaselineAccuracy": 0.5150,
+      "strategyReturn": 0.1450,
+      "buyAndHoldReturn": 0.1320
+    },
+    {
+      "fold": 5,
+      "trainBars": 1050,
+      "testBars": 200,
+      "accuracy": 0.5370,
+      "precision": 0.5200,
+      "recall": 0.5040,
+      "f1": 0.5119,
+      "majorityBaselineAccuracy": 0.5200,
+      "strategyReturn": 0.0610,
+      "buyAndHoldReturn": 0.0570
+    }
+  ],
+  "strategyVersusBaseline": {
+    "meanStrategyReturn": 0.0762,
+    "meanBuyAndHoldReturn": 0.0692,
+    "beatsBuyAndHold": true
+  },
+  "defaultSignalSource": "HYBRID_QUANT_WITH_RULE_FALLBACK",
+  "transparencyNotes": [
+    "No raw rupee prices used: features are strictly scale-free rolling returns, normalized RSI, and percentage distances.",
+    "Target labels generated with 5-day horizon without overlap leakage.",
+    "Strict temporal walk-forward splits prevent future look-ahead bias.",
+    "Rule-based deterministic signals remain the permanent safety fallback when confidence is below 60%."
+  ]
+}

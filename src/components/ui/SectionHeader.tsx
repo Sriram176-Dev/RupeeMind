@@ -21,22 +21,25 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   return (
     <div
       className={cn(
-        'mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4',
+        'mb-7 flex flex-col md:flex-row md:items-end md:justify-between gap-4',
         align === 'center' && 'text-center items-center',
         className
       )}
     >
       <div className={cn('space-y-1.5', align === 'center' ? 'max-w-2xl mx-auto' : 'max-w-3xl')}>
         {eyebrow && (
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#0F766E]">
-            {eyebrow}
-          </p>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold tracking-wider uppercase text-emerald-800 bg-emerald-50 border border-emerald-200/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+              {eyebrow}
+            </span>
+          </div>
         )}
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#0B1220] leading-tight">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-[-0.025em] text-slate-900 leading-tight">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-sm sm:text-base text-[#5B6572] leading-relaxed max-w-[65ch]">
+          <p className="text-sm sm:text-[15px] text-slate-500 leading-relaxed max-w-[68ch]">
             {subtitle}
           </p>
         )}

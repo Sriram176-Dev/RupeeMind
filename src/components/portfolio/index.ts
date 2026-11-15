@@ -4,3 +4,5 @@ export { SipsTab } from './SipsTab';
 export { WatchlistTab } from './WatchlistTab';
 export { AddHoldingModal } from './AddHoldingModal';
 export { AddSipModal } from './AddSipModal';
+export { BenchmarkTab } from './BenchmarkTab';
+export { TransactionsTab } from './TransactionsTab';

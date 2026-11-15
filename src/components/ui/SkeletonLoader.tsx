@@ -12,6 +12,33 @@ export const Skeleton: React.FC<{ className?: string }> = ({ className }) => {
   );
 };
 
+export const SkeletonLoader: React.FC<{
+  variant?: 'rect' | 'circle' | 'text';
+  height?: number | string;
+  className?: string;
+  count?: number;
+}> = ({ height, className, count = 1 }) => {
+  if (count > 1) {
+    return (
+      <div className="space-y-3">
+        {Array.from({ length: count }).map((_, i) => (
+          <div
+            key={i}
+            style={height ? { height: typeof height === 'number' ? `${height}px` : height } : undefined}
+            className={cn('animate-pulse rounded-xl bg-stone-200 w-full h-16', className)}
+          />
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div
+      style={height ? { height: typeof height === 'number' ? `${height}px` : height } : undefined}
+      className={cn('animate-pulse rounded-xl bg-stone-200 w-full', className)}
+    />
+  );
+};
+
 export const TableSkeleton: React.FC<{ rows?: number }> = ({ rows = 5 }) => {
   return (
     <div className="space-y-3">

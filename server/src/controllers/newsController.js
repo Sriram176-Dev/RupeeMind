@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getNews } from "../services/newsService.js";
+import { getNews, getPortfolioNews } from "../services/newsService.js";
 
 export const newsQuerySchema = z.object({
   category: z.string().max(50).optional(),
@@ -31,6 +31,25 @@ export async function fetchNews(req, res, next) {
         data: [],
       });
     }
+    next(err);
+  }
+}
+
+/**
+ * GET /api/news/portfolio
+ * Returns articles matched to the user's holdings and watchlist with sentiment tagging
+ */
+export async function fetchPortfolioNews(req, res, next) {
+  try {
+    const userId = req.user?.id;
+    const items = await getPortfolioNews(userId);
+    res.json({
+      success: true,
+      data: items,
+      count: items.length,
+      fetchedAt: new Date().toISOString(),
+    });
+  } catch (err) {
     next(err);
   }
 }

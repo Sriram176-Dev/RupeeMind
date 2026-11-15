@@ -1,0 +1,42 @@
+[
+  {
+    "id": "sebi-mf-categorization",
+    "title": "SEBI Master Circular on Categorization and Rationalization of Mutual Fund Schemes",
+    "url": "https://www.sebi.gov.in/legal/master-circulars/jun-2024/master-circular-for-mutual-funds_84457.html",
+    "category": "SEBI",
+    "summary": "Mandates classification of mutual funds into 5 distinct groups: Equity, Debt, Hybrid, Solution Oriented, and Other Schemes. Defines large cap (1-100th), mid cap (101-250th), and small cap (251st onwards) by full market capitalization.",
+    "content": "SEBI Master Circular for Mutual Funds specifies that mutual fund schemes must clearly define their investment universe. Equity schemes include Multi Cap (minimum 25% each in large, mid, small caps), Large Cap (minimum 80% in large cap stocks), Large & Mid Cap (min 35% in large caps and min 35% in mid caps), Mid Cap (min 65% in mid cap stocks), Small Cap (min 65% in small cap stocks), and Flexi Cap (min 65% in equity with dynamic cap allocation). Debt funds are strictly classified by Macaulay Duration and credit rating, with Liquid funds having up to 91 days maturity."
+  },
+  {
+    "id": "finance-act-2024-tax-amendments",
+    "title": "Finance (No. 2) Act 2024 — Capital Gains Tax Restructuring (Sections 111A, 112, 112A)",
+    "url": "https://incometaxindia.gov.in/communications/circular/circular-budget-2024.pdf",
+    "category": "TAX",
+    "summary": "Effective July 23, 2024, Short-Term Capital Gains (STCG) on equity under Section 111A is taxed at 20%. Long-Term Capital Gains (LTCG) on equity under Section 112A is taxed at 12.5% with the annual exemption limit raised to ₹1,25,000.",
+    "content": "Under the Finance (No. 2) Act, 2024, significant amendments were made to Indian capital gains taxation. Section 111A was amended to increase the STCG tax rate on listed equity shares and equity-oriented mutual funds from 15% to 20%. Section 112A was amended to revise the tax rate on LTCG exceeding the exemption limit from 10% to 12.5%. Concurrently, the annual aggregate exemption threshold under Section 112A was increased from ₹1,00,000 to ₹1,25,000 per financial year. Holding period for equity shares and equity mutual funds remains 12 months for long-term classification. Specified mutual funds (debt funds with equity <= 35%) acquired on or after April 1, 2023 continue to be taxed at individual slab rates under Section 50AA without indexation benefit."
+  },
+  {
+    "id": "section-80c-elss-guidance",
+    "title": "CBDT Guidance on Tax Deduction under Section 80C for ELSS Mutual Funds",
+    "url": "https://incometaxindia.gov.in/Pages/rules/income-tax-rules-1962.aspx",
+    "category": "TAX",
+    "summary": "Equity Linked Savings Schemes (ELSS) allow tax deductions up to ₹1.5 Lakhs under Section 80C of the Old Tax Regime with a statutory 3-year lock-in period.",
+    "content": "Investments in Equity Linked Savings Schemes (ELSS) qualify for deduction under Section 80C of the Income Tax Act, 1961 up to a cumulative ceiling of ₹1,50,000 per financial year under the Old Tax Regime. ELSS units are subject to a mandatory statutory lock-in period of 3 years from the date of allotment. In the case of SIP investments in ELSS, each individual installment carries its own independent 3-year lock-in from its respective debit date. Long-term capital gains on redemption of ELSS after 3 years are subject to Section 112A rules (12.5% tax on cumulative LTCG exceeding ₹1.25 Lakhs per financial year). Note that Section 80C deductions are not available under the New Tax Regime (Section 115BAC)."
+  },
+  {
+    "id": "amfi-fiduciary-code-of-conduct",
+    "title": "AMFI Best Practice Guidelines — Fiduciary Duties and Risk Profiling",
+    "url": "https://www.amfiindia.com/research-information/amfi-guidelines",
+    "category": "AMC_FACTSHEET",
+    "summary": "Association of Mutual Funds in India (AMFI) code of conduct prescribing objective risk assessment, suitability matching, and transparent expense ratio disclosures.",
+    "content": "AMFI Best Practice Guidelines mandate that asset managers and intermediaries assess investor suitability through formal risk-profiling questionnaires. Portfolios must align with investor risk bands: Conservative investors should be shielded with high allocation to high-credit debt and liquid instruments; Moderate investors should maintain balanced hybrid exposure; Aggressive investors can bear equity volatility with allocations to flexi-cap and mid-cap schemes. Total Expense Ratio (TER) caps under SEBI regulations range from 2.25% down to 1.05% for open-ended equity schemes depending on AUM slabs. Direct plans have lower expense ratios by omitting intermediary distributor commissions."
+  },
+  {
+    "id": "rbi-liquid-debt-guidelines",
+    "title": "RBI & SEBI Prudential Norms for Liquid Funds and Emergency Liquidity",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasCirculardetails.aspx",
+    "category": "RBI",
+    "summary": "Norms governing liquidity buffers, graded exit loads on liquid funds, and overnight mutual funds for emergency capital preservation.",
+    "content": "SEBI and Reserve Bank of India prudential guidelines require liquid funds to maintain at least 20% in liquid assets (cash, government securities, T-bills, and repo on G-Sec). A graded exit load applies on liquid fund redemptions up to day 6 (Day 1: 0.0070%, decreasing to 0.0045% by Day 6, nil from Day 7) to discourage short-term institutional churning. For emergency funds, financial planning standards recommend 6 to 12 months of non-discretionary living expenses held in high-credit liquid funds, overnight funds, or sweep-in bank fixed deposits to ensure principal preservation and same-day liquidity access."
+  }
+]

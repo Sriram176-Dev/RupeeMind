@@ -40,6 +40,7 @@ export const HoldingsTab: React.FC<HoldingsTabProps> = ({
                 <th className="py-3 px-4 font-semibold text-right">Avg Buy</th>
                 <th className="py-3 px-4 font-semibold text-right">Current Value</th>
                 <th className="py-3 px-4 font-semibold text-right">Unrealized P&L</th>
+                <th className="py-3 px-4 font-semibold text-center">Return Metrics (Abs / CAGR / XIRR)</th>
                 <th className="py-3 px-3 text-center">Action</th>
               </tr>
             </thead>
@@ -50,12 +51,21 @@ export const HoldingsTab: React.FC<HoldingsTabProps> = ({
                 const pnl = current - invested;
                 const pnlPct = invested > 0 ? (pnl / invested) * 100 : 0;
 
+                const absReturn = h.absoluteReturn !== undefined ? h.absoluteReturn : Number(pnlPct.toFixed(2));
+                const cagrVal = h.cagr !== undefined ? h.cagr : null;
+                const xirrVal = h.xirr !== undefined ? h.xirr : null;
+
                 return (
                   <tr key={h.id} className="hover:bg-[#FAFAF7]">
                     <td className="py-3.5 px-4">
                       <p className="font-bold text-[#0B1220]">{h.name}</p>
-                      <p className="text-[11px] text-[#5B6572]">
-                        {h.type} • {h.categoryOrSector}
+                      <p className="text-[11px] text-[#5B6572] flex items-center gap-1.5 mt-0.5">
+                        <span>{h.type} • {h.categoryOrSector}</span>
+                        {h.folio && (
+                          <span className="font-mono text-[10px] bg-slate-100 text-slate-600 px-1 rounded">
+                            Folio: {h.folio}
+                          </span>
+                        )}
                       </p>
                     </td>
                     <td className="py-3.5 px-4 text-right tabular-nums font-mono">{h.quantity}</td>
@@ -70,6 +80,30 @@ export const HoldingsTab: React.FC<HoldingsTabProps> = ({
                       <p className={`text-[10px] ${pnl >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                         ({formatPercent(pnlPct)})
                       </p>
+                    </td>
+                    <td className="py-3.5 px-4 text-center">
+                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px]">
+                        <span
+                          className={`px-1.5 py-0.5 rounded font-semibold ${
+                            absReturn >= 0 ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-700'
+                          }`}
+                          title="Absolute Return"
+                        >
+                          Abs: {absReturn >= 0 ? '+' : ''}{absReturn}%
+                        </span>
+                        <span
+                          className="px-1.5 py-0.5 rounded font-semibold bg-slate-100 text-slate-700"
+                          title="CAGR (Annualized)"
+                        >
+                          CAGR: {cagrVal !== null ? `${cagrVal}%` : '—'}
+                        </span>
+                        <span
+                          className="px-1.5 py-0.5 rounded font-bold bg-indigo-50 text-indigo-700 border border-indigo-100"
+                          title="XIRR (Cash-Flow Weighted)"
+                        >
+                          XIRR: {xirrVal !== null ? `${xirrVal}%` : '—'}
+                        </span>
+                      </div>
                     </td>
                     <td className="py-3.5 px-3 text-center">
                       <button

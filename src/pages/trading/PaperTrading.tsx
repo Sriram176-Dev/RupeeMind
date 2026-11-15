@@ -154,22 +154,22 @@ export const PaperTrading: React.FC = () => {
       {/* Page Title & Breadcrumb */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#0F766E] uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4" />
-            <span>Virtual Trading Sandbox</span>
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1 font-mono">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Virtual Execution Engine</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#0B1220] tracking-tight">
-            Live Paper Trading & Execution
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+            Live Paper Trading Terminal
           </h1>
-          <p className="text-sm text-[#5E687A] mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Test quantitative strategies with ₹10,00,000 in virtual capital, real NSE quotes, and authentic Indian regulatory taxes.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => loadData()}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-[#5E687A] bg-white border border-[#E7E5DF] hover:border-slate-400 transition shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-2xs"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Refresh Ticks</span>
@@ -177,7 +177,7 @@ export const PaperTrading: React.FC = () => {
 
           <button
             onClick={() => handleOpenBuy()}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#0F766E] to-emerald-600 hover:from-[#115E59] hover:to-emerald-700 shadow-md shadow-emerald-500/20 transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs hover:shadow transition-all"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Trade Stocks</span>
@@ -195,13 +195,13 @@ export const PaperTrading: React.FC = () => {
       )}
 
       {/* Main Tabs Navigation */}
-      <div className="flex items-center gap-2 border-b border-[#E7E5DF]">
+      <div className="flex items-center gap-2 border-b border-slate-200">
         <button
           onClick={() => setActiveTab('POSITIONS')}
-          className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors ${
             activeTab === 'POSITIONS'
-              ? 'border-[#0F766E] text-[#0F766E]'
-              : 'border-transparent text-[#5E687A] hover:text-[#0B1220]'
+              ? 'border-emerald-600 text-emerald-800'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -210,10 +210,10 @@ export const PaperTrading: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('ORDERS')}
-          className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors ${
             activeTab === 'ORDERS'
-              ? 'border-[#0F766E] text-[#0F766E]'
-              : 'border-transparent text-[#5E687A] hover:text-[#0B1220]'
+              ? 'border-emerald-600 text-emerald-800'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
           }`}
         >
           <History className="w-4 h-4" />
@@ -222,10 +222,10 @@ export const PaperTrading: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('ANALYTICS')}
-          className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors ${
             activeTab === 'ANALYTICS'
-              ? 'border-[#0F766E] text-[#0F766E]'
-              : 'border-transparent text-[#5E687A] hover:text-[#0B1220]'
+              ? 'border-emerald-600 text-emerald-800'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
           }`}
         >
           <BarChart3 className="w-4 h-4" />
@@ -255,17 +255,17 @@ export const PaperTrading: React.FC = () => {
       {activeTab === 'ANALYTICS' && summary && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Allocation Donut Chart */}
-          <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-sm lg:col-span-2 space-y-4">
+          <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-[#0B1220]">
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight">
                   Portfolio Capital Allocation
                 </h3>
-                <p className="text-xs text-[#5E687A]">
+                <p className="text-xs text-slate-500">
                   Breakdown of virtual cash versus invested equity positions
                 </p>
               </div>
-              <PieIcon className="w-5 h-5 text-[#0F766E]" />
+              <PieIcon className="w-5 h-5 text-emerald-600" />
             </div>
 
             <div className="h-64 w-full">
@@ -287,10 +287,10 @@ export const PaperTrading: React.FC = () => {
                   <Tooltip
                     formatter={(val: any) => formatINR(Number(val) || 0)}
                     contentStyle={{
-                      backgroundColor: '#11161D',
-                      borderColor: '#1F2933',
-                      borderRadius: '12px',
-                      color: '#E8EDF2',
+                      backgroundColor: '#FFFFFF',
+                      borderColor: '#E2E8F0',
+                      borderRadius: '8px',
+                      color: '#0F172A',
                       fontSize: '12px',
                     }}
                   />
@@ -302,17 +302,17 @@ export const PaperTrading: React.FC = () => {
               {allocationData.map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-center gap-2 p-2 rounded-xl bg-[#FAFAF7] border border-[#E7E5DF]"
+                  className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-200/80"
                 >
                   <span
-                    className="w-3 h-3 rounded-full shrink-0"
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: item.color }}
                   />
                   <div className="truncate">
-                    <div className="text-[11px] font-bold text-[#0B1220] truncate">
+                    <div className="text-[11px] font-semibold text-slate-900 truncate font-mono">
                       {item.name}
                     </div>
-                    <div className="text-[10px] text-[#5E687A]">
+                    <div className="text-[10px] text-slate-500 font-mono">
                       {formatINR(item.value)}
                     </div>
                   </div>
@@ -322,51 +322,51 @@ export const PaperTrading: React.FC = () => {
           </div>
 
           {/* Quick Stats Panel */}
-          <div className="p-6 rounded-3xl bg-white border border-[#E7E5DF] shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-[#0B1220]">
+          <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 tracking-tight">
               Paper Trading Performance
             </h3>
 
-            <div className="space-y-3">
-              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
-                <span className="text-xs text-[#5E687A]">
+            <div className="space-y-2.5">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                <span className="text-xs text-slate-500">
                   Initial Seed Capital:
                 </span>
-                <span className="text-xs font-bold text-[#0B1220]">
+                <span className="text-xs font-bold text-slate-900 font-mono">
                   ₹10,00,000
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
-                <span className="text-xs text-[#5E687A]">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                <span className="text-xs text-slate-500">
                   Completed Trades:
                 </span>
-                <span className="text-xs font-bold text-[#0B1220]">
+                <span className="text-xs font-bold text-slate-900 font-mono">
                   {summary.wallet.totalTrades}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
-                <span className="text-xs text-[#5E687A]">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                <span className="text-xs text-slate-500">
                   Winning Trade Ratio:
                 </span>
-                <span className="text-xs font-bold text-emerald-600">
+                <span className="text-xs font-bold text-emerald-700 font-mono">
                   {summary.performance.winRatePercent}%
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#FAFAF7] border border-[#E7E5DF] flex items-center justify-between">
-                <span className="text-xs text-[#5E687A]">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                <span className="text-xs text-slate-500">
                   Sandbox Reset Count:
                 </span>
-                <span className="text-xs font-bold text-[#0B1220]">
+                <span className="text-xs font-bold text-slate-900 font-mono">
                   {summary.wallet.resetCount} times
                 </span>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-800 leading-relaxed">
-              💡 <strong>Pro Tip:</strong> Use limit orders to capture dips during intraday market volatility. Indian statutory charges (STT, GST) are simulated in real-time.
+            <div className="p-3.5 rounded-lg bg-amber-50/70 border border-amber-200/80 text-[11px] text-amber-900 leading-relaxed">
+              💡 <strong>Execution Note:</strong> Simulated limit orders match against real-time NSE market depth. Statutory charges (STT, GST, Exchange turn-over fees) are calculated according to Indian market norms.
             </div>
           </div>
         </div>

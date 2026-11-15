@@ -1,5 +1,7 @@
 import Parser from 'rss-parser';
 import NodeCache from 'node-cache';
+import { Holding } from '../models/Holding.js';
+import { Watchlist } from '../models/Watchlist.js';
 
 const parser = new Parser({
   timeout: 3000, // 3s fast timeout so external slow sites never hang the server
@@ -306,4 +308,150 @@ export async function getNews(category, forceRefresh = false) {
 
 export function invalidateNewsCache() {
   newsCache.flushAll();
+}
+
+/**
+ * Analyzes text sentiment for financial tone
+ */
+export function analyzeSentiment(text) {
+  const t = (text || '').toLowerCase();
+
+  const bullishKeywords = [
+    'rally', 'surge', 'high', 'profit', 'beat', 'growth', 'gain', 'dividend',
+    'outperform', 'record', 'bull', 'positive', 'inflows', 'expansion', 'jump',
+    'upgrade', 'soar', 'rebound'
+  ];
+
+  const bearishKeywords = [
+    'fall', 'drop', 'plunge', 'loss', 'miss', 'cut', 'inflation', 'slump',
+    'crash', 'bear', 'downgrade', 'negative', 'outflows', 'probe', 'penalty',
+    'decline', 'tumble', 'warning', 'weak'
+  ];
+
+  let bullCount = 0;
+  let bearCount = 0;
+
+  for (const kw of bullishKeywords) {
+    if (t.includes(kw)) bullCount++;
+  }
+  for (const kw of bearishKeywords) {
+    if (t.includes(kw)) bearCount++;
+  }
+
+  const netScore = bullCount - bearCount;
+  if (netScore > 0) return { sentiment: 'BULLISH', score: netScore };
+  if (netScore < 0) return { sentiment: 'BEARISH', score: netScore };
+  return { sentiment: 'NEUTRAL', score: 0 };
+}
+
+/**
+ * Matches ingested RSS articles to user holdings and watchlist
+ */
+export async function getPortfolioNews(userId) {
+  let holdings = [];
+  let watchlist = [];
+
+  if (userId) {
+    try {
+      [holdings, watchlist] = await Promise.all([
+        Holding.find({ userId }).lean(),
+        Watchlist.find({ userId }).lean(),
+      ]);
+    } catch {
+      holdings = [];
+      watchlist = [];
+    }
+  }
+
+  // Extract asset tokens
+  const targetTokens = [];
+
+  for (const h of holdings) {
+    const rawSym = h.symbolOrCode || h.symbol || '';
+    const cleanSym = rawSym.replace(/\.(NS|BO)$/i, '').trim();
+    if (cleanSym && cleanSym.length >= 2) {
+      targetTokens.push({
+        token: cleanSym.toLowerCase(),
+        symbol: cleanSym,
+        name: h.name || cleanSym,
+        type: 'HOLDING',
+      });
+    }
+    if (h.name && h.name.length > 3) {
+      const nameKey = h.name.split(' ')[0].toLowerCase();
+      if (nameKey.length >= 4) {
+        targetTokens.push({
+          token: nameKey,
+          symbol: cleanSym,
+          name: h.name,
+          type: 'HOLDING',
+        });
+      }
+    }
+  }
+
+  for (const w of watchlist) {
+    const cleanSym = (w.symbol || '').replace(/\.(NS|BO)$/i, '').trim();
+    if (cleanSym && cleanSym.length >= 2) {
+      targetTokens.push({
+        token: cleanSym.toLowerCase(),
+        symbol: cleanSym,
+        name: w.name || cleanSym,
+        type: 'WATCHLIST',
+      });
+    }
+  }
+
+  // Get active news articles
+  const allArticles = await getNews('All');
+  const matched = [];
+  const seenIds = new Set();
+
+  for (const article of allArticles) {
+    const text = `${article.headline} ${article.summary}`.toLowerCase();
+
+    let matchedToken = null;
+    for (const t of targetTokens) {
+      // Regex boundary search or substring for exact symbol match
+      const regex = new RegExp(`\\b${t.token}\\b`, 'i');
+      if (regex.test(text) || text.includes(t.token)) {
+        matchedToken = t;
+        break;
+      }
+    }
+
+    if (matchedToken && !seenIds.has(article.id)) {
+      seenIds.add(article.id);
+      const sentimentData = analyzeSentiment(`${article.headline} ${article.summary}`);
+      matched.push({
+        ...article,
+        matchedAsset: {
+          symbol: matchedToken.symbol,
+          name: matchedToken.name,
+          type: matchedToken.type,
+        },
+        sentiment: sentimentData.sentiment,
+        sentimentScore: sentimentData.score,
+      });
+    }
+  }
+
+  // Fallback: If no direct holding matches, return top broad market articles tagged as benchmark
+  if (matched.length === 0) {
+    for (const article of allArticles.slice(0, 6)) {
+      const sentimentData = analyzeSentiment(`${article.headline} ${article.summary}`);
+      matched.push({
+        ...article,
+        matchedAsset: {
+          symbol: article.category === 'Mutual Funds' ? 'MUTUAL FUNDS' : 'NIFTY 50',
+          name: article.category === 'Mutual Funds' ? 'Domestic Mutual Funds' : 'Market Benchmark',
+          type: 'BENCHMARK',
+        },
+        sentiment: sentimentData.sentiment,
+        sentimentScore: sentimentData.score,
+      });
+    }
+  }
+
+  return matched;
 }
