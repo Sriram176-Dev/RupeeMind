@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   ShieldCheck,
   ShieldAlert,
@@ -12,6 +13,7 @@ import {
   Sparkles,
   Info,
   Scale,
+  ArrowLeft,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { SectionHeader } from '../../components/ui/SectionHeader';
@@ -44,6 +46,17 @@ export const ModelTransparency: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-fade-in pb-16">
+      {/* Back button */}
+      <div className="flex items-center gap-2">
+        <Link
+          to="/settings"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-2xs"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to Settings</span>
+        </Link>
+      </div>
+
       {/* Header */}
       <div>
         <SectionHeader

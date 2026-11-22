@@ -31,33 +31,32 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Column 2: Products */}
+          {/* Column 2: Markets */}
           <div className="space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-900 font-mono">
-              Products & Markets
+              Markets & Research
             </h3>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/market" className="text-slate-500 hover:text-emerald-700 transition-colors">NSE Live Market</Link></li>
-              <li><Link to="/funds" className="text-slate-500 hover:text-emerald-700 transition-colors">Mutual Fund Explorer</Link></li>
+              <li><Link to="/markets?tab=stocks" className="text-slate-500 hover:text-emerald-700 transition-colors">Stock Market & Signals</Link></li>
+              <li><Link to="/markets?tab=funds" className="text-slate-500 hover:text-emerald-700 transition-colors">Mutual Fund Explorer</Link></li>
               <li><Link to="/funds/compare" className="text-slate-500 hover:text-emerald-700 transition-colors">Fund Comparison</Link></li>
-              <li><Link to="/paper-trading" className="text-slate-500 hover:text-emerald-700 transition-colors">Paper Trading Terminal</Link></li>
-              <li><Link to="/recommendations" className="text-slate-500 hover:text-emerald-700 transition-colors">AI Recommendations</Link></li>
-              <li><Link to="/portfolio" className="text-slate-500 hover:text-emerald-700 transition-colors">Portfolio & SIP Tracker</Link></li>
+              <li><Link to="/markets?tab=news" className="text-slate-500 hover:text-emerald-700 transition-colors">Market & Macro News</Link></li>
+              <li><Link to="/markets?tab=picks" className="text-slate-500 hover:text-emerald-700 transition-colors">AI Quant Recommendations</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Tools & Analytics */}
+          {/* Column 3: Portfolio & Tools */}
           <div className="space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-900 font-mono">
-              Analytics & Tools
+              Portfolio & Analytics
             </h3>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/analytics" className="text-slate-500 hover:text-emerald-700 transition-colors">Stress Testing & VaR</Link></li>
-              <li><Link to="/calculators" className="text-slate-500 hover:text-emerald-700 transition-colors">SIP & Lumpsum Calculator</Link></li>
-              <li><Link to="/calculators" className="text-slate-500 hover:text-emerald-700 transition-colors">Step-Up SIP Planner</Link></li>
-              <li><Link to="/calculators" className="text-slate-500 hover:text-emerald-700 transition-colors">Retirement & Tax Tools</Link></li>
-              <li><Link to="/news" className="text-slate-500 hover:text-emerald-700 transition-colors">Market & Economy News</Link></li>
-              <li><Link to="/learn" className="text-slate-500 hover:text-emerald-700 transition-colors">Learn Academy & Glossary</Link></li>
+              <li><Link to="/portfolio?tab=holdings" className="text-slate-500 hover:text-emerald-700 transition-colors">Holdings & Statement Import</Link></li>
+              <li><Link to="/portfolio?tab=analytics" className="text-slate-500 hover:text-emerald-700 transition-colors">Risk Analytics & Stress Test</Link></li>
+              <li><Link to="/portfolio?tab=tax" className="text-slate-500 hover:text-emerald-700 transition-colors">Capital Gains & Tax Harvesting</Link></li>
+              <li><Link to="/portfolio?tab=rebalance" className="text-slate-500 hover:text-emerald-700 transition-colors">Portfolio Rebalancing</Link></li>
+              <li><Link to="/portfolio?tab=goals" className="text-slate-500 hover:text-emerald-700 transition-colors">Goal Simulator</Link></li>
+              <li><Link to="/tools" className="text-slate-500 hover:text-emerald-700 transition-colors">Financial Calculators</Link></li>
             </ul>
           </div>
 

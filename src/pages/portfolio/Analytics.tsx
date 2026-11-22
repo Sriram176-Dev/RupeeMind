@@ -39,6 +39,8 @@ import {
   Gauge,
   Flame,
   FileText,
+  Sliders,
+  LineChart as LineChartIcon,
 } from 'lucide-react';
 import {
   CrisisScenarioSelector,
@@ -47,18 +49,42 @@ import {
   MonteCarloChart,
 } from '../../components/stresstest';
 import { AuditReportModal } from '../../components/reports';
+import { PortfolioOptimizer } from '../optimize/PortfolioOptimizer';
+import { BacktestLab } from '../backtest/BacktestLab';
+
+export type AnalyticsSubTabKey =
+  | 'health'
+  | 'stress-test'
+  | 'var'
+  | 'monte-carlo'
+  | 'optimizer'
+  | 'backtest';
 
 export const Analytics: React.FC = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Tab state: 'health' | 'stress-test' | 'var' | 'monte-carlo'
-  const initialTab =
-    location.pathname === '/crisis-simulator' || searchParams.get('tab') === 'stress-test'
+  // Tab state: 'health' | 'stress-test' | 'var' | 'monte-carlo' | 'optimizer' | 'backtest'
+  const subtabParam = searchParams.get('subtab');
+  const tabParam = searchParams.get('tab');
+  const initialTab: AnalyticsSubTabKey =
+    subtabParam && ['health', 'stress-test', 'var', 'monte-carlo', 'optimizer', 'backtest'].includes(subtabParam)
+      ? (subtabParam as AnalyticsSubTabKey)
+      : location.pathname === '/crisis-simulator' || tabParam === 'stress-test'
       ? 'stress-test'
-      : (searchParams.get('tab') as 'health' | 'stress-test' | 'var' | 'monte-carlo') || 'health';
+      : tabParam && ['health', 'stress-test', 'var', 'monte-carlo', 'optimizer', 'backtest'].includes(tabParam)
+      ? (tabParam as AnalyticsSubTabKey)
+      : 'health';
 
-  const [activeTab, setActiveTab] = useState<'health' | 'stress-test' | 'var' | 'monte-carlo'>(initialTab);
+  const [activeTab, setActiveTab] = useState<AnalyticsSubTabKey>(initialTab);
+
+  // Sync state if subtab in URL query changes externally
+  useEffect(() => {
+    const st = searchParams.get('subtab');
+    if (st && ['health', 'stress-test', 'var', 'monte-carlo', 'optimizer', 'backtest'].includes(st)) {
+      setActiveTab(st as AnalyticsSubTabKey);
+    }
+  }, [searchParams]);
 
   // Health & Signal Telemetry
   const [healthData, setHealthData] = useState<PortfolioHealthData | null>(null);
@@ -83,9 +109,11 @@ export const Analytics: React.FC = () => {
   // Institutional Audit PDF Modal State
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
 
-  const handleTabChange = (tab: 'health' | 'stress-test' | 'var' | 'monte-carlo') => {
+  const handleTabChange = (tab: AnalyticsSubTabKey) => {
     setActiveTab(tab);
-    setSearchParams({ tab });
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('subtab', tab);
+    setSearchParams(newParams);
   };
 
   const fetchHealthAndSignal = async () => {
@@ -246,14 +274,38 @@ export const Analytics: React.FC = () => {
 
         <button
           onClick={() => handleTabChange('monte-carlo')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
             activeTab === 'monte-carlo'
-              ? 'bg-emerald-600 text-white shadow-sm'
+              ? 'bg-purple-600 text-white shadow-xs font-semibold'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <Cpu className="w-4 h-4" />
           <span>Monte Carlo 1,000-Path Engine</span>
+        </button>
+
+        <button
+          onClick={() => handleTabChange('optimizer')}
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+            activeTab === 'optimizer'
+              ? 'bg-emerald-700 text-white shadow-xs font-semibold'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          }`}
+        >
+          <Sliders className="w-3.5 h-3.5" />
+          <span>Portfolio Optimizer</span>
+        </button>
+
+        <button
+          onClick={() => handleTabChange('backtest')}
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+            activeTab === 'backtest'
+              ? 'bg-slate-900 text-white shadow-xs font-semibold'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          }`}
+        >
+          <LineChartIcon className="w-3.5 h-3.5" />
+          <span>Strategy Backtest Lab</span>
         </button>
       </div>
 
@@ -634,6 +686,24 @@ export const Analytics: React.FC = () => {
               loading={mcLoading}
             />
           )}
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* TAB 5: PORTFOLIO OPTIMIZER & EFFICIENT FRONTIER          */}
+      {/* ========================================================= */}
+      {activeTab === 'optimizer' && (
+        <div className="space-y-6">
+          <PortfolioOptimizer />
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* TAB 6: STRATEGY BACKTEST LAB                             */}
+      {/* ========================================================= */}
+      {activeTab === 'backtest' && (
+        <div className="space-y-6">
+          <BacktestLab />
         </div>
       )}
 

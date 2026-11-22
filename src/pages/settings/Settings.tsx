@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { SectionHeader } from "../../components/ui/SectionHeader";
 import {
@@ -9,6 +10,9 @@ import {
   CheckCircle2,
   X,
   Loader2,
+  Cpu,
+  ExternalLink,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -180,6 +184,28 @@ export const Settings: React.FC = () => {
 
         {/* Right Column: Appearance & Danger Zone (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
+          {/* AI Model Governance Card */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
+            <div className="flex items-center gap-2">
+              <Cpu className="w-5 h-5 text-indigo-600" />
+              <h3 className="font-serif text-lg font-bold text-[#0B1220]">
+                AI Governance & Model Audit
+              </h3>
+            </div>
+            <p className="text-xs text-[#5B6572] leading-relaxed">
+              Inspect temporal walk-forward validation splits, zero price-level leakage safeguards, and SEBI-aligned majority class fallback heuristics.
+            </p>
+
+            <Link
+              to="/model-transparency"
+              className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-800 hover:bg-indigo-100 flex items-center justify-center gap-2 min-h-[44px] transition-colors"
+            >
+              <ShieldCheck className="w-4 h-4 text-indigo-700" />
+              <span>Inspect Quantitative Governance</span>
+              <ExternalLink className="w-3.5 h-3.5 text-indigo-500" />
+            </Link>
+          </div>
+
           {/* Data Export Card */}
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E7E5DF] shadow-xs space-y-4">
             <h3 className="font-serif text-lg font-bold text-[#0B1220]">

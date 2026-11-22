@@ -16,7 +16,6 @@ import {
   Sparkles,
   Calculator,
   Newspaper,
-  BookOpen,
   User,
   Settings,
   Scale,
@@ -48,73 +47,108 @@ const PLATFORM_FEATURES: PlatformFeature[] = [
   },
   {
     name: "Portfolio Holdings & P&L",
-    path: "/portfolio",
+    path: "/portfolio?tab=holdings",
     desc: "Real-time equity/mutual fund holdings & capital gains audit",
     category: "Portfolio",
     icon: Briefcase,
   },
   {
     name: "Stock Market & Signals",
-    path: "/market",
+    path: "/markets?tab=stocks",
     desc: "Live NSE/BSE quotes with algorithmic BUY/HOLD/SELL signals",
     category: "Markets",
     icon: TrendingUp,
   },
   {
     name: "Mutual Funds Explorer",
-    path: "/funds",
+    path: "/markets?tab=funds",
     desc: "Quant-screened mutual funds, categories & historical NAVs",
-    category: "Funds",
+    category: "Markets",
     icon: PieChart,
   },
   {
     name: "Mutual Fund Comparison Tool",
     path: "/funds/compare",
     desc: "Head-to-head risk, expense ratio, Sharpe ratio & returns compare",
-    category: "Funds",
+    category: "Markets",
     icon: Scale,
   },
   {
     name: "Stress Test & Risk Analytics",
-    path: "/analytics",
+    path: "/portfolio?tab=analytics",
     desc: "Basel III VaR (95%/99%), Monte Carlo & crisis simulation",
+    category: "Portfolio",
+    icon: BarChart3,
+  },
+  {
+    name: "Capital Gains & Tax Harvesting",
+    path: "/portfolio?tab=tax",
+    desc: "FIFO tax lots, Section 112A tax exemption harvest & P&L report",
+    category: "Portfolio",
+    icon: Scale,
+  },
+  {
+    name: "Portfolio Rebalancing",
+    path: "/portfolio?tab=rebalance",
+    desc: "Target allocation drift analysis & zero-tax SIP rebalance",
+    category: "Portfolio",
+    icon: Scale,
+  },
+  {
+    name: "Goal Planning & Simulator",
+    path: "/portfolio?tab=goals",
+    desc: "Corpus simulation, skip-SIP projection & retirement milestone",
+    category: "Portfolio",
+    icon: Wallet,
+  },
+  {
+    name: "Price & Signal Alerts",
+    path: "/portfolio?tab=alerts",
+    desc: "Real-time automated alerts for price breaks, technical signals & drift",
+    category: "Portfolio",
+    icon: Bot,
+  },
+  {
+    name: "Strategy Backtest Lab",
+    path: "/portfolio?tab=analytics&subtab=backtest",
+    desc: "Simulate SMA crossover & disciplined SIP on historical data",
+    category: "Analytics",
+    icon: BarChart3,
+  },
+  {
+    name: "Portfolio Optimizer",
+    path: "/portfolio?tab=analytics&subtab=optimizer",
+    desc: "Markowitz Mean-Variance Efficient Frontier & Max-Sharpe allocation",
     category: "Analytics",
     icon: BarChart3,
   },
   {
     name: "Paper Trading Terminal",
-    path: "/paper-trading",
+    path: "/portfolio?tab=paper-trading",
     desc: "Virtual trading sandbox with ₹10,00,000 capital & order simulation",
     category: "Trading",
     icon: Wallet,
   },
   {
     name: "AI Quant Recommendations",
-    path: "/recommendations",
+    path: "/markets?tab=picks",
     desc: "Personalized ML stock & mutual fund picks tailored to your KYC",
     category: "AI",
     icon: Sparkles,
   },
   {
     name: "Financial Calculators (SIP/SWP)",
-    path: "/calculators",
+    path: "/tools",
     desc: "SIP, Step-Up SIP, SWP, Lumpsum, ELSS Tax & Retirement Planner",
-    category: "Calculators",
+    category: "Tools",
     icon: Calculator,
   },
   {
     name: "Market News & Intel",
-    path: "/news",
+    path: "/markets?tab=news",
     desc: "Live curated Indian market headlines & sentiment analysis",
-    category: "News",
+    category: "Markets",
     icon: Newspaper,
-  },
-  {
-    name: "Learn Academy",
-    path: "/learn",
-    desc: "SEBI investor education, asset allocation & tax saving rules",
-    category: "Education",
-    icon: BookOpen,
   },
   {
     name: "RupeeBot AI Copilot",
@@ -150,6 +184,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
   const [featureResults, setFeatureResults] = useState<PlatformFeature[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [categoryFilter, setCategoryFilter] = useState<string>("All");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -183,7 +218,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
         feat.desc.toLowerCase().includes(trimmed) ||
         feat.category.toLowerCase().includes(trimmed),
     );
-    setFeatureResults(matchedFeatures.slice(0, 4));
+    setFeatureResults(matchedFeatures.slice(0, 8));
 
     // Debounce remote stocks & mutual funds lookup
     const timer = setTimeout(async () => {
@@ -309,50 +344,84 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
           )}
 
           {!loading && !query && (
-            <div className="py-4 px-2 space-y-3">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-[#5B6572] px-2">
-                Quick Feature Navigation
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {PLATFORM_FEATURES.slice(0, 6).map((feat) => {
+            <div className="py-2 px-1 space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono">
+                  All Platform Features & Tools ({PLATFORM_FEATURES.length})
+                </p>
+                <span className="text-[10px] text-slate-400 font-mono">Click to launch</span>
+              </div>
+
+              {/* Category Filter Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-[11px] font-medium px-1">
+                {['All', 'Markets', 'Portfolio', 'Analytics', 'Tools', 'AI'].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoryFilter(cat)}
+                    className={cn(
+                      'px-2.5 py-1 rounded-lg border transition-all cursor-pointer whitespace-nowrap',
+                      categoryFilter === cat
+                        ? 'bg-emerald-600 text-white border-emerald-600 font-semibold shadow-2xs'
+                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* Grid of features */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[36vh] overflow-y-auto pr-1 custom-scrollbar">
+                {PLATFORM_FEATURES.filter(
+                  (f) => categoryFilter === 'All' || f.category.toLowerCase().includes(categoryFilter.toLowerCase())
+                ).map((feat) => {
                   const Icon = feat.icon;
                   return (
                     <button
-                      key={feat.path}
-                      onClick={() =>
-                        handleSelect({ type: "feature", data: feat })
-                      }
-                      className="p-2.5 rounded-xl border border-[#E7E5DF] bg-[#FAFAF7] hover:bg-[#E6F4F1] hover:border-emerald-300 transition-all text-left group"
+                      key={feat.name}
+                      onClick={() => handleSelect({ type: 'feature', data: feat })}
+                      className="p-2.5 rounded-xl border border-slate-200/90 bg-slate-50/70 hover:bg-emerald-50/70 hover:border-emerald-300 transition-all text-left flex items-start gap-2.5 group cursor-pointer"
                     >
-                      <div className="flex items-center gap-2 text-xs font-semibold text-[#0B1220] group-hover:text-[#0F766E]">
-                        <Icon className="w-3.5 h-3.5 text-[#0F766E]" />
-                        <span className="truncate">{feat.name}</span>
+                      <div className="w-7 h-7 rounded-lg bg-white border border-slate-200/80 flex items-center justify-center text-emerald-700 shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                        <Icon className="w-3.5 h-3.5" />
                       </div>
-                      <p className="text-[10px] text-[#5B6572] truncate mt-0.5">
-                        {feat.desc}
-                      </p>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-800 truncate">
+                            {feat.name}
+                          </span>
+                          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-200/70 text-slate-600 shrink-0">
+                            {feat.category}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">
+                          {feat.desc}
+                        </p>
+                      </div>
                     </button>
                   );
                 })}
               </div>
 
-              <div className="pt-2">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#5B6572] px-2 mb-2">
-                  Popular Market Searches
+              <div className="pt-2 border-t border-slate-100">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 px-1 mb-1.5 font-mono">
+                  Popular Stock & Index Searches
                 </p>
-                <div className="flex flex-wrap gap-1.5 px-2">
+                <div className="flex flex-wrap gap-1.5 px-1">
                   {[
                     "RELIANCE",
                     "TCS",
                     "HDFCBANK",
                     "INFY",
-                    "Parag Parikh Flexi Cap",
+                    "ICICIBANK",
+                    "TATAMOTORS",
                     "NIFTY 50",
+                    "SENSEX",
                   ].map((item) => (
                     <button
                       key={item}
                       onClick={() => setQuery(item)}
-                      className="px-2.5 py-1 rounded-lg bg-[#FAFAF7] border border-[#E7E5DF] text-xs font-medium text-[#0B1220] hover:border-[#0F766E] transition-colors"
+                      className="px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs font-mono text-slate-700 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-800 transition-colors cursor-pointer"
                     >
                       {item}
                     </button>

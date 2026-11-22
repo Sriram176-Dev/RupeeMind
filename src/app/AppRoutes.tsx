@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "../components/layout/ProtectedRoute";
 
 // ── Auth pages ──────────────────────────────────────────────
@@ -27,17 +27,20 @@ const Dashboard = lazy(() =>
   import("../pages/dashboard/Dashboard").then((m) => ({ default: m.Dashboard })),
 );
 
-// ── Market pages ─────────────────────────────────────────────
-const Market = lazy(() =>
-  import("../pages/market/Market").then((m) => ({ default: m.Market })),
+// ── 5 Core Zones Hubs ────────────────────────────────────────
+const MarketsHub = lazy(() =>
+  import("../pages/market/MarketsHub").then((m) => ({ default: m.MarketsHub })),
 );
-const StockDetail = lazy(() =>
-  import("../pages/market/StockDetail").then((m) => ({ default: m.StockDetail })),
+const PortfolioHub = lazy(() =>
+  import("../pages/portfolio/PortfolioHub").then((m) => ({ default: m.PortfolioHub })),
+);
+const ToolsHub = lazy(() =>
+  import("../pages/tools/ToolsHub").then((m) => ({ default: m.ToolsHub })),
 );
 
-// ── Funds pages ──────────────────────────────────────────────
-const Funds = lazy(() =>
-  import("../pages/funds/Funds").then((m) => ({ default: m.Funds })),
+// ── Security Detail & Secondary Pages ─────────────────────────
+const StockDetail = lazy(() =>
+  import("../pages/market/StockDetail").then((m) => ({ default: m.StockDetail })),
 );
 const FundDetail = lazy(() =>
   import("../pages/funds/FundDetail").then((m) => ({ default: m.FundDetail })),
@@ -45,31 +48,8 @@ const FundDetail = lazy(() =>
 const FundCompare = lazy(() =>
   import("../pages/funds/FundCompare").then((m) => ({ default: m.FundCompare })),
 );
-
-// ── Portfolio pages ───────────────────────────────────────────
-const Portfolio = lazy(() =>
-  import("../pages/portfolio/Portfolio").then((m) => ({ default: m.Portfolio })),
-);
 const PortfolioImport = lazy(() =>
   import("../pages/portfolio/PortfolioImport").then((m) => ({ default: m.PortfolioImport })),
-);
-const Analytics = lazy(() =>
-  import("../pages/portfolio/Analytics").then((m) => ({ default: m.Analytics })),
-);
-const TaxReport = lazy(() =>
-  import("../pages/tax/TaxReport").then((m) => ({ default: m.TaxReport })),
-);
-const RebalanceDashboard = lazy(() =>
-  import("../pages/rebalance/RebalanceDashboard").then((m) => ({ default: m.RebalanceDashboard })),
-);
-const GoalDashboard = lazy(() =>
-  import("../pages/goals/GoalDashboard").then((m) => ({ default: m.GoalDashboard })),
-);
-const HealthCheckPage = lazy(() =>
-  import("../pages/healthCheck/HealthCheckPage").then((m) => ({ default: m.HealthCheckPage })),
-);
-const AlertsManagement = lazy(() =>
-  import("../pages/alerts/AlertsManagement").then((m) => ({ default: m.AlertsManagement })),
 );
 const BacktestLab = lazy(() =>
   import("../pages/backtest/BacktestLab").then((m) => ({ default: m.BacktestLab })),
@@ -77,31 +57,11 @@ const BacktestLab = lazy(() =>
 const PortfolioOptimizer = lazy(() =>
   import("../pages/optimize/PortfolioOptimizer").then((m) => ({ default: m.PortfolioOptimizer })),
 );
+const HealthCheckPage = lazy(() =>
+  import("../pages/healthCheck/HealthCheckPage").then((m) => ({ default: m.HealthCheckPage })),
+);
 const ModelTransparency = lazy(() =>
   import("../pages/analytics/ModelTransparency").then((m) => ({ default: m.ModelTransparency })),
-);
-
-// ── Trading pages ─────────────────────────────────────────────
-const PaperTrading = lazy(() =>
-  import("../pages/trading/PaperTrading").then((m) => ({ default: m.PaperTrading })),
-);
-
-// ── Recommendations ───────────────────────────────────────────
-const Recommendations = lazy(() =>
-  import("../pages/recommendations/Recommendations").then((m) => ({ default: m.Recommendations })),
-);
-
-// ── Tools & Education ─────────────────────────────────────────
-const Calculators = lazy(() =>
-  import("../pages/tools/Calculators").then((m) => ({ default: m.Calculators })),
-);
-const Learn = lazy(() =>
-  import("../pages/tools/Learn").then((m) => ({ default: m.Learn })),
-);
-
-// ── News ──────────────────────────────────────────────────────
-const News = lazy(() =>
-  import("../pages/news/News").then((m) => ({ default: m.News })),
 );
 
 // ── Settings / Profile ────────────────────────────────────────
@@ -135,6 +95,7 @@ export function AppRoutes() {
       }
     >
       <Routes>
+        {/* Public & Auth Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -148,15 +109,8 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route path="/market" element={<Market />} />
-        <Route path="/market/:symbol" element={<StockDetail />} />
-        <Route path="/funds" element={<Funds />} />
-        <Route path="/funds/:code" element={<FundDetail />} />
-        <Route path="/funds/compare" element={<FundCompare />} />
-        <Route path="/calculators" element={<Calculators />} />
-        <Route path="/news" element={<News />} />
-        <Route path="/learn" element={<Learn />} />
-        <Route path="/disclaimer" element={<Disclaimer />} />
+
+        {/* ── ZONE 1: Home Dashboard ─────────────────────────────── */}
         <Route
           path="/dashboard"
           element={
@@ -165,30 +119,31 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/recommendations"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <Recommendations />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <Analytics />
-            </ProtectedRoute>
-          }
-        />
+
+        {/* ── ZONE 2: Markets & Research Hub ─────────────────────── */}
+        <Route path="/markets" element={<MarketsHub />} />
+        {/* Detail & Action Sub-Routes */}
+        <Route path="/markets/:symbol" element={<StockDetail />} />
+        <Route path="/market/:symbol" element={<StockDetail />} />
+        <Route path="/funds/:code" element={<FundDetail />} />
+        <Route path="/funds/compare" element={<FundCompare />} />
+
+        {/* Backwards-compatibility redirects into Markets Hub tabs */}
+        <Route path="/market" element={<Navigate to="/markets?tab=stocks" replace />} />
+        <Route path="/funds" element={<Navigate to="/markets?tab=funds" replace />} />
+        <Route path="/news" element={<Navigate to="/markets?tab=news" replace />} />
+        <Route path="/recommendations" element={<Navigate to="/markets?tab=picks" replace />} />
+
+        {/* ── ZONE 3: Portfolio Intelligence Hub ─────────────────── */}
         <Route
           path="/portfolio"
           element={
             <ProtectedRoute requireOnboarding>
-              <Portfolio />
+              <PortfolioHub />
             </ProtectedRoute>
           }
         />
+        {/* Contextual Sub-Routes */}
         <Route
           path="/portfolio/import"
           element={
@@ -198,28 +153,12 @@ export function AppRoutes() {
           }
         />
         <Route
-          path="/tax"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <TaxReport />
-            </ProtectedRoute>
-          }
+          path="/backtest"
+          element={<Navigate to="/portfolio?tab=analytics&subtab=backtest" replace />}
         />
         <Route
-          path="/rebalance"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <RebalanceDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/goals"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <GoalDashboard />
-            </ProtectedRoute>
-          }
+          path="/optimize"
+          element={<Navigate to="/portfolio?tab=analytics&subtab=optimizer" replace />}
         />
         <Route
           path="/health-check"
@@ -229,54 +168,21 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/alerts"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <AlertsManagement />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/backtest"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <BacktestLab />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/optimize"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <PortfolioOptimizer />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/model-transparency"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <ModelTransparency />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/paper-trading"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <PaperTrading />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/crisis-simulator"
-          element={
-            <ProtectedRoute requireOnboarding>
-              <Analytics />
-            </ProtectedRoute>
-          }
-        />
+
+        {/* Backwards-compatibility redirects into Portfolio Hub tabs */}
+        <Route path="/analytics" element={<Navigate to="/portfolio?tab=analytics" replace />} />
+        <Route path="/tax" element={<Navigate to="/portfolio?tab=tax" replace />} />
+        <Route path="/rebalance" element={<Navigate to="/portfolio?tab=rebalance" replace />} />
+        <Route path="/goals" element={<Navigate to="/portfolio?tab=goals" replace />} />
+        <Route path="/alerts" element={<Navigate to="/portfolio?tab=alerts" replace />} />
+        <Route path="/paper-trading" element={<Navigate to="/portfolio?tab=paper-trading" replace />} />
+        <Route path="/crisis-simulator" element={<Navigate to="/portfolio?tab=analytics" replace />} />
+
+        {/* ── ZONE 4: Financial Tools Hub ────────────────────────── */}
+        <Route path="/tools" element={<ToolsHub />} />
+        <Route path="/calculators" element={<Navigate to="/tools" replace />} />
+
+        {/* ── ZONE 5: Account & Governance ───────────────────────── */}
         <Route
           path="/profile"
           element={
@@ -293,8 +199,23 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/model-transparency"
+          element={
+            <ProtectedRoute requireOnboarding>
+              <ModelTransparency />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Legal & Compliance */}
+        <Route path="/disclaimer" element={<Disclaimer />} />
+
+        {/* 404 Catch-All */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );
 }
+
+export default AppRoutes;

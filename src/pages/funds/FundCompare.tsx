@@ -91,16 +91,26 @@ export const FundCompare: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-8 animate-in fade-in duration-200">
       
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => navigate('/funds')}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-[#5B6572] hover:text-[#0B1220]"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Fund Explorer</span>
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/markets?tab=funds')}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back</span>
+          </button>
 
-        <span className="text-xs text-[#5B6572]">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+            <Link to="/markets?tab=funds" className="hover:text-emerald-700">Markets</Link>
+            <span className="text-slate-300">/</span>
+            <Link to="/markets?tab=funds" className="hover:text-emerald-700">Mutual Funds</Link>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-900 font-semibold">Compare Schemes</span>
+          </nav>
+        </div>
+
+        <span className="text-xs text-slate-500 font-medium self-start sm:self-auto bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded">
           Comparing {comparedFunds.length} / 3 schemes
         </span>
       </div>

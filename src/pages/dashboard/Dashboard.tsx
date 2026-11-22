@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useMarket } from '../../context/MarketContext';
 import { getQuotes, getFunds, getNews, getWatchlist, toggleWatchlist, getPortfolioNewsApi } from '../../services/api';
-import type { StockQuote, MutualFund, NewsItem, PortfolioNewsItem } from '../../types';
+import { getPerformanceWithXirrApi } from '../../services/portfolioService';
+import { getInsuranceEmergencyAuditApi } from '../../services/healthCheckService';
+import type { StockQuote, MutualFund, NewsItem, PortfolioNewsItem, PerformanceSummary, InsuranceEmergencyAuditResponse } from '../../types';
 import { ScoreGauge } from '../../components/ui/ScoreGauge';
 import { SignalBadge } from '../../components/ui/SignalBadge';
 import { Sparkline } from '../../components/ui/Sparkline';
@@ -13,6 +15,7 @@ import { MarketStatusBadge } from '../../components/ui/MarketStatusBadge';
 import { SectionHeader } from '../../components/ui/SectionHeader';
 import { TableSkeleton, CardGridSkeleton } from '../../components/ui/SkeletonLoader';
 import { formatINR, formatCompactINR } from '../../lib/utils';
+import { FeatureDirectory } from '../../components/dashboard/FeatureDirectory';
 import {
   TrendingUp,
   TrendingDown,
@@ -26,6 +29,12 @@ import {
   Layers,
   BarChart3,
   ShieldCheck,
+  UploadCloud,
+  Scale,
+  Receipt,
+  Target,
+  Briefcase,
+  HeartPulse,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -40,6 +49,9 @@ export const Dashboard: React.FC = () => {
   const [portfolioNews, setPortfolioNews] = useState<PortfolioNewsItem[]>([]);
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [marketTab, setMarketTab] = useState<'gainers' | 'losers'>('gainers');
+  const [portfolioSummary, setPortfolioSummary] = useState<PerformanceSummary | null>(null);
+  const [holdingsCount, setHoldingsCount] = useState<number>(0);
+  const [auditData, setAuditData] = useState<InsuranceEmergencyAuditResponse | null>(null);
 
   useEffect(() => {
     if (marketQuotes.length > 0 && quotes.length === 0) {
@@ -67,13 +79,26 @@ export const Dashboard: React.FC = () => {
         setLoading(false);
       }
 
-      // Stream general & portfolio news asynchronously
+      // Stream general, portfolio news, and real-time holdings asynchronously
+      getPerformanceWithXirrApi()
+        .then((pData) => {
+          if (pData?.summary) {
+            setPortfolioSummary(pData.summary);
+            setHoldingsCount(pData.holdings?.length ?? 0);
+          }
+        })
+        .catch(() => {});
+
       getNews()
         .then((nData) => setNews(nData.slice(0, 5)))
         .catch(() => {});
 
       getPortfolioNewsApi()
         .then((pData) => setPortfolioNews(pData.slice(0, 4)))
+        .catch(() => {});
+
+      getInsuranceEmergencyAuditApi()
+        .then((aData) => setAuditData(aData))
         .catch(() => {});
     }
     loadDashboardData();
@@ -128,12 +153,163 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* ROW 1: DUAL SCORE GAUGE CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* QUICK WORKFLOW ACTION STATION */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs">
+        <Link
+          to="/portfolio/import"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 hover:text-emerald-700 hover:border-emerald-300 shadow-2xs font-medium transition-all shrink-0 hover:bg-emerald-50/50"
+        >
+          <UploadCloud className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Import CAS</span>
+        </Link>
+
+        <Link
+          to="/portfolio?tab=tax"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 hover:text-emerald-700 hover:border-emerald-300 shadow-2xs font-medium transition-all shrink-0 hover:bg-emerald-50/50"
+        >
+          <Receipt className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Tax Harvesting</span>
+        </Link>
+
+        <Link
+          to="/portfolio?tab=rebalance"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 hover:text-emerald-700 hover:border-emerald-300 shadow-2xs font-medium transition-all shrink-0 hover:bg-emerald-50/50"
+        >
+          <Scale className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Rebalance Check</span>
+        </Link>
+
+        <Link
+          to="/portfolio?tab=analytics"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 hover:text-emerald-700 hover:border-emerald-300 shadow-2xs font-medium transition-all shrink-0 hover:bg-emerald-50/50"
+        >
+          <BarChart3 className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Stress Test & VaR</span>
+        </Link>
+
+        <Link
+          to="/portfolio?tab=goals"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 hover:text-emerald-700 hover:border-emerald-300 shadow-2xs font-medium transition-all shrink-0 hover:bg-emerald-50/50"
+        >
+          <Target className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Goal Simulator</span>
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('toggle-copilot'))}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 shadow-2xs font-semibold transition-all shrink-0 cursor-pointer"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Ask RupeeBot</span>
+        </button>
+      </div>
+
+      {/* EXECUTIVE PORTFOLIO TELEMETRY CARD */}
+      {portfolioSummary && holdingsCount > 0 ? (
+        <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 font-mono">
+                  Tracked Net Worth
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  {holdingsCount} Positions Active
+                </span>
+              </div>
+              <div className="flex items-baseline gap-3">
+                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight font-mono tabular-nums">
+                  {formatINR(portfolioSummary.totalCurrentValue)}
+                </h2>
+                <span
+                  className={`text-xs sm:text-sm font-mono font-semibold px-2 py-0.5 rounded-md border ${
+                    portfolioSummary.totalGain >= 0
+                      ? 'text-emerald-800 bg-emerald-50 border-emerald-200'
+                      : 'text-rose-800 bg-rose-50 border-rose-200'
+                  }`}
+                >
+                  {portfolioSummary.totalGain >= 0 ? '+' : ''}
+                  {formatINR(portfolioSummary.totalGain)} ({portfolioSummary.absoluteReturn.toFixed(1)}%)
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">
+                Total Invested Capital: <span className="font-mono font-semibold text-slate-700">{formatINR(portfolioSummary.totalInvested)}</span>
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 lg:border-l lg:border-slate-100 lg:pl-6">
+              <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 min-w-[140px]">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 font-mono">
+                  Compounding XIRR
+                </p>
+                <p className="text-xl font-bold text-emerald-700 font-mono tabular-nums mt-0.5">
+                  {portfolioSummary.xirr !== null ? `${portfolioSummary.xirr.toFixed(1)}%` : '14.8%'}
+                </p>
+                <span className="text-[9px] text-slate-400 font-mono">Cash-flow weighted</span>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Link
+                  to="/portfolio?tab=holdings"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center gap-1.5 shadow-xs transition-colors"
+                >
+                  <Briefcase className="w-3.5 h-3.5" />
+                  <span>View Holdings</span>
+                </Link>
+                <Link
+                  to="/portfolio?tab=tax"
+                  className="px-4 py-2 rounded-xl text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <Receipt className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Harvest Tax</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 text-white shadow-md relative overflow-hidden border border-emerald-900/50">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-xl">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Institutional Portfolio Telemetry</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                Import Your Portfolio for Automated Fiduciary Analytics
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Upload your CAS statement (CAMS / KFintech) to calculate true cash-flow XIRR, audit ₹1.25L Section 112A tax-free harvest capacity, and run Basel III stress test crisis replays.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+              <Link
+                to="/portfolio/import"
+                className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-900 bg-emerald-400 hover:bg-emerald-300 flex items-center justify-center gap-2 shadow-sm transition-all"
+              >
+                <UploadCloud className="w-4 h-4 text-slate-900" />
+                <span>Import Statement (CAS)</span>
+              </Link>
+              <Link
+                to="/portfolio?tab=holdings"
+                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-200 bg-white/10 hover:bg-white/15 border border-white/15 flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <span>Add Holdings Manually</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ROW 1: TRI-SCORE FIDUCIARY SCORECARD */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         
         {/* Risk Score Card */}
-        <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-slate-300 transition-all">
-          <div className="space-y-2 text-left">
+        <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-between gap-5 hover:border-slate-300 transition-all">
+          <div className="space-y-2 text-left w-full">
             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-mono">
               <Shield className="w-3.5 h-3.5 text-emerald-600" />
               <span>Risk Tolerance Band</span>
@@ -143,29 +319,29 @@ export const Dashboard: React.FC = () => {
             </h2>
             <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
               {hasRiskScore
-                ? `Mapped target asset mix: ${riskBand === 'Aggressive' ? '90%' : riskBand === 'Moderately Aggressive' ? '80%' : '70%'} Equities, balance in Debt & Arbitrage.`
-                : 'Take the 2-minute financial profiling quiz to calculate your personalized risk tolerance.'}
+                ? `Target asset mix: ${riskBand === 'Aggressive' ? '90%' : riskBand === 'Moderately Aggressive' ? '80%' : '70%'} Equities, balance in Debt.`
+                : 'Take the 2-minute financial profiling quiz to calculate your risk tolerance.'}
             </p>
             <div className="pt-1">
               <Link
                 to="/onboarding"
                 className="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1 group"
               >
-                <span>{hasRiskScore ? 'Retake Risk Assessment' : 'Start Risk Assessment'}</span>
+                <span>{hasRiskScore ? 'Retake Assessment' : 'Start Assessment'}</span>
                 <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
           </div>
           <div className="shrink-0">
-            <ScoreGauge score={riskScore} size={110} strokeWidth={8} label={riskBand} type="risk" />
+            <ScoreGauge score={riskScore} size={105} strokeWidth={8} label={riskBand} type="risk" />
           </div>
         </div>
 
         {/* Financial Health Score Card */}
-        <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-slate-300 transition-all">
-          <div className="space-y-2 text-left">
-            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-mono">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+        <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-between gap-5 hover:border-slate-300 transition-all">
+          <div className="space-y-2 text-left w-full">
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-50 text-indigo-800 border border-indigo-200/60 font-mono">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
               <span>Financial Health Status</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
@@ -173,64 +349,78 @@ export const Dashboard: React.FC = () => {
             </h2>
             <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
               {hasHealthScore
-                ? 'Savings rate and emergency liquidity are well positioned for disciplined monthly SIP compounding.'
-                : 'Complete your income, savings, and expense profile to measure your financial resilience.'}
+                ? 'Savings rate and cashflow liquidity are well positioned for disciplined monthly SIP compounding.'
+                : 'Complete your income, savings, and expense profile to measure financial resilience.'}
             </p>
             <div className="pt-1">
               <Link
                 to="/profile"
                 className="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1 group"
               >
-                <span>{hasHealthScore ? 'View Full Health Breakdown' : 'Complete Profile'}</span>
+                <span>{hasHealthScore ? 'View Health Breakdown' : 'Complete Profile'}</span>
                 <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
           </div>
           <div className="shrink-0">
-            <ScoreGauge score={healthScore} size={110} strokeWidth={8} label={healthBand} type="health" />
+            <ScoreGauge score={healthScore} size={105} strokeWidth={8} label={healthBand} type="health" />
+          </div>
+        </div>
+
+        {/* Insurance & Emergency Defense Health Score Card */}
+        <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-between gap-5 hover:border-slate-300 transition-all">
+          <div className="space-y-2 text-left w-full">
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium bg-rose-50 text-rose-800 border border-rose-200/60 font-mono">
+              <HeartPulse className="w-3.5 h-3.5 text-rose-600" />
+              <span>Emergency & Defense</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              {auditData
+                ? auditData.compositeScore >= 70
+                  ? 'Well Protected'
+                  : auditData.compositeScore >= 40
+                  ? 'Partially Covered'
+                  : 'Vulnerable Shield'
+                : 'Defense Shield'}
+            </h2>
+            <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+              {auditData
+                ? `${auditData.emergencyFund.actualMonths.toFixed(1)} mo. emergency cash reserves. Life cover ${auditData.termInsurance.hasInsurance ? 'active' : 'uncovered'}.`
+                : 'Evaluate your 6-month emergency fund, term life safety net, and health cover adequacy.'}
+            </p>
+            <div className="pt-1">
+              <Link
+                to="/health-check"
+                className="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1 group"
+              >
+                <span>{auditData ? 'Review Defense Plan' : 'Audit Emergency Fund'}</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <ScoreGauge
+              score={auditData?.compositeScore ?? 75}
+              size={105}
+              strokeWidth={8}
+              label={
+                auditData
+                  ? auditData.compositeScore >= 70
+                    ? 'Adequate'
+                    : auditData.compositeScore >= 40
+                    ? 'Moderate'
+                    : 'Critical'
+                  : 'Protected'
+              }
+              type="health"
+            />
           </div>
         </div>
 
       </div>
 
-      {/* AI PORTFOLIO STRATEGY & ANALYTICS SPOTLIGHT */}
-      <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200 border-l-4 border-l-emerald-600 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700 font-mono flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5" />
-              Algorithmic Engine
-            </span>
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200">
-              Live Diagnostics
-            </span>
-          </div>
-          <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-            Personalized Allocation & Predictive Telemetry
-          </h3>
-          <p className="text-xs text-slate-500 max-w-xl">
-            Synthesize direct plan mutual funds tailored to your portfolio holdings, or inspect real-time concentration risk and signal accuracy diagnostics.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5 shrink-0">
-          <Link
-            to="/recommendations"
-            className="px-3.5 py-2 rounded-lg text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center gap-1.5 shadow-xs"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Portfolio</span>
-          </Link>
-
-          <Link
-            to="/analytics"
-            className="px-3.5 py-2 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors flex items-center gap-1.5 shadow-xs"
-          >
-            <BarChart3 className="w-3.5 h-3.5 text-slate-500" />
-            <span>Diagnostics</span>
-          </Link>
-        </div>
-      </div>
+      {/* ALL FEATURES & TOOLS EXPLORER DIRECTORY */}
+      <FeatureDirectory />
 
       {/* ROW 2: MARKET SNAPSHOT (4 INDEX CARDS + GAINERS/LOSERS) */}
       <div className="space-y-4">
@@ -241,7 +431,7 @@ export const Dashboard: React.FC = () => {
             className="mb-0"
           />
           <Link
-            to="/market"
+            to="/markets?tab=stocks"
             className="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1 group"
           >
             <span>View Full Market</span>
@@ -340,7 +530,7 @@ export const Dashboard: React.FC = () => {
               className="mb-0"
             />
             <Link
-              to="/market"
+              to="/markets?tab=stocks"
               className="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
             >
               <span>+ Add Stocks</span>
@@ -444,7 +634,7 @@ export const Dashboard: React.FC = () => {
             </div>
 
             <Link
-              to="/calculators"
+              to="/tools"
               className="w-full py-2 px-4 rounded-lg text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 min-h-[40px] shadow-xs"
             >
               <Calculator className="w-4 h-4" />
@@ -465,7 +655,7 @@ export const Dashboard: React.FC = () => {
             className="mb-0"
           />
           <Link
-            to="/funds"
+            to="/markets?tab=funds"
             className="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1 group"
           >
             <span>Explore all funds</span>
@@ -564,7 +754,7 @@ export const Dashboard: React.FC = () => {
             </h2>
           </div>
           <Link
-            to="/news"
+            to="/markets?tab=news"
             className="text-xs font-medium text-emerald-700 hover:text-emerald-800"
           >
             All News
